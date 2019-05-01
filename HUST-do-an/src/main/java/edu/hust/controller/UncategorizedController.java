@@ -229,7 +229,9 @@ public class UncategorizedController {
 				this.teacherClassService.updateTeacherClass(teacherClass);
 			}
 		}
-		return ResponseEntity.ok("Check teacher roll call today complete!");
+		
+		report = new ReportError(200, "Check teacher roll call today complete!");
+		return ResponseEntity.ok(report);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -432,6 +434,7 @@ public class UncategorizedController {
 			}
 		}
 
-		return ResponseEntity.ok("Check student roll call today complete!");
+		report = new ReportError(200, "Check student roll call today complete!");
+		return ResponseEntity.ok(report);
 	}
 }

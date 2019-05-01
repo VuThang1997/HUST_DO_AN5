@@ -76,7 +76,8 @@ public class RoomController {
 			}
 			
 			this.roomService.addNewRoom(room);
-			return ResponseEntity.ok("Adding new room successes!");
+			report = new ReportError(200, "Adding new room success!");
+			return ResponseEntity.ok(report);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -101,7 +102,8 @@ public class RoomController {
 		}
 		
 		if (this.roomService.deleteRoom(id)) {
-			return ResponseEntity.ok("Deleting room successes!");
+			report = new ReportError(200, "Deleting room success!");
+			return ResponseEntity.ok(report);
 		}
 		
 		report = new ReportError(55, "This room still has dependant!");
@@ -168,7 +170,8 @@ public class RoomController {
 			}
 			
 			this.roomService.updateRoom(room);
-			return ResponseEntity.ok("Updating room info successes!");
+			report = new ReportError(200, "Updating room success!");
+			return ResponseEntity.ok(report);
 		} catch (Exception e) {
 			e.printStackTrace();
 			report = new ReportError(2, "Error happened when jackson deserialization info!");

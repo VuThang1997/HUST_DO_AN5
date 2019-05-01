@@ -100,7 +100,8 @@ public class SemesterController {
 			semester = new Semester(semesterName, beginDate, endDate);
 
 			this.semesterService.addNewSemester(semester);
-			return ResponseEntity.ok("Adding new semester successfully!");
+			report = new ReportError(200, "Adding new semester success!");
+			return ResponseEntity.ok(report);
 		} catch (Exception e) {
 			e.printStackTrace();
 			report = new ReportError(2, "Error happened when jackson deserialization info!");
@@ -148,7 +149,8 @@ public class SemesterController {
 		}
 
 		this.semesterService.deleteSemester(semesterName);
-		return ResponseEntity.ok("The semester is deleted!");
+		report = new ReportError(200, "Deleting semester success!");
+		return ResponseEntity.ok(report);
 	}
 	
 	@RequestMapping(value = "/semesters", method = RequestMethod.PUT)
@@ -209,7 +211,8 @@ public class SemesterController {
 
 			semester = new Semester(id, semesterName, beginDate, endDate);
 			this.semesterService.updateSemesterInfo(semester);
-			return ResponseEntity.ok("Updating new semester successfully!");
+			report = new ReportError(200, "Updating semester success!");
+			return ResponseEntity.ok(report);
 		} catch (Exception e) {
 			e.printStackTrace();
 			report = new ReportError(2, "Error happened when jackson deserialization info!");

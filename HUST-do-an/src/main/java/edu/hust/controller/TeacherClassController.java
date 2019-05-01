@@ -280,7 +280,8 @@ public class TeacherClassController {
 				return ResponseEntity.badRequest().body(report);
 			}
 
-			return ResponseEntity.ok("Roll call student with permission successes!");
+			report = new ReportError(200, "Roll call student with permission successes!");
+			return ResponseEntity.ok(report);
 
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -363,7 +364,8 @@ public class TeacherClassController {
 			teacherClass.setListRollCall(null);
 			
 			this.teacherClassService.addNewTeacherClass(teacherClass);
-			return ResponseEntity.ok("Adding new teacher-class successes!");
+			report = new ReportError(200, "Adding new teacher-class successes!");
+			return ResponseEntity.ok(report);
 
 		} catch (NumberFormatException e) {
 			e.printStackTrace();

@@ -128,7 +128,8 @@ public class ClassController {
 			classInstance.setSemester(semester);
 
 			this.classService.addNewClass(classInstance);
-			return ResponseEntity.ok("Adding new class successes!");
+			report = new ReportError(200, "Adding new class successes!");
+			return ResponseEntity.ok(report);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -256,7 +257,8 @@ public class ClassController {
 			classInstance.setSemester(semester);
 
 			this.classService.updateClassInfo(classInstance);
-			return ResponseEntity.ok("Updating class info successes!");
+			report = new ReportError(200, "Updating class info successes!");
+			return ResponseEntity.ok(report);
 
 		} catch (Exception e) {
 			e.printStackTrace();

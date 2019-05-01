@@ -140,7 +140,8 @@ public class ClassRoomController {
 			classRoom.setRoom(room);
 
 			this.classRoomService.addNewClassRoom(classRoom);
-			return ResponseEntity.ok("Adding new class-room suceeses!");
+			report = new ReportError(200, "Adding new class-room suceeses!");
+			return ResponseEntity.ok(report);
 		} catch (Exception e) {
 			e.printStackTrace();
 			report = new ReportError(2, "Error happened when jackson deserialization info!");
@@ -275,7 +276,8 @@ public class ClassRoomController {
 			}
 
 			this.classRoomService.updateClassRoomInfo(classRoom);
-			return ResponseEntity.ok("Updating class-room info suceeses!");
+			report = new ReportError(200, "Updating class-room info suceeses!");
+			return ResponseEntity.ok(report);
 		} catch (Exception e) {
 			e.printStackTrace();
 			report = new ReportError(2, "Error happened when jackson deserialization info!");
@@ -311,6 +313,7 @@ public class ClassRoomController {
 		}
 		
 		this.classRoomService.deleteClassRoom(classRoom);
-		return ResponseEntity.ok("Deleting class-room suceeses!");
+		report = new ReportError(200, "Deleting class-room suceeses!");
+		return ResponseEntity.ok(report);
 	}
 }

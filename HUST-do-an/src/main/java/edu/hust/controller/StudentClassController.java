@@ -150,7 +150,8 @@ public class StudentClassController {
 				return ResponseEntity.ok(report);
 			}
 			
-			return ResponseEntity.ok("Roll call successful!");
+			report = new ReportError(200, "Roll call success!");
+			return ResponseEntity.ok(report);
 
 		} catch (Exception e) {
 			e.printStackTrace();

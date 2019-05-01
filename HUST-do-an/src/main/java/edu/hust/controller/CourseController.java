@@ -127,7 +127,8 @@ public class CourseController {
 			}
 
 			if (this.courseService.updateCourseInfo(course)) {
-				return ResponseEntity.ok("Updating course success!");
+				report = new ReportError(200, "Updating course success!");
+				return ResponseEntity.ok(report);
 			}
 
 			report = new ReportError(41, "Duplicate course name!");
@@ -154,7 +155,8 @@ public class CourseController {
 		}
 
 		if (this.courseService.deleteCourse(id)) {
-			return ResponseEntity.ok("Deleting course success!");
+			report = new ReportError(200, "Deleting course success!");
+			return ResponseEntity.ok(report);
 		}
 		
 		report = new ReportError(45, "This course still has dependant!");
