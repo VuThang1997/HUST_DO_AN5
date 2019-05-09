@@ -40,5 +40,7 @@ public interface AccountService {
 
 	Account updateAccountInfo(Account account);
 
-	
+	Account findAccountByEmail(String email);
+
+	String createUserInfoString(User user);
 }

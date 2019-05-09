@@ -29,4 +29,8 @@ public interface RoomService {
 
 	Room findRoomById(int id);
 
+	Room findRoomByName(String roomName);
+
+	Room findRoomByMacAddr(String macAddress);
+
 }

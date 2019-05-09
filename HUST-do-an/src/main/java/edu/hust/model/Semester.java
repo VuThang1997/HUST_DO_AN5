@@ -50,12 +50,12 @@ public class Semester implements Serializable {
 		this.endDate = endDate;
 	}
 
-	public String getName() {
+	public String getSemesterName() {
 		return semesterName;
 	}
 
-	public void setName(String name) {
-		this.semesterName = name;
+	public void setSemesterName(String semesterName) {
+		this.semesterName = semesterName;
 	}
 
 	public LocalDate getBeginDate() {

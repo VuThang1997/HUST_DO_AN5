@@ -12,11 +12,14 @@
 	<groupId>edu.hust</groupId>
 	<artifactId>HUST-DO-AN</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>course-database-1</name>
+	<name>HUST_do_an</name>
+	<packaging>jar</packaging>
 	<description>HUST do an</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencies>
@@ -52,7 +55,18 @@
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+
+		<dependency> <groupId>org.eclipse.birt.runtime</groupId> 
+			<artifactId>org.eclipse.birt.runtime</artifactId> 
+			<version>4.2.2</version> 
+		</dependency>
+
 	</dependencies>
+
 
 	<build>
 		<plugins>

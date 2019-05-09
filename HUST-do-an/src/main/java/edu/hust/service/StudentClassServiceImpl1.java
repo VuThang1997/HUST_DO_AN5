@@ -136,8 +136,9 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 		//create a blacklist's record if imei is different
 		if (!instance.getAccount().getEmail().equals(imei)) {
-			this.blacklistService.createNewRecord(instance, imei);
-			return "Warning: System has created a record in blacklist for your incorrect IMEI!";
+			//this.blacklistService.createNewRecord(instance, imei);
+			//return "Warning: System has created a record in blacklist for your incorrect IMEI!";
+			return "Sorry! It seem like you are using other's device!";
 		}
 		return null;
 

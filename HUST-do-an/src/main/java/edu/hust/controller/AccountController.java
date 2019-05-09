@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import edu.hust.utils.GeneralValue;
 import edu.hust.utils.JsonMapUtil;
 import edu.hust.utils.ValidationData;
 
+@CrossOrigin(origins = "http://localhost:8085", maxAge = 3600)
 @RestController
 public class AccountController {
 
@@ -62,6 +64,7 @@ public class AccountController {
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password")) {
 				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				// return new ResponseEntity<>(report, HttpStatus.FORBIDDEN);
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -69,10 +72,12 @@ public class AccountController {
 			if (errorMessage != null) {
 				report = new ReportError(10, "Login failed because " + errorMessage);
 				return ResponseEntity.badRequest().body(report);
+				// return new ResponseEntity<>(report, HttpStatus.FORBIDDEN);
 			}
 
 			email = jsonMap.get("email").toString();
 			password = jsonMap.get("password").toString();
+
 			Account account = this.accountService.findAccountByEmailAndPassword(email, password);
 			if (account == null) {
 				report = new ReportError(11, "Authentication has failed or has not yet been provided!");
@@ -271,54 +276,54 @@ public class AccountController {
 		}
 	}
 
-	@RequestMapping(value = "/accounts", method = RequestMethod.PATCH)
+	@RequestMapping(value = "/accounts", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateAccountInfo(@RequestHeader(value = "email") String email,
 			@RequestHeader(value = "password") String password,
 			@RequestParam(value = "updateUser", required = true) boolean updateUser, @RequestBody String accountInfo) {
+		
+		System.out.println("\n\n begin update");
 		ObjectMapper objectMapper = null;
-		Map<String, Object> jsonMap = null;
+		Map<String, Object> jsonMap = new HashMap<>();
 		Account account = null;
+		Account tmpAccount = null;
 		String errorMessage = null;
 		String newEmail = null;
-		String newPassword = null;
-		String newUsername = null;
 		String newImei = null;
 		ReportError report;
 		User user = null;
 
+		// check old info (provided by header) is correct
+		jsonMap.put("email", email);
+		jsonMap.put("password", password);
+		errorMessage = this.validationData.validateAccountData(jsonMap);
+		if (errorMessage != null) {
+			System.out.println("validate failed");
+			report = new ReportError(17, "Updating account info failed because " + errorMessage);
+			return ResponseEntity.badRequest().body(report);
+		}
+
+		account = this.accountService.findAccountByEmailAndPassword(email, password);
+		if (account == null) {
+			System.out.println("no account");
+			report = new ReportError(11, "Authentication has failed or has not yet been provided!");
+			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
+		}
+
+		// prepare map for new info
+		jsonMap.clear();
 		try {
-			jsonMap = new HashMap<>();
-
-			// check old info (provided by header) is valid
-			jsonMap.put("email", email);
-			jsonMap.put("password", password);
-			errorMessage = this.validationData.validateAccountData(jsonMap);
-			if (errorMessage != null) {
-				report = new ReportError(17, "Updating account info failed because " + errorMessage);
-				return ResponseEntity.badRequest().body(report);
-			}
-
-			account = this.accountService.findAccountByEmailAndPassword(jsonMap.get("email").toString(),
-					jsonMap.get("password").toString());
-			if (account == null) {
-				report = new ReportError(11, "Authentication has failed or has not yet been provided!");
-				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
-			}
-
-			// remove all old info.
-			jsonMap.clear();
-
 			objectMapper = new ObjectMapper();
 			jsonMap = objectMapper.readValue(accountInfo, new TypeReference<Map<String, Object>>() {
 			});
 
+			System.out.println("\n\n Mile 3");
 			// check request body has enough info in right JSON format
 			if (updateUser == false) {
 				if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password", "username", "imei")) {
 					report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
 					return ResponseEntity.badRequest().body(report);
 				}
-				
+
 			} else {
 				if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password", "username", "imei", "birthday",
 						"phone", "address", "fullName")) {
@@ -327,58 +332,62 @@ public class AccountController {
 				}
 			}
 
-			// check new data is valid
+			System.out.println("\n\n Mile 4");
+			// check new account data is valid
 			errorMessage = this.validationData.validateAccountData(jsonMap);
 			if (errorMessage != null) {
 				report = new ReportError(17, "Updating account info failed because " + errorMessage);
 				return ResponseEntity.badRequest().body(report);
 			}
-			
+
+			//Check if new email is not used anywhere (must exclude account itself)
+			newEmail = jsonMap.get("email").toString();
+			tmpAccount = this.accountService.findAccountByEmail(newEmail);
+			if (tmpAccount != null && tmpAccount.getId() != account.getId()) {
+				report = new ReportError(17,
+						"Updating account info failed because the email is already used by another account");
+				return ResponseEntity.badRequest().body(report);
+			}
+
 			newImei = jsonMap.get("imei").toString();
-			if (newImei != account.getImei()) {
+			if (!newImei.equals(account.getImei())) {
 				if (account.getUpdateImeiCounter() == GeneralValue.maxTimesForUpdatingImei) {
-					report = new ReportError(18, "Adding account info failed because this account is not allowed to change imei number");
+					report = new ReportError(18,
+							"Updating account info failed because this account is not allowed to change IMEI number");
 					return ResponseEntity.badRequest().body(report);
 				}
-				
+
 				account.setImei(newImei);
 				account.setUpdateImeiCounter(account.getUpdateImeiCounter() + 1);
 			}
-
-			newEmail = jsonMap.get("email").toString();
-			newPassword = jsonMap.get("password").toString();
-			newUsername = jsonMap.get("username").toString();
-			
 
 			if (updateUser == true) {
 				LocalDate birthday = null;
 				String address = null;
 				String fullName = null;
 				String phone = null;
-			
+
 				errorMessage = this.validationData.validateUserData(jsonMap);
 				if (errorMessage != null) {
-					report = new ReportError(20, "Adding user info failed because" + errorMessage);
+					report = new ReportError(20, "Updating user info failed because" + errorMessage);
 					return ResponseEntity.badRequest().body(report);
 				}
-				
+
 				fullName = jsonMap.get("fullName").toString();
 				phone = jsonMap.get("phone").toString();
 				birthday = LocalDate.parse(jsonMap.get("birthday").toString());
 				address = jsonMap.get("address").toString();
 				user = new User(address, fullName, birthday, phone);
-			}
-
-			account.setEmail(newEmail);
-			account.setPassword(newPassword);
-			account.setUsername(newUsername);
-
-			this.accountService.updateAccountInfo(account);
-			if (user != null) {
-				user.setId(account.getId());
-				this.accountService.addUserInfo(user);
+				
+				String userInfo = this.accountService.createUserInfoString(user);
+				account.setUserInfo(userInfo);
 			}
 			
+			account.setEmail(newEmail);
+			account.setPassword(jsonMap.get("password").toString());
+			account.setUsername(jsonMap.get("username").toString());
+			this.accountService.updateAccountInfo(account);
+
 			report = new ReportError(200, "Updating account info successes!");
 			return ResponseEntity.ok(report);
 

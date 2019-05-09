@@ -107,4 +107,24 @@ public class RoomServiceImpl1 implements RoomService {
 		return null;
 	}
 
+	@Override
+	public Room findRoomByName(String roomName) {
+		Optional<Room> room = this.roomRepository.findByRoomName(roomName);
+		if (room.isPresent()) {
+			return room.get();
+		}
+		
+		return null;
+	}
+
+	@Override
+	public Room findRoomByMacAddr(String macAddress) {
+		Optional<Room> room = this.roomRepository.findByMacAddress(macAddress);
+		if (room.isPresent()) {
+			return room.get();
+		}
+		
+		return null;
+	}
+
 }

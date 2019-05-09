@@ -11,6 +11,7 @@ import edu.hust.enumData.AccountStatus;
 import edu.hust.model.Account;
 import edu.hust.model.User;
 import edu.hust.repository.AccountRepository;
+import edu.hust.utils.GeneralValue;
 
 @Service
 @Qualifier("AccountServiceImpl1")
@@ -128,18 +129,26 @@ public class AccountServiceImpl1 implements AccountService {
 		return true;
 	}
 
-	private String createUserInfoString(User user) {
+	@Override
+	public String createUserInfoString(User user) {
 		String userInfo = null;
 
 		// userInfo has format: "fullName+address+phone+birthDay"
-		userInfo = user.getFullName() + "+";
-		userInfo += user.getAddress() + "+";
-		userInfo += user.getPhone() + "+";
+		userInfo = user.getFullName() + GeneralValue.regexForSplitUserInfo;
+		userInfo += user.getAddress() + GeneralValue.regexForSplitUserInfo;
+		userInfo += user.getPhone() + GeneralValue.regexForSplitUserInfo;
 		userInfo += user.getBirthDay();
 		
-		System.out.println("\n\nUser info = " + userInfo);
-		
 		return userInfo;
+	}
+
+	@Override
+	public Account findAccountByEmail(String email) {
+		Optional<Account> account = this.accountRepository.findByEmail(email);
+		if (account.isEmpty()) {
+			return null;
+		}
+		return account.get();
 	}
 
 }

@@ -27,7 +27,7 @@ public class ValidationUserDataImpl1 implements ValidationUserData{
 
 	@Override
 	public String validateBirthdayData(LocalDate birthday) {
-		if (birthday == null || birthday.getYear() < 1940) {
+		if (birthday == null || birthday.getYear() < 1940 ) {
 			return "Birthday info is missing or not in valid range! ";
 		}
 		return null;

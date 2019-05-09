@@ -96,4 +96,13 @@ public class SemesterServiceImpl1 implements SemesterService {
 		
 	}
 
+	@Override
+	public List<Semester> findAllSemester() {
+		List<Semester> listSemester = this.semesterRepository.findAll();
+		if (listSemester == null || listSemester.isEmpty()) {
+			return null;
+		}
+		return listSemester;
+	}
+
 }

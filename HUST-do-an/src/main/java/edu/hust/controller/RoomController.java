@@ -134,6 +134,7 @@ public class RoomController {
 		ObjectMapper objectMapper = null;
 		Map<String, Object> jsonMap = null;
 		Room room = null;
+		Room tmpRoom = null;
 		ReportError report = null;
 		
 		try {
@@ -159,12 +160,16 @@ public class RoomController {
 				return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
 			}
 			
-			if (!this.roomService.checkRoomNameDuplicate(room.getRoomName())) {
+			//Check if room name is duplicate (must exclude itself)
+			tmpRoom = this.roomService.findRoomByName(room.getRoomName());
+			if (tmpRoom != null && room.getId() != tmpRoom.getId()) {
 				report = new ReportError(51, "Duplicate room name!");
 				return ResponseEntity.badRequest().body(report);
 			}
 			
-			if (!this.roomService.checkMacAddrDuplicate(room.getMacAddress())) {
+			//Check if Mac Address is duplicate (must exclude itself)
+			tmpRoom = this.roomService.findRoomByMacAddr(room.getMacAddress());
+			if (tmpRoom != null && tmpRoom.getId() != room.getId()) {
 				report = new ReportError(52, "Duplicate MAC address!");
 				return ResponseEntity.badRequest().body(report);
 			}

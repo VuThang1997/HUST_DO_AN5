@@ -1,6 +1,7 @@
 package edu.hust.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +128,15 @@ public class SemesterController {
 		}
 		return ResponseEntity.ok(semester);
 	}
+	
+	@RequestMapping(value = "/semesters/all", method = RequestMethod.GET)
+	public ResponseEntity<?> getAllSemester() {
+		List<Semester> listSemester = this.semesterService.findAllSemester();
+		if (listSemester == null) {
+			return ResponseEntity.badRequest().body("No data founded!");
+		}
+		return ResponseEntity.ok(listSemester);
+	}
 
 	@RequestMapping(value = "/semesters", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteSemester(
@@ -219,4 +229,7 @@ public class SemesterController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
 	}
+	
+	
+	
 }

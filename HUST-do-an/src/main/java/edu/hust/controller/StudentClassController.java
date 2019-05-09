@@ -72,8 +72,13 @@ public class StudentClassController {
 			});
 
 			// check request body has enough info in right JSON format
+//			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "studentID", "classID", "roomID", "gpsLong", "gpsLa",
+//					"macAddr", "identifyString", "imei")) {
+//				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "studentID", "classID", "roomID", "gpsLong", "gpsLa",
-					"macAddr", "identifyString", "imei")) {
+				"identifyString", "imei")) {
 				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -112,11 +117,11 @@ public class StudentClassController {
 				return ResponseEntity.badRequest().body(report);
 			}
 			
-			macAddr = jsonMap.get("macAddr").toString();
-			if (macAddr == null || macAddr.isBlank()) {
-				report = new ReportError(92, "Missing MAC address");
-				return ResponseEntity.badRequest().body(report);
-			}
+//			macAddr = jsonMap.get("macAddr").toString();
+//			if (macAddr == null || macAddr.isBlank()) {
+//				report = new ReportError(92, "Missing MAC address");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 
 			identifyString = jsonMap.get("identifyString").toString();
 			if (identifyString == null || identifyString.isBlank()) {
@@ -131,13 +136,13 @@ public class StudentClassController {
 			}
 			
 			// check if MAC address is correct
-			if (!this.roomService.checkMacAddress(roomID, macAddr)) {
-				report = new ReportError(95, "MAC address is incorrect!");
-				return ResponseEntity.badRequest().body(report);
-			}
+//			if (!this.roomService.checkMacAddress(roomID, macAddr)) {
+//				report = new ReportError(95, "MAC address is incorrect!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 
 			// check if device is in distance limit - 20m
-			if (this.roomService.calculateDistanceBetween2GPSCoord(roomID, gpsLong, gpsLa) > 20) {
+			if (this.roomService.calculateDistanceBetween2GPSCoord(roomID, gpsLong, gpsLa) > 50) {
 				report = new ReportError(96, "Device is out of valid distance to classroom!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -146,8 +151,8 @@ public class StudentClassController {
 			rollCallAt = LocalDateTime.now();
 			errorMessage = this.studentClassService.rollCall(classID, studentID, rollCallAt, imei);
 			if (errorMessage != null) {
-				report = new ReportError(200, errorMessage);
-				return ResponseEntity.ok(report);
+				report = new ReportError(97, errorMessage);
+				return ResponseEntity.badRequest().body(report);
 			}
 			
 			report = new ReportError(200, "Roll call success!");

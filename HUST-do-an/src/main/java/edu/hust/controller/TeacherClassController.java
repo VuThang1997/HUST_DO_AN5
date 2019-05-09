@@ -100,7 +100,12 @@ public class TeacherClassController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "gpsLong", "gpsLa")) {
+//			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "gpsLong", "gpsLa")) {
+//				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
+			
+			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID")) {
 				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -126,12 +131,12 @@ public class TeacherClassController {
 				return ResponseEntity.badRequest().body(report);
 			}
 
-			gpsLong = Double.parseDouble(jsonMap.get("gpsLong").toString());
-			gpsLa = Double.parseDouble(jsonMap.get("gpsLa").toString());
-			if (gpsLong < -180 || gpsLong > 180 || gpsLa < -90 || gpsLa > 90) {
-				report = new ReportError(84, "Longitude/Latitude is out of practical range!");
-				return ResponseEntity.badRequest().body(report);
-			}
+//			gpsLong = Double.parseDouble(jsonMap.get("gpsLong").toString());
+//			gpsLa = Double.parseDouble(jsonMap.get("gpsLa").toString());
+//			if (gpsLong < -180 || gpsLong > 180 || gpsLa < -90 || gpsLa > 90) {
+//				report = new ReportError(84, "Longitude/Latitude is out of practical range!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 
 			// check teacher has authority to roll call this class
 			if (!this.teacherClassService.checkTeacherHasAuthority(teacherID, classID)) {
@@ -140,10 +145,10 @@ public class TeacherClassController {
 			}
 
 			// check if device is in distance limit - 50m
-			if (this.roomService.calculateDistanceBetween2GPSCoord(roomID, gpsLong, gpsLa) > 50) {
-				report = new ReportError(85, "Device is out of valid distance to classroom!");
-				return ResponseEntity.badRequest().body(report);
-			}
+//			if (this.roomService.calculateDistanceBetween2GPSCoord(roomID, gpsLong, gpsLa) > 50) {
+//				report = new ReportError(85, "Device is out of valid distance to classroom!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 
 			// Check teacher generate time in valid limit
 			// Notice: weekday of java = weekday of mySQL - 1
@@ -201,7 +206,13 @@ public class TeacherClassController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "gpsLong", "gpsLa",
+//			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "gpsLong", "gpsLa",
+//					"studentEmail", "studentPassword", "reason")) {
+//				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
+			
+			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID",
 					"studentEmail", "studentPassword", "reason")) {
 				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
 				return ResponseEntity.badRequest().body(report);
@@ -242,12 +253,12 @@ public class TeacherClassController {
 				return ResponseEntity.badRequest().body(report);
 			}
 
-			gpsLong = Double.parseDouble(jsonMap.get("gpsLong").toString());
-			gpsLa = Double.parseDouble(jsonMap.get("gpsLa").toString());
-			if (gpsLong < -180 || gpsLong > 180 || gpsLa < -90 || gpsLa > 90) {
-				report = new ReportError(84, "Longitude/Latitude is out of practical range!");
-				return ResponseEntity.badRequest().body(report);
-			}
+//			gpsLong = Double.parseDouble(jsonMap.get("gpsLong").toString());
+//			gpsLa = Double.parseDouble(jsonMap.get("gpsLa").toString());
+//			if (gpsLong < -180 || gpsLong > 180 || gpsLa < -90 || gpsLa > 90) {
+//				report = new ReportError(84, "Longitude/Latitude is out of practical range!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 
 			// check student's email and password are valid
 			studentPassword = jsonMap.get("studentPassword").toString();
@@ -270,10 +281,10 @@ public class TeacherClassController {
 			}
 
 			// check if device is in distance limit - 50m
-			if (this.roomService.calculateDistanceBetween2GPSCoord(roomID, gpsLong, gpsLa) > 50) {
-				report = new ReportError(85, "Device is out of valid distance to classroom!");
-				return ResponseEntity.badRequest().body(report);
-			}
+//			if (this.roomService.calculateDistanceBetween2GPSCoord(roomID, gpsLong, gpsLa) > 50) {
+//				report = new ReportError(85, "Device is out of valid distance to classroom!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 
 			if (!this.teacherClassService.rollCallStudentWithPermission(studentEmail, classID, roomID, reason)) {
 				report = new ReportError(88, "This student has rolled call already!!");

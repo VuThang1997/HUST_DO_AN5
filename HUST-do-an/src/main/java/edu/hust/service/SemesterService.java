@@ -1,6 +1,7 @@
 package edu.hust.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import edu.hust.model.Semester;
 
@@ -21,4 +22,6 @@ public interface SemesterService {
 	Semester findSemesterById(int id);
 
 	void updateSemesterInfo(Semester semester);
+
+	List<Semester> findAllSemester();
 }
