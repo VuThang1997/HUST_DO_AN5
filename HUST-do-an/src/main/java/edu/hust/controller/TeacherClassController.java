@@ -83,8 +83,8 @@ public class TeacherClassController {
 		int classID = 0;
 		int roomID = 0;
 		int weekday = 0;
-		double gpsLong;
-		double gpsLa;
+//		double gpsLong;
+//		double gpsLa;
 		String inputMd5 = null;
 		String result = null;
 		String errorMessage = null;
@@ -190,11 +190,11 @@ public class TeacherClassController {
 		int teacherID = 0;
 		int classID = 0;
 		int roomID = 0;
-		double gpsLong;
-		double gpsLa;
+//		double gpsLong;
+//		double gpsLa;
 		int reason = -1;
 		String studentEmail = null;
-		String studentPassword = null;
+//		String studentPassword = null;
 		String errorMessage = null;
 		ObjectMapper objectMapper = null;
 		Map<String, Object> jsonMap = null;
@@ -213,7 +213,7 @@ public class TeacherClassController {
 //			}
 			
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID",
-					"studentEmail", "studentPassword", "reason")) {
+					"studentEmail","reason")) {
 				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -261,8 +261,8 @@ public class TeacherClassController {
 //			}
 
 			// check student's email and password are valid
-			studentPassword = jsonMap.get("studentPassword").toString();
-			if (this.accountService.findAccountByEmailAndPassword(studentEmail, studentPassword) == null) {
+			//studentPassword = jsonMap.get("studentPassword").toString();
+			if (this.accountService.findAccountByEmail(studentEmail) == null) {
 				report = new ReportError(11, "Authentication has failed or has not yet been provided!");
 				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 			}
