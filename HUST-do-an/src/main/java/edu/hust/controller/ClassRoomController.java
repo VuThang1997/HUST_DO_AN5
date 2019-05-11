@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +35,7 @@ import edu.hust.utils.JsonMapUtil;
 import edu.hust.utils.ValidationClassRoomData;
 import edu.hust.utils.ValidationData;
 
+@CrossOrigin
 @RestController
 public class ClassRoomController {
 
@@ -316,4 +318,27 @@ public class ClassRoomController {
 		report = new ReportError(200, "Deleting class-room suceeses!");
 		return ResponseEntity.ok(report);
 	}
+	
+	@GetMapping("/listRooms")
+	public ResponseEntity<?> getListRoom(@RequestParam(value = "classID", required = true) int classID) {
+
+		String errorMessage = null;
+		ReportError report = null;
+		errorMessage = this.validationClassRoomData.validateIdData(classID);
+		if (errorMessage != null) {
+			report = new ReportError(73, "Getting class-room info failed because " + errorMessage);
+			return ResponseEntity.badRequest().body(report);
+		}
+
+		//List<ClassRoom> classRooms = this.classRoomService.getListClassRoomByClassID(classID);
+		List<Room> listRoom = this.classRoomService.getListRoomByClassID(classID);
+		if (listRoom != null && !listRoom.isEmpty()) {
+			
+			return ResponseEntity.ok(listRoom);
+		}
+
+		report = new ReportError(74, "This class-room do not exist!");
+		return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+	}
+
 }

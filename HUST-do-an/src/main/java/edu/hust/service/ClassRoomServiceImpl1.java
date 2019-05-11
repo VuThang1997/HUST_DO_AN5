@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.hust.model.ClassRoom;
+import edu.hust.model.Room;
 import edu.hust.repository.ClassRoomRepository;
 
 @Service
@@ -104,6 +105,24 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 			return null;
 		}
 		return listClassRoom;
+	}
+
+	@Override
+	public List<ClassRoom> getListClassRoomByClassID(int classID) {
+		List<ClassRoom> listClassRoom = this.classRoomRepository.findByClassID(classID);
+		if (listClassRoom == null || listClassRoom.isEmpty()) {
+			return null;
+		}
+		return listClassRoom;
+	}
+
+	@Override
+	public List<Room> getListRoomByClassID(int classID) {
+		List<Room> listRoom = this.classRoomRepository.findListRoomByClassID(classID);
+		if (listRoom == null || listRoom.isEmpty()) {
+			return null;
+		}
+		return listRoom;
 	}
 
 }

@@ -266,4 +266,22 @@ public class ClassController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
 	}
+	
+	@RequestMapping(value = "/getClassInfo", method = RequestMethod.GET)
+	public ResponseEntity<?> getClassInfo(@RequestParam(value = "className", required = true) String className) {
+		String errorMessage = this.validationClassData.validateClassNameData(className);
+		ReportError report = null;
+		if (errorMessage != null) {
+			report = new ReportError(62, "Getting class info failed because " + errorMessage);
+			return ResponseEntity.badRequest().body(report);
+		}
+
+		Class classInstance = this.classService.findClassByClassName(className);
+		if (classInstance != null) {
+			report = new ReportError(63, "This class do not exist!");
+			return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+		}
+
+		return ResponseEntity.ok(classInstance);
+	}
 }

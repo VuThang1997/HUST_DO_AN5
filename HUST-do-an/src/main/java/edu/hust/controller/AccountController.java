@@ -2,6 +2,7 @@ package edu.hust.controller;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +29,27 @@ import edu.hust.model.User;
 import edu.hust.service.AccountService;
 import edu.hust.utils.GeneralValue;
 import edu.hust.utils.JsonMapUtil;
+import edu.hust.utils.ValidationAccountData;
 import edu.hust.utils.ValidationData;
 
-@CrossOrigin(origins = "http://localhost:8085", maxAge = 3600)
+@CrossOrigin
 @RestController
 public class AccountController {
 
 	private AccountService accountService;
+	private ValidationAccountData validationAccountData;
 	private ValidationData validationData;
 	private JsonMapUtil jsonMapUtil;
 
 	@Autowired
 	public AccountController(@Qualifier("AccountServiceImpl1") AccountService accountService,
 			@Qualifier("ValidationDataImpl1") ValidationData validationData,
-			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil) {
+			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
+			@Qualifier("ValidationAccountDataImpl1") ValidationAccountData validationAccountData) {
 		this.accountService = accountService;
 		this.validationData = validationData;
 		this.jsonMapUtil = jsonMapUtil;
+		this.validationAccountData = validationAccountData;
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -543,6 +548,59 @@ public class AccountController {
 			}
 
 			return ResponseEntity.ok(account.getUserInfo());
+		} catch (Exception e) {
+			e.printStackTrace();
+			report = new ReportError(2, "Error happened when jackson deserialization info!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
+		}
+	}
+	
+	@RequestMapping(value = "/createMultipleAccount", method = RequestMethod.POST)
+	public ResponseEntity<?> createMultipleAccount(@RequestBody String accountInfo) {
+		ObjectMapper objectMapper = null;
+		List<Account> listAccount = null;
+		String errorMessage = null;
+		ReportError report;
+		Account account = null;
+		int invalidAccount = 0;
+
+		try {
+			objectMapper = new ObjectMapper();
+			listAccount = objectMapper.readValue(accountInfo, new TypeReference<List<Account>>() {
+			});
+			
+			for (Account tmpAccount: listAccount) {
+				
+				errorMessage = this.validationAccountData.validateUsernameData(tmpAccount.getUsername());
+				if (errorMessage != null) {
+					invalidAccount ++;
+					continue;
+				}
+				
+				errorMessage = this.validationAccountData.validatePasswordData(tmpAccount.getPassword());
+				if (errorMessage != null) {
+					invalidAccount ++;
+					continue;
+				}
+				
+				errorMessage = this.validationAccountData.validateEmailData(tmpAccount.getEmail());
+				if (errorMessage != null) {
+					invalidAccount ++;
+					continue;
+				}
+				
+				account = this.accountService.findAccountByEmail(tmpAccount.getEmail());
+				if (account != null) {
+					invalidAccount ++;
+					continue;
+				}
+				
+				this.accountService.saveAccount(tmpAccount);
+			}
+
+			report = new ReportError(200, "" + invalidAccount);
+			return ResponseEntity.ok(report);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			report = new ReportError(2, "Error happened when jackson deserialization info!");

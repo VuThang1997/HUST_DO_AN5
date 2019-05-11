@@ -76,4 +76,13 @@ public class ClassServiceImpl1 implements ClassService {
 		return false;
 	}
 
+	@Override
+	public Class findClassByClassName(String className) {
+		Optional<Class> classInstance = this.classRepository.findByClassName(className);
+		if (classInstance.isEmpty()) {
+			return null;
+		}
+		return classInstance.get();
+	}
+
 }

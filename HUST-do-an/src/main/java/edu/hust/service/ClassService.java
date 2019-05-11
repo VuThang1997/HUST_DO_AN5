@@ -16,4 +16,6 @@ public interface ClassService {
 
 	boolean checkAddingTime(LocalDate addingDate, int semesterId);
 
+	Class findClassByClassName(String className);
+
 }

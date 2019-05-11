@@ -200,9 +200,7 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 		classInstance = instance.getClassInstance();
 		listRollCall = instance.getListRollCall();
 
-		newValue = "" + rollCallAt.getYear();
-		newValue += "-" + rollCallAt.getDayOfYear();
-		newValue += "-" + rollCallAt.toLocalTime().toSecondOfDay() + GeneralValue.regexForSplitListRollCall;
+		newValue = createRollcallDate(rollCallAt);
 
 		if (listRollCall == null) {
 			listRollCall = newValue;
@@ -294,6 +292,7 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 		}
 
 		studentClassInstance.setListRollCall(listRollCall);
+		studentClassInstance.setIsChecked(createRollcallDate(rollCallAt));
 		this.studentClassRepository.save(studentClassInstance);
 		return true;
 	}
@@ -407,6 +406,23 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 			return "the reason is not allowed!";
 		}
 		return null;
+	}
+
+	@Override
+	public String createRollcallDate(LocalDateTime rollCallAt) {
+		String rollCallDate = "" + rollCallAt.getYear();
+		rollCallDate += "-" + rollCallAt.getDayOfYear();
+		rollCallDate += "-" + rollCallAt.toLocalTime().toSecondOfDay() + GeneralValue.regexForSplitListRollCall;
+		return rollCallDate;
+	}
+
+	@Override
+	public List<TeacherClass> findByCurrentTeacherID(int teacherID) {
+		List<TeacherClass> listRecords = this.teacherClassRepository.findByCurrentTeacherID(teacherID, IsTeaching.TEACHING.getValue());
+		if (listRecords == null || listRecords.isEmpty()) {
+			return null;
+		}
+		return listRecords;
 	}
 
 }

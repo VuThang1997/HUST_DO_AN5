@@ -1,0 +1,54 @@
+2019-05-11 08:59:15.744  INFO 7052 --- [main] edu.hust.HUSTServerApplication           : Starting HUSTServerApplication on DESKTOP-D0J0TEI with PID 7052 (C:\Users\BePro\eclipse-workspace\HUST-do-an\target\classes started by BePro in C:\Users\BePro\eclipse-workspace\HUST-do-an)
+2019-05-11 08:59:15.754  INFO 7052 --- [main] edu.hust.HUSTServerApplication           : No active profile set, falling back to default profiles: default
+2019-05-11 08:59:22.218  INFO 7052 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-05-11 08:59:22.536  INFO 7052 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 294ms. Found 9 repository interfaces.
+2019-05-11 08:59:23.578  INFO 7052 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$a2e3d825] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-05-11 08:59:24.631  INFO 7052 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2019-05-11 08:59:24.707  INFO 7052 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-05-11 08:59:24.709  INFO 7052 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.16]
+2019-05-11 08:59:24.738  INFO 7052 --- [main] o.a.catalina.core.AprLifecycleListener   : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jdk-11.0.2\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Program Files/Java/jdk-11.0.2/bin/server;C:/Program Files/Java/jdk-11.0.2/bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\ManagementStudio\;C:\Program Files\nodejs\;C:\Program Files\Java\jdk-11.0.2\bin;C:\Users\BePro\Downloads\apache-maven-3.6.0\bin;C:\Gradle\gradle-5.4\bin;C:\Users\BePro\Downloads\apache-tomcat-8.5.35\lib;C:\Users\BePro\AppData\Local\Microsoft\WindowsApps;C:\Users\BePro\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\BePro\AppData\Roaming\npm;C:\Users\BePro\AppData\Local\GitHubDesktop\bin;C:\Users\BePro\Desktop;;.]
+2019-05-11 08:59:25.277  INFO 7052 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-05-11 08:59:25.278 DEBUG 7052 --- [main] o.s.web.context.ContextLoader            : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+2019-05-11 08:59:25.278  INFO 7052 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 9018 ms
+2019-05-11 08:59:25.890  INFO 7052 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2019-05-11 08:59:26.489  INFO 7052 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2019-05-11 08:59:26.816  INFO 7052 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2019-05-11 08:59:27.143  INFO 7052 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.7.Final}
+2019-05-11 08:59:27.147  INFO 7052 --- [main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2019-05-11 08:59:27.712  INFO 7052 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2019-05-11 08:59:28.227  INFO 7052 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2019-05-11 08:59:29.903  INFO 7052 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-05-11 08:59:30.889  INFO 7052 --- [main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2019-05-11 08:59:31.892  INFO 7052 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: c5052d79-fbda-43b1-948b-b32c9e49a999
+
+2019-05-11 08:59:32.247 DEBUG 7052 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/**/favicon.ico] in 'faviconHandlerMapping'
+2019-05-11 08:59:32.289  WARN 7052 --- [main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2019-05-11 08:59:32.427 DEBUG 7052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 48 mappings in 'requestMappingHandlerMapping'
+2019-05-11 08:59:32.451 DEBUG 7052 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2019-05-11 08:59:32.493  INFO 7052 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@75c3584e, org.springframework.security.web.context.SecurityContextPersistenceFilter@5ef7ae2f, org.springframework.security.web.header.HeaderWriterFilter@774189d0, org.springframework.web.filter.CorsFilter@f7b7720, org.springframework.security.web.authentication.logout.LogoutFilter@2c51c756, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@b5bddfe, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@b75f3f4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1e0c898c, org.springframework.security.web.session.SessionManagementFilter@32f45e15, org.springframework.security.web.access.ExceptionTranslationFilter@7c07023, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@b53ce18]
+2019-05-11 08:59:32.766  INFO 7052 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-05-11 08:59:32.782 DEBUG 7052 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2019-05-11 08:59:32.878 DEBUG 7052 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2019-05-11 08:59:33.406  INFO 7052 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2019-05-11 08:59:33.410  INFO 7052 --- [main] edu.hust.HUSTServerApplication           : Started HUSTServerApplication in 19.362 seconds (JVM running for 21.042)
+2019-05-11 09:05:33.252  INFO 7052 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-05-11 09:05:33.255  INFO 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-05-11 09:05:33.255 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2019-05-11 09:05:33.286 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2019-05-11 09:05:33.286  INFO 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 31 ms
+2019-05-11 09:05:33.349 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/login", parameters={}
+2019-05-11 09:05:33.375 DEBUG 7052 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.checkLogin(java.lang.String)
+2019-05-11 09:05:33.434 DEBUG 7052 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"password":"1234","email":"adminTest1@gmail.com"}"]
+2019-05-11 09:05:33.885 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-11 09:05:33.887 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [edu.hust.model.Account@706fc8c3]
+2019-05-11 09:05:33.903 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2019-05-11 09:05:57.002 DEBUG 7052 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/createMultipleAccount", parameters={}
+2019-05-11 09:05:57.004 DEBUG 7052 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.createMultipleAccount(java.lang.String)
+2019-05-11 09:05:57.009 DEBUG 7052 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["[{"id":0,"username":"Tên tài khoản","password":"Mật khẩu","role":3,"isActive":2,"email":"Email","im (truncated)...]
+2019-05-11 09:05:57.286 DEBUG 7052 --- [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-11 09:05:57.286 DEBUG 7052 --- [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "200", "description" : "1"}]
+2019-05-11 09:05:57.289 DEBUG 7052 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK

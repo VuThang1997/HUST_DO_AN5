@@ -57,4 +57,8 @@ public interface TeacherClassService {
 	void addNewTeacherClass(TeacherClass teacherClass);
 
 	String checkReasonValid(int reason);
+	
+	String createRollcallDate(LocalDateTime rollCallAt);
+
+	List<TeacherClass> findByCurrentTeacherID(int teacherID);
 }

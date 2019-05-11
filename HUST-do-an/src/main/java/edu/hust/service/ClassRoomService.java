@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import edu.hust.model.ClassRoom;
+import edu.hust.model.Room;
 
 public interface ClassRoomService {
 
@@ -26,5 +27,9 @@ public interface ClassRoomService {
 	boolean deleteClassRoom(ClassRoom classRoom);
 
 	List<ClassRoom> findClassRoomByWeekday(int currentDay);
+
+	List<ClassRoom> getListClassRoomByClassID(int classID);
+
+	List<Room> getListRoomByClassID(int classID);
 	
 }

@@ -183,4 +183,22 @@ public class RoomController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
 	}
+	
+	@RequestMapping(value = "/getRoomInfo", method = RequestMethod.GET)
+	public ResponseEntity<?> getRoomInfo(@RequestParam(value = "roomName", required = true) String roomName) {
+		String errorMessage = this.validationRoomData.validateRoomNameData(roomName);
+		ReportError report = null;
+		if (errorMessage != null) {
+			report = new ReportError(57, "Getting room info failed because " + errorMessage);
+			return ResponseEntity.badRequest().body(report);
+		}
+		
+		Room room = this.roomService.findRoomByName(roomName);
+		if (room == null) {
+			report = new ReportError(53, "This room do not exist!");
+			return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+		}
+
+		return ResponseEntity.ok(room);
+	}
 }

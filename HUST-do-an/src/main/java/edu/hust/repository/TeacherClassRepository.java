@@ -25,7 +25,10 @@ public interface TeacherClassRepository extends JpaRepository<TeacherClass, Inte
 	@Query("SELECT tc FROM TeacherClass tc WHERE tc.classInstance.id = ?1 AND tc.isTeaching = ?2")
 	Optional<TeacherClass> findByClassIDAndStatus(int classID, int value);
 	
-	@Query("SELECT tc FROM TeacherClass tc WHERE tc.account.id = ?1 AND tc.isTeaching = ?2")
+	@Query("SELECT tc.classInstance FROM TeacherClass tc WHERE tc.account.id = ?1 AND tc.isTeaching = ?2")
 	List<Class> findByTeacherIDAndStatus(int teacherID, int value);
+
+	@Query("SELECT tc FROM TeacherClass tc WHERE tc.account.id = ?1 AND tc.isTeaching = ?2")
+	List<TeacherClass> findByCurrentTeacherID(int teacherID, int isLearning);
 
 }

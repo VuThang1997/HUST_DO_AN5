@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import edu.hust.model.ClassRoom;
+import edu.hust.model.Room;
 
 @Repository
 public interface ClassRoomRepository extends JpaRepository<ClassRoom, Integer>, CustomClassRoomRepository {
@@ -25,5 +26,8 @@ public interface ClassRoomRepository extends JpaRepository<ClassRoom, Integer>, 
 
 	@Query("SELECT cr FROM ClassRoom cr WHERE cr.classInstance.id = ?1")
 	List<ClassRoom> findByClassID(int classID);
+
+	@Query("SELECT DISTINCT cr.room FROM ClassRoom cr WHERE cr.classInstance.id = ?1")
+	List<Room> findListRoomByClassID(int classID);
 
 }

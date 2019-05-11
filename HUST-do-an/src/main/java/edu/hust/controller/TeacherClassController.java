@@ -3,6 +3,7 @@ package edu.hust.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -10,17 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.hust.model.Class;
 import edu.hust.enumData.IsTeaching;
 import edu.hust.model.Account;
+import edu.hust.model.Class;
 import edu.hust.model.ReportError;
 import edu.hust.model.TeacherClass;
 import edu.hust.service.AccountService;
@@ -33,6 +37,7 @@ import edu.hust.utils.ValidationAccountData;
 import edu.hust.utils.ValidationRoomData;
 import edu.hust.utils.ValidationTeacherClassData;
 
+@CrossOrigin
 @RestController
 public class TeacherClassController {
 
@@ -104,7 +109,7 @@ public class TeacherClassController {
 //				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
 //				return ResponseEntity.badRequest().body(report);
 //			}
-			
+
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID")) {
 				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
 				return ResponseEntity.badRequest().body(report);
@@ -205,19 +210,11 @@ public class TeacherClassController {
 			jsonMap = objectMapper.readValue(info, new TypeReference<Map<String, Object>>() {
 			});
 
-			// check request body has enough info in right JSON format
-//			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "gpsLong", "gpsLa",
-//					"studentEmail", "studentPassword", "reason")) {
-//				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
-//				return ResponseEntity.badRequest().body(report);
-//			}
-			
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID",
-					"studentEmail","reason")) {
+			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "studentEmail", "reason")) {
 				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
 				return ResponseEntity.badRequest().body(report);
 			}
-			
+
 			reason = Integer.parseInt(jsonMap.get("reason").toString());
 			errorMessage = this.teacherClassService.checkReasonValid(reason);
 			if (errorMessage != null) {
@@ -253,15 +250,8 @@ public class TeacherClassController {
 				return ResponseEntity.badRequest().body(report);
 			}
 
-//			gpsLong = Double.parseDouble(jsonMap.get("gpsLong").toString());
-//			gpsLa = Double.parseDouble(jsonMap.get("gpsLa").toString());
-//			if (gpsLong < -180 || gpsLong > 180 || gpsLa < -90 || gpsLa > 90) {
-//				report = new ReportError(84, "Longitude/Latitude is out of practical range!");
-//				return ResponseEntity.badRequest().body(report);
-//			}
-
 			// check student's email and password are valid
-			//studentPassword = jsonMap.get("studentPassword").toString();
+			// studentPassword = jsonMap.get("studentPassword").toString();
 			if (this.accountService.findAccountByEmail(studentEmail) == null) {
 				report = new ReportError(11, "Authentication has failed or has not yet been provided!");
 				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
@@ -279,12 +269,6 @@ public class TeacherClassController {
 				report = new ReportError(11, "Authentication has failed or has not yet been provided!");
 				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 			}
-
-			// check if device is in distance limit - 50m
-//			if (this.roomService.calculateDistanceBetween2GPSCoord(roomID, gpsLong, gpsLa) > 50) {
-//				report = new ReportError(85, "Device is out of valid distance to classroom!");
-//				return ResponseEntity.badRequest().body(report);
-//			}
 
 			if (!this.teacherClassService.rollCallStudentWithPermission(studentEmail, classID, roomID, reason)) {
 				report = new ReportError(88, "This student has rolled call already!!");
@@ -360,7 +344,7 @@ public class TeacherClassController {
 				if (teacherClass.getAccount().getId() == teacherID) {
 					report = new ReportError(113, "The teacher is teaching this class. Nothing need be added!");
 				}
-				
+
 				report = new ReportError(114, "Another teacher is teaching this class!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -373,7 +357,7 @@ public class TeacherClassController {
 			teacherClass = new TeacherClass(classInstance, teacherAccount);
 			teacherClass.setIsTeaching(IsTeaching.TEACHING.getValue());
 			teacherClass.setListRollCall(null);
-			
+
 			this.teacherClassService.addNewTeacherClass(teacherClass);
 			report = new ReportError(200, "Adding new teacher-class successes!");
 			return ResponseEntity.ok(report);
@@ -387,5 +371,25 @@ public class TeacherClassController {
 			report = new ReportError(2, "Error happened when jackson deserialization info!");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
+	}
+
+	@GetMapping(value = "/teacherClass")
+	public ResponseEntity<?> getTeacherClassInfoByTeacherID(
+			@RequestParam(value = "teacherID", required = true) int teacherID) {
+		
+		ReportError report = null;
+		
+		if (teacherID < 1) {
+			report = new ReportError(120, "Teacher id must not less be than 1!");
+			return ResponseEntity.badRequest().body(report);
+		}
+		
+		List<TeacherClass> listRecords = this.teacherClassService.findByCurrentTeacherID(teacherID);
+		if (listRecords == null || listRecords.isEmpty()) {
+			report = new ReportError(121, "No record is found!");
+			return ResponseEntity.badRequest().body(report);
+		}
+		
+		return ResponseEntity.ok(listRecords);
 	}
 }
