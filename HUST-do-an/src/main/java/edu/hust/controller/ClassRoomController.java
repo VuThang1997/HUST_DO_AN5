@@ -95,7 +95,7 @@ public class ClassRoomController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "beginAt", "finishAt", "weekday", "classID", "roomID")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -202,7 +202,7 @@ public class ClassRoomController {
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "beginAt", "finishAt", "weekday", "classID",
 					"roomID")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 

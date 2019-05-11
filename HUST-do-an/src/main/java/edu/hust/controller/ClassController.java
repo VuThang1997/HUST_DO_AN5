@@ -1,13 +1,16 @@
 package edu.hust.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,13 +31,16 @@ import edu.hust.service.CourseService;
 import edu.hust.service.SemesterService;
 import edu.hust.utils.JsonMapUtil;
 import edu.hust.utils.ValidationClassData;
+import edu.hust.utils.ValidationCourseData;
 import edu.hust.utils.ValidationData;
 
+@CrossOrigin
 @RestController
 public class ClassController {
 
 	private ClassService classService;
 	private ValidationData validationData;
+	private ValidationCourseData validationCourseData;
 	private ValidationClassData validationClassData;
 	private JsonMapUtil jsonMapUtil;
 	private SemesterService semesterService;
@@ -51,7 +57,8 @@ public class ClassController {
 			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
 			@Qualifier("SemesterServiceImpl1") SemesterService semesterService,
 			@Qualifier("CourseServiceImpl1") CourseService courseService,
-			@Qualifier("ValidationClassDataImpl1") ValidationClassData validationClassData) {
+			@Qualifier("ValidationClassDataImpl1") ValidationClassData validationClassData,
+			@Qualifier("ValidationCourseDataImpl1") ValidationCourseData validationCourseData) {
 		super();
 		this.classService = classService;
 		this.validationData = validationData;
@@ -59,6 +66,7 @@ public class ClassController {
 		this.semesterService = semesterService;
 		this.courseService = courseService;
 		this.validationClassData = validationClassData;
+		this.validationCourseData = validationCourseData;
 	}
 
 	@RequestMapping(value = "/classes", method = RequestMethod.POST)
@@ -85,7 +93,7 @@ public class ClassController {
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "className", "maxStudent", "numberOfLessons", "courseID",
 					"semesterID")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -203,7 +211,7 @@ public class ClassController {
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "className", "maxStudent", "numberOfLessons",
 					"courseID", "semesterID")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -283,5 +291,26 @@ public class ClassController {
 		}
 
 		return ResponseEntity.ok(classInstance);
+	}
+	
+	@GetMapping("/listClass")
+	public ResponseEntity<?> getListClass(@RequestParam(value = "courseID", required = true) int courseID) {
+
+		String errorMessage = null;
+		ReportError report = null;
+		errorMessage = this.validationCourseData.validateIdData(courseID);
+		if (errorMessage != null) {
+			report = new ReportError(73, "Getting list class failed because " + errorMessage);
+			return ResponseEntity.badRequest().body(report);
+		}
+
+		List<Class> listClasses = this.classService.getListClassByCourseID(courseID);
+		if (listClasses != null && !listClasses.isEmpty()) {
+			
+			return ResponseEntity.ok(listClasses);
+		}
+
+		report = new ReportError(74, "No record is found!");
+		return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
 	}
 }

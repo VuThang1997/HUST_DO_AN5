@@ -1,6 +1,7 @@
 package edu.hust.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import edu.hust.model.Class;
 
@@ -17,5 +18,7 @@ public interface ClassService {
 	boolean checkAddingTime(LocalDate addingDate, int semesterId);
 
 	Class findClassByClassName(String className);
+
+	List<Class> getListClassByCourseID(int courseID);
 
 }

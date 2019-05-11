@@ -106,12 +106,12 @@ public class TeacherClassController {
 
 			// check request body has enough info in right JSON format
 //			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "gpsLong", "gpsLa")) {
-//				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+//				report = new ReportError(1, "You have to fill all required information!");
 //				return ResponseEntity.badRequest().body(report);
 //			}
 
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -160,7 +160,7 @@ public class TeacherClassController {
 			generateTime = LocalTime.now();
 			weekday = LocalDate.now().getDayOfWeek().getValue() + 1;
 			if (!this.teacherClassService.checkGenerateTimeValid(weekday, generateTime, classID, roomID)) {
-				report = new ReportError(81, "Teacher roll call failed because timing is not in valid range!");
+				report = new ReportError(81, "Class is not in lesson's time!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -211,7 +211,7 @@ public class TeacherClassController {
 			});
 
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "studentEmail", "reason")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -239,7 +239,7 @@ public class TeacherClassController {
 			studentEmail = jsonMap.get("studentEmail").toString();
 			errorMessage = this.validationAccountData.validateEmailData(studentEmail);
 			if (errorMessage != null) {
-				report = new ReportError(86, "Roll call with permission failed because " + errorMessage);
+				report = new ReportError(86, errorMessage);
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -253,14 +253,14 @@ public class TeacherClassController {
 			// check student's email and password are valid
 			// studentPassword = jsonMap.get("studentPassword").toString();
 			if (this.accountService.findAccountByEmail(studentEmail) == null) {
-				report = new ReportError(11, "Authentication has failed or has not yet been provided!");
+				report = new ReportError(11, "This student is not existed!");
 				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 			}
 
 			// check student is learning in this class
 			if (!this.studentClassService.checkStudentIsLearning(studentEmail, classID)) {
 				report = new ReportError(87,
-						"Roll call with permission failed because this student is not in list student");
+						"This student is not in class or dropped out");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -308,7 +308,7 @@ public class TeacherClassController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 

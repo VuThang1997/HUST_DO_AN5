@@ -16,4 +16,7 @@ public interface ClassRepository extends JpaRepository<Class, Integer>, CustomCl
 	List<Class> findBySemesterName(String semesterName);
 
 	Optional<Class> findByClassName(String className);
+
+	@Query("SELECT cl FROM Class cl WHERE cl.course.courseID = ?1")
+	List<Class> findByCourseID(int courseID);
 }

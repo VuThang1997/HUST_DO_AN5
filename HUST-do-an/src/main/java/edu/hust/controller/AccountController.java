@@ -68,8 +68,7 @@ public class AccountController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
-				// return new ResponseEntity<>(report, HttpStatus.FORBIDDEN);
+				report = new ReportError(1, "Email and password are required!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -85,7 +84,7 @@ public class AccountController {
 
 			Account account = this.accountService.findAccountByEmailAndPassword(email, password);
 			if (account == null) {
-				report = new ReportError(11, "Authentication has failed or has not yet been provided!");
+				report = new ReportError(11, "Email or password is incorrect!");
 				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 			}
 
@@ -124,7 +123,7 @@ public class AccountController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "username", "role", "password")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -177,7 +176,7 @@ public class AccountController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "role", "password")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -221,7 +220,7 @@ public class AccountController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "role", "password")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -309,7 +308,6 @@ public class AccountController {
 
 		account = this.accountService.findAccountByEmailAndPassword(email, password);
 		if (account == null) {
-			System.out.println("no account");
 			report = new ReportError(11, "Authentication has failed or has not yet been provided!");
 			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 		}
@@ -321,23 +319,21 @@ public class AccountController {
 			jsonMap = objectMapper.readValue(accountInfo, new TypeReference<Map<String, Object>>() {
 			});
 
-			System.out.println("\n\n Mile 3");
 			// check request body has enough info in right JSON format
 			if (updateUser == false) {
 				if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password", "username", "imei")) {
-					report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+					report = new ReportError(1, "You have to fill all required information!");
 					return ResponseEntity.badRequest().body(report);
 				}
 
 			} else {
 				if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password", "username", "imei", "birthday",
 						"phone", "address", "fullName")) {
-					report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+					report = new ReportError(1, "You have to fill all required information!");
 					return ResponseEntity.badRequest().body(report);
 				}
 			}
 
-			System.out.println("\n\n Mile 4");
 			// check new account data is valid
 			errorMessage = this.validationData.validateAccountData(jsonMap);
 			if (errorMessage != null) {
@@ -355,10 +351,10 @@ public class AccountController {
 			}
 
 			newImei = jsonMap.get("imei").toString();
-			if (!newImei.equals(account.getImei())) {
+			if (!newImei.equals(account.getImei()) || account.getRole() == AccountRole.STUDENT.getValue()) {
 				if (account.getUpdateImeiCounter() == GeneralValue.maxTimesForUpdatingImei) {
 					report = new ReportError(18,
-							"Updating account info failed because this account is not allowed to change IMEI number");
+							"This account is not allowed to change IMEI number anymore");
 					return ResponseEntity.badRequest().body(report);
 				}
 
@@ -374,7 +370,7 @@ public class AccountController {
 
 				errorMessage = this.validationData.validateUserData(jsonMap);
 				if (errorMessage != null) {
-					report = new ReportError(20, "Updating user info failed because" + errorMessage);
+					report = new ReportError(20, errorMessage);
 					return ResponseEntity.badRequest().body(report);
 				}
 
@@ -393,7 +389,7 @@ public class AccountController {
 			account.setUsername(jsonMap.get("username").toString());
 			this.accountService.updateAccountInfo(account);
 
-			report = new ReportError(200, "Updating account info successes!");
+			report = new ReportError(200, "Updating account info successful!");
 			return ResponseEntity.ok(report);
 
 		} catch (Exception e) {
@@ -424,7 +420,7 @@ public class AccountController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "birthday", "phone", "address", "fullName")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -485,7 +481,7 @@ public class AccountController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "birthday", "phone", "address", "fullName")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -563,6 +559,8 @@ public class AccountController {
 		ReportError report;
 		Account account = null;
 		int invalidAccount = 0;
+		int rowCounter = 1;				//Excel table: first row = info of field
+		String infoOfRow = "";
 
 		try {
 			objectMapper = new ObjectMapper();
@@ -570,35 +568,39 @@ public class AccountController {
 			});
 			
 			for (Account tmpAccount: listAccount) {
-				
+				rowCounter ++;
 				errorMessage = this.validationAccountData.validateUsernameData(tmpAccount.getUsername());
 				if (errorMessage != null) {
 					invalidAccount ++;
+					infoOfRow += invalidAccount;
 					continue;
 				}
 				
 				errorMessage = this.validationAccountData.validatePasswordData(tmpAccount.getPassword());
 				if (errorMessage != null) {
 					invalidAccount ++;
+					infoOfRow += invalidAccount;
 					continue;
 				}
 				
 				errorMessage = this.validationAccountData.validateEmailData(tmpAccount.getEmail());
 				if (errorMessage != null) {
 					invalidAccount ++;
+					infoOfRow += invalidAccount;
 					continue;
 				}
 				
 				account = this.accountService.findAccountByEmail(tmpAccount.getEmail());
 				if (account != null) {
 					invalidAccount ++;
+					infoOfRow += invalidAccount;
 					continue;
 				}
 				
 				this.accountService.saveAccount(tmpAccount);
 			}
 
-			report = new ReportError(200, "" + invalidAccount);
+			report = new ReportError(200, "" + invalidAccount + "," + infoOfRow);
 			return ResponseEntity.ok(report);
 
 		} catch (Exception e) {

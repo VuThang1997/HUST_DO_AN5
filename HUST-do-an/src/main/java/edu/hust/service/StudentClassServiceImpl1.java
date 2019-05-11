@@ -58,14 +58,14 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 	}
 
 	@Override
-	public boolean checkStudentHasAuthority(int studentID, int classID, int roomID, String identifyString,
+	public String checkStudentHasAuthority(int studentID, int classID, int roomID, String identifyString,
 			String imei) {
 		Optional<StudentClass> studentClass = this.studentClassRepository.findByStudentIDAndClassIDAndStatus(studentID,
 				classID, IsLearning.LEARNING.getValue());
 
 		if (studentClass.isEmpty()) {
 			System.out.println("\n\nMile 1");
-			return false;
+			return "Mile1";
 		}
 
 		StudentClass instance = studentClass.get();
@@ -75,7 +75,7 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		// check if identifyString is incorrect
 		if (!classIdentifyString.equals(identifyString)) {
 			System.out.println("\n\nMile 2");
-			return false;
+			return "You have to scan the right QR code to rollcall";
 		}
 
 		// check if ClassRoom exists
@@ -85,7 +85,7 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		ClassRoom classRoom = this.classRoomService.getInfoClassRoom(classID, roomID, weekday, checkTime);
 		if (classRoom == null) {
 			System.out.println("\n\nMile 3");
-			return false;
+			return "Class is not in lesson's time!";
 		}
 
 		// check if student has already roll call
@@ -94,10 +94,10 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		
 		if (!checkIsCheckedValid(isChecked, classRoom.getBeginAt(), classRoom.getFinishAt())) {
 			System.out.println("\n\nMile 4");
-			return false;
+			return "You have already rollcalled before";
 		}
 
-		return true;
+		return null;
 	}
 
 	@Override
@@ -138,6 +138,7 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		if (!instance.getAccount().getEmail().equals(imei)) {
 			//this.blacklistService.createNewRecord(instance, imei);
 			//return "Warning: System has created a record in blacklist for your incorrect IMEI!";
+			
 			return "Sorry! It seem like you are using other's device!";
 		}
 		return null;

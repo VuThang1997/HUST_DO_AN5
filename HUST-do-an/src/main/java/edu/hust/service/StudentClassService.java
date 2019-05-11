@@ -26,7 +26,7 @@ public interface StudentClassService {
 	 * @param identifyString
 	 * @return true if server can find a record with the above fields
 	 */
-	boolean checkStudentHasAuthority(int studentID, int classID, int roomID, String identifyString, String imei);
+	String checkStudentHasAuthority(int studentID, int classID, int roomID, String identifyString, String imei);
 
 	//boolean checkGenerateTimeValid(int weekday, LocalTime generateTime, int classID, int roomID);
 	
