@@ -68,7 +68,7 @@ public class SemesterController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "semesterName", "beginDate", "endDate")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -182,7 +182,7 @@ public class SemesterController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "semesterName", "beginDate", "endDate")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 

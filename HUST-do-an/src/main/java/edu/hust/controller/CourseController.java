@@ -1,6 +1,7 @@
 package edu.hust.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,5 +162,14 @@ public class CourseController {
 		
 		report = new ReportError(45, "This course still has dependant!");
 		return ResponseEntity.badRequest().body(report);
+	}
+	
+	@RequestMapping(value = "/courses/all", method = RequestMethod.GET)
+	public ResponseEntity<?> getAllCourse() {
+		List<Course> listCourse = this.courseService.findAllCourse();
+		if (listCourse == null) {
+			return ResponseEntity.badRequest().body("No data founded!");
+		}
+		return ResponseEntity.ok(listCourse);
 	}
 }

@@ -1,5 +1,6 @@
 package edu.hust.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.hust.model.Course;
+import edu.hust.model.Semester;
 import edu.hust.repository.CourseRepository;
 
 @Service
@@ -73,5 +75,14 @@ public class CourseServiceImpl1 implements CourseService {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	@Override
+	public List<Course> findAllCourse() {
+		List<Course> listCourse = this.courseRepository.findAll();
+		if (listCourse == null || listCourse.isEmpty()) {
+			return null;
+		}
+		return listCourse;
 	}
 }

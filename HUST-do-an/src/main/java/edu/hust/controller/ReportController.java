@@ -105,14 +105,15 @@ public class ReportController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "semesterID", "beginAt", "finishAt", "fileType")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
 			System.out.println("\n\nMile 1");
-			Account adminAccount = this.accountService.findAccountByID(adminID);
-			if (adminAccount == null || adminAccount.getRole() != AccountRole.ADMIN.getValue()) {
-				report = new ReportError(111, "Only admin has authority to use this API!");
+			Account tmpAccount = this.accountService.findAccountByID(adminID);
+			if (tmpAccount == null || (tmpAccount.getRole() != AccountRole.ADMIN.getValue()
+					&& tmpAccount.getRole() != AccountRole.TEACHER.getValue())) {
+				report = new ReportError(111, "Only admin and teacher has authority to use this API!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
@@ -230,14 +231,15 @@ public class ReportController {
 
 			// check request body has enough info in right JSON format
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "classID", "beginAt", "finishAt", "fileType")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
 			System.out.println("\n\nMile 1");
-			Account adminAccount = this.accountService.findAccountByID(adminID);
-			if (adminAccount == null || adminAccount.getRole() != AccountRole.ADMIN.getValue()) {
-				report = new ReportError(111, "Only admin has authority to use this API!");
+			Account tmpAccount = this.accountService.findAccountByID(adminID);
+			if (tmpAccount == null || (tmpAccount.getRole() != AccountRole.ADMIN.getValue()
+					&& tmpAccount.getRole() != AccountRole.TEACHER.getValue())) {
+				report = new ReportError(111, "Only admin and teacher has authority to use this API!");
 				return ResponseEntity.badRequest().body(report);
 			}
 			

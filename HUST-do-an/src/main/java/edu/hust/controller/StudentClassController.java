@@ -59,7 +59,7 @@ public class StudentClassController {
 		double gpsLa;
 		ReportError report = null;
 		String imei = null;
-		String macAddr = null;
+		//String macAddr = null;
 		String identifyString = null;
 		String errorMessage = null;
 		LocalDateTime rollCallAt = null;
@@ -74,14 +74,19 @@ public class StudentClassController {
 			// check request body has enough info in right JSON format
 //			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "studentID", "classID", "roomID", "gpsLong", "gpsLa",
 //					"macAddr", "identifyString", "imei")) {
-//				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+//				report = new ReportError(1, "You have to fill all required information!");
 //				return ResponseEntity.badRequest().body(report);
 //			}
 			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "studentID", "classID", "roomID", "gpsLong", "gpsLa",
-				"identifyString", "imei")) {
-				report = new ReportError(1, "Json dynamic map lacks necessary key(s)!");
+				"imei")) {
+				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
+			
+			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "identifyString")) {
+					report = new ReportError(1, "You have to scan QR code before rollcall!");
+					return ResponseEntity.badRequest().body(report);
+				}
 
 			studentID = Integer.parseInt(jsonMap.get("studentID").toString());
 			errorMessage = this.validationStudentClassData.validateIdData(studentID);
@@ -125,13 +130,14 @@ public class StudentClassController {
 
 			identifyString = jsonMap.get("identifyString").toString();
 			if (identifyString == null || identifyString.isBlank()) {
-				report = new ReportError(94, "Missing identifyString info");
+				report = new ReportError(94, "You have to scan the right QR code to rollcall");
 				return ResponseEntity.badRequest().body(report);
 			}
 			
 			// check student has authority to roll call this class
-			if (!this.studentClassService.checkStudentHasAuthority(studentID, classID, roomID, identifyString, imei)) {
-				report = new ReportError(11, "Authentication has failed or has not yet been provided!");
+			errorMessage = this.studentClassService.checkStudentHasAuthority(studentID, classID, roomID, identifyString, imei);
+			if (errorMessage != null) {
+				report = new ReportError(11, errorMessage);
 				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 			}
 			
@@ -143,7 +149,7 @@ public class StudentClassController {
 
 			// check if device is in distance limit - 20m
 			if (this.roomService.calculateDistanceBetween2GPSCoord(roomID, gpsLong, gpsLa) > 50) {
-				report = new ReportError(96, "Device is out of valid distance to classroom!");
+				report = new ReportError(96, "It seems like you are not in classroom!");
 				return ResponseEntity.badRequest().body(report);
 			}
 

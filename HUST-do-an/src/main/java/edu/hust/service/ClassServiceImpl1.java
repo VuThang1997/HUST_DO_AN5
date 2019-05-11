@@ -1,6 +1,7 @@
 package edu.hust.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,15 @@ public class ClassServiceImpl1 implements ClassService {
 			return null;
 		}
 		return classInstance.get();
+	}
+
+	@Override
+	public List<Class> getListClassByCourseID(int courseID) {
+		List<Class> listClasses = this.classRepository.findByCourseID(courseID);
+		if (listClasses == null || listClasses.isEmpty()) {
+			return null;
+		}
+		return listClasses;
 	}
 
 }
