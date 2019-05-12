@@ -49,7 +49,6 @@ public class TeacherClassController {
 	private ValidationAccountData validationAccountData;
 	private ValidationRoomData validationRoomData;
 	private JsonMapUtil jsonMapUtil;
-	private RoomService roomService;
 
 	public TeacherClassController() {
 		super();
@@ -72,7 +71,7 @@ public class TeacherClassController {
 		this.teacherClassService = teacherClassService;
 		this.studentClassService = studentClassService;
 		this.accountService = accountService;
-		this.roomService = roomService;
+		//this.roomService = roomService;
 		this.validationRoomData = validationRoomData;
 		this.validationTeacherClassData = validationTeacherClassData;
 		this.classService = classService;

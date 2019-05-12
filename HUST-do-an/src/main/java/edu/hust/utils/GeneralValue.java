@@ -2,7 +2,9 @@ package edu.hust.utils;
 
 public class GeneralValue {
 
-	//from corner of Dai Co Viet to TC
+	public static int isCheckTeacherRollcallToday ;
+	public static int isCheckStudentRollcallToday ;
+	
 	public static final double minLongitude = -180;
 	public static final double maxLongitude = 180;
 	public static final double minLatitude = -90;

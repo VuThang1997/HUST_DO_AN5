@@ -122,7 +122,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "username", "role", "password")) {
+			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "username", "role", "password", "userInfo")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -138,15 +138,17 @@ public class AccountController {
 				report = new ReportError(13, "Registrantion failed because this email has already been used");
 				return ResponseEntity.badRequest().body(report);
 			}
-
+			
+			String userInfo = jsonMap.get("userInfo").toString();
+			
 			username = jsonMap.get("username").toString();
 			password = jsonMap.get("password").toString();
 			role = Integer.parseUnsignedInt(jsonMap.get("role").toString());
 
 			account = new Account(username, password, role, email);
-			account.setIsActive(AccountStatus.INACTIVE.getValue());
+			account.setUserInfo(userInfo);
+			account.setIsActive(AccountStatus.ACTIVE.getValue());
 			account.setImei(null);
-			account.setUserInfo(null);
 			account.setUpdateImeiCounter(0);
 			this.accountService.saveAccount(account);
 
@@ -284,7 +286,7 @@ public class AccountController {
 	public ResponseEntity<?> updateAccountInfo(@RequestHeader(value = "email") String email,
 			@RequestHeader(value = "password") String password,
 			@RequestParam(value = "updateUser", required = true) boolean updateUser, @RequestBody String accountInfo) {
-		
+
 		System.out.println("\n\n begin update");
 		ObjectMapper objectMapper = null;
 		Map<String, Object> jsonMap = new HashMap<>();
@@ -341,7 +343,7 @@ public class AccountController {
 				return ResponseEntity.badRequest().body(report);
 			}
 
-			//Check if new email is not used anywhere (must exclude account itself)
+			// Check if new email is not used anywhere (must exclude account itself)
 			newEmail = jsonMap.get("email").toString();
 			tmpAccount = this.accountService.findAccountByEmail(newEmail);
 			if (tmpAccount != null && tmpAccount.getId() != account.getId()) {
@@ -353,8 +355,7 @@ public class AccountController {
 			newImei = jsonMap.get("imei").toString();
 			if (!newImei.equals(account.getImei()) || account.getRole() == AccountRole.STUDENT.getValue()) {
 				if (account.getUpdateImeiCounter() == GeneralValue.maxTimesForUpdatingImei) {
-					report = new ReportError(18,
-							"This account is not allowed to change IMEI number anymore");
+					report = new ReportError(18, "This account is not allowed to change IMEI number anymore");
 					return ResponseEntity.badRequest().body(report);
 				}
 
@@ -379,11 +380,11 @@ public class AccountController {
 				birthday = LocalDate.parse(jsonMap.get("birthday").toString());
 				address = jsonMap.get("address").toString();
 				user = new User(address, fullName, birthday, phone);
-				
+
 				String userInfo = this.accountService.createUserInfoString(user);
 				account.setUserInfo(userInfo);
 			}
-			
+
 			account.setEmail(newEmail);
 			account.setPassword(jsonMap.get("password").toString());
 			account.setUsername(jsonMap.get("username").toString());
@@ -550,57 +551,58 @@ public class AccountController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
 	}
-	
+
 	@RequestMapping(value = "/createMultipleAccount", method = RequestMethod.POST)
 	public ResponseEntity<?> createMultipleAccount(@RequestBody String accountInfo) {
+		
 		ObjectMapper objectMapper = null;
 		List<Account> listAccount = null;
 		String errorMessage = null;
 		ReportError report;
 		Account account = null;
 		int invalidAccount = 0;
-		int rowCounter = 1;				//Excel table: first row = info of field
+		int rowCounter = 1; // Excel table: first row = info of field
 		String infoOfRow = "";
 
 		try {
 			objectMapper = new ObjectMapper();
 			listAccount = objectMapper.readValue(accountInfo, new TypeReference<List<Account>>() {
 			});
-			
-			for (Account tmpAccount: listAccount) {
-				rowCounter ++;
+
+			for (Account tmpAccount : listAccount) {
+				rowCounter++;
 				errorMessage = this.validationAccountData.validateUsernameData(tmpAccount.getUsername());
 				if (errorMessage != null) {
-					invalidAccount ++;
+					invalidAccount++;
 					infoOfRow += invalidAccount;
 					continue;
 				}
-				
+
 				errorMessage = this.validationAccountData.validatePasswordData(tmpAccount.getPassword());
 				if (errorMessage != null) {
-					invalidAccount ++;
+					invalidAccount++;
 					infoOfRow += invalidAccount;
 					continue;
 				}
-				
+
 				errorMessage = this.validationAccountData.validateEmailData(tmpAccount.getEmail());
 				if (errorMessage != null) {
-					invalidAccount ++;
+					invalidAccount++;
 					infoOfRow += invalidAccount;
 					continue;
 				}
-				
+
 				account = this.accountService.findAccountByEmail(tmpAccount.getEmail());
 				if (account != null) {
-					invalidAccount ++;
-					infoOfRow += invalidAccount;
+					invalidAccount++;
+					infoOfRow += invalidAccount + ", ";
 					continue;
 				}
-				
+
 				this.accountService.saveAccount(tmpAccount);
 			}
 
-			report = new ReportError(200, "" + invalidAccount + "," + infoOfRow);
+			report = new ReportError(200, "" + invalidAccount + "+" + infoOfRow);
 			return ResponseEntity.ok(report);
 
 		} catch (Exception e) {

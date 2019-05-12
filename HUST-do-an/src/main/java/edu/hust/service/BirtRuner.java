@@ -35,16 +35,16 @@ import edu.hust.utils.GeneralValue;
  */
 public class BirtRuner {
 	private static IReportEngine birtReportEngine = null;
-	private static final List<String> listFile = new ArrayList<>();
+	//private static final List<String> listFile = new ArrayList<>();
 
 	static {
 		try {
-			File folder = new File(GeneralValue.LINK_FONT_REPORT_IN_SERVER);
-			System.out.println("\n\n folder = " + folder);
-			
-			listFilesForFolder(folder, listFile);
-			// logger.info("lstFontConfig : " + listFile.size());
-			System.out.println("\n\n list file size = " + listFile.size());
+//			File folder = new File(GeneralValue.LINK_FONT_REPORT_IN_SERVER);
+//			System.out.println("\n\n folder = " + folder);
+//			
+//			listFilesForFolder(folder, listFile);
+//			// logger.info("lstFontConfig : " + listFile.size());
+//			System.out.println("\n\n list file size = " + listFile.size());
 			initBirtRunner();
 		} catch (BirtException | IOException e) {
 			// logger.error("Have Error", e);
@@ -53,9 +53,9 @@ public class BirtRuner {
 		}
 	}
 
-	private static URL createUrlFor(File file) throws MalformedURLException {
-		return new URL("file", "", file.getAbsolutePath());
-	}
+//	private static URL createUrlFor(File file) throws MalformedURLException {
+//		return new URL("file", "", file.getAbsolutePath());
+//	}
 
 	private synchronized static void initBirtRunner() throws BirtException, IOException {
 		// logger.info("Begin initBirtRunner");
@@ -69,19 +69,19 @@ public class BirtRuner {
 			conf = new EngineConfig();
 
 			
-			if (listFile != null && !listFile.isEmpty()) {
-				for (String fileFont : listFile) {
-					conf.setFontConfig(createUrlFor(new File(fileFont)));
-					FontFactory.register(fileFont);
-				}
-			}
+//			if (listFile != null && !listFile.isEmpty()) {
+//				for (String fileFont : listFile) {
+//					conf.setFontConfig(createUrlFor(new File(fileFont)));
+//					FontFactory.register(fileFont);
+//				}
+//			}
 			
 			
 			IReportEngineFactory factory = (IReportEngineFactory) Platform
 					.createFactoryObject(IReportEngineFactory.EXTENSION_REPORT_ENGINE_FACTORY);
 			birtReportEngine = factory.createReportEngine(conf);
 			System.out.println("\n\n birt Report engine = " + birtReportEngine);
-		} catch (BirtException | IOException e) {
+		} catch (BirtException e) {
 			// logger.error("Have error", e);
 			throw e;
 		}

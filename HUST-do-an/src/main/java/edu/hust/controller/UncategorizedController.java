@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.hust.enumData.AccountRole;
 import edu.hust.enumData.AfternoonTimeFrame;
+import edu.hust.enumData.CheckRollcallStatus;
 import edu.hust.model.ClassRoom;
 import edu.hust.model.ReportError;
 import edu.hust.model.StudentClass;
@@ -81,12 +83,6 @@ public class UncategorizedController {
 			return ResponseEntity.badRequest().body(report);
 		}
 
-		errorMessage = this.validationSemesterData.validateIdData(semesterID);
-		if (errorMessage != null) {
-			report = new ReportError(100, "Getting timetable failed because " + errorMessage);
-			return ResponseEntity.badRequest().body(report);
-		}
-
 		// truong hop vua login xong thi lay server time de tim semester hien tai
 		if (semesterID == 0) {
 			LocalDate currentDate = LocalDate.now();
@@ -94,6 +90,13 @@ public class UncategorizedController {
 			if (semesterID == -1) {
 				report = new ReportError(33, "This semester do not exist yet!");
 				return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+			}
+
+		} else {
+			errorMessage = this.validationSemesterData.validateIdData(semesterID);
+			if (errorMessage != null) {
+				report = new ReportError(100, "Getting timetable failed because " + errorMessage);
+				return ResponseEntity.badRequest().body(report);
 			}
 		}
 
@@ -113,13 +116,21 @@ public class UncategorizedController {
 		return ResponseEntity.ok(listClassRoom);
 	}
 
-	@PostMapping("/checkTeacherRollCallToday")
-	public ResponseEntity<?> checkTeacherRollCallToday(@RequestParam(value = "role", required = true) int role) {
+//	@PostMapping("/checkTeacherRollCallToday")
+//	@Scheduled(cron = "0 0 20 * * ?")
+	public ResponseEntity<?> checkTeacherRollCallToday() {
+		
+		ReportError report = null;
+		if (GeneralValue.isCheckTeacherRollcallToday == CheckRollcallStatus.CHECKED.getValue()) {
+			report = new ReportError(400, "This day has already checked!");
+			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
+		} 
+		
 		int currentDay = -1;
 		int indexOf = -1;
 		boolean flag = false;
 		LocalTime tmpTime = null;
-		ReportError report = null;
+		
 		String errorMessage = null;
 		String tmpString = null;
 		String[] rollCallList;
@@ -130,18 +141,18 @@ public class UncategorizedController {
 		LocalDateTime now = null;
 		List<ClassRoom> listClassRoom = null;
 
-		// only admins have permission to access this API errorMessage =
-		errorMessage = this.validationAccountData.validateRoleData(role);
-		if (errorMessage != null || role != AccountRole.ADMIN.getValue()) {
-			report = new ReportError(11, "Authentication has failed or has not yet been provided!");
-			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
-		}
+//		// only admins have permission to access this API errorMessage =
+//		errorMessage = this.validationAccountData.validateRoleData(role);
+//		if (errorMessage != null || role != AccountRole.ADMIN.getValue()) {
+//			report = new ReportError(11, "Authentication has failed or has not yet been provided!");
+//			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
+//		}
 
 		now = LocalDateTime.now(); // currentTime = now.toLocalTime();
-		if (now.toLocalTime().isBefore(AfternoonTimeFrame.FRAME12.getValue())) {
-			report = new ReportError(102, "Check roll call today failed because of current time is not valid! ");
-			return ResponseEntity.badRequest().body(report);
-		}
+//		if (now.toLocalTime().isBefore(AfternoonTimeFrame.FRAME12.getValue())) {
+//			report = new ReportError(102, "Check roll call today failed because of current time is not valid! ");
+//			return ResponseEntity.badRequest().body(report);
+//		}
 
 		// Notice: weekday of java = weekday of mySQL - 1
 		currentDay = now.getDayOfWeek().getValue() + 1;
@@ -229,20 +240,28 @@ public class UncategorizedController {
 				this.teacherClassService.updateTeacherClass(teacherClass);
 			}
 		}
-		
+
+		GeneralValue.isCheckTeacherRollcallToday = CheckRollcallStatus.CHECKED.getValue();
 		report = new ReportError(200, "Check teacher roll call today complete!");
 		return ResponseEntity.ok(report);
 	}
 
 	@SuppressWarnings("deprecation")
 	@PostMapping("/checkStudentRollCallToday")
-	public ResponseEntity<?> checkStudentRollCallToday(@RequestParam(value = "role", required = true) int role) {
+//	@Scheduled(cron = "0 0 20 * * ?")
+	public ResponseEntity<?> checkStudentRollCallToday() {
+		
+		ReportError report = null;
+		if (GeneralValue.isCheckStudentRollcallToday == CheckRollcallStatus.CHECKED.getValue()) {
+			report = new ReportError(400, "This day has already checked!");
+			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
+		} 
+		
 		int currentDay = -1;
 		int indexOf = -1;
 		boolean isTeacheRollCalled = false;
 		boolean flag = true;
 		LocalTime tmpTime = null;
-		ReportError report = null;
 		String message1 = null;
 		String message2 = null;
 		String tmpString = null;
@@ -256,13 +275,6 @@ public class UncategorizedController {
 		List<StudentClass> listStudentClass = null;
 		Map<ClassRoom, Boolean> mapClassRoomRollCalled = null;
 		ClassRoom instanceClassRoom = null;
-
-		// only admins have permission to access this API
-		message2 = this.validationAccountData.validateRoleData(role);
-		if (message2 != null || role != AccountRole.ADMIN.getValue()) {
-			report = new ReportError(11, "Authentication has failed or has not yet been provided!");
-			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
-		}
 
 		now = LocalDateTime.now(); // currentTime = now.toLocalTime();
 		if (now.toLocalTime().isBefore(AfternoonTimeFrame.FRAME12.getValue())) {
@@ -434,7 +446,14 @@ public class UncategorizedController {
 			}
 		}
 
+		GeneralValue.isCheckStudentRollcallToday = CheckRollcallStatus.CHECKED.getValue();
 		report = new ReportError(200, "Check student roll call today complete!");
 		return ResponseEntity.ok(report);
+	}
+	
+	@Scheduled(cron = "0 0 5 * * ?")
+	public void scheduleTaskUsingCronExpression() {
+		GeneralValue.isCheckStudentRollcallToday = CheckRollcallStatus.NOT_CHECK.getValue();
+		GeneralValue.isCheckTeacherRollcallToday = CheckRollcallStatus.NOT_CHECK.getValue();
 	}
 }
