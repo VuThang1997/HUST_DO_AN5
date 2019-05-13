@@ -1,221 +1,91 @@
-2019-05-11 08:59:15.744  INFO 7052 --- [main] edu.hust.HUSTServerApplication           : Starting HUSTServerApplication on DESKTOP-D0J0TEI with PID 7052 (C:\Users\BePro\eclipse-workspace\HUST-do-an\target\classes started by BePro in C:\Users\BePro\eclipse-workspace\HUST-do-an)
-2019-05-11 08:59:15.754  INFO 7052 --- [main] edu.hust.HUSTServerApplication           : No active profile set, falling back to default profiles: default
-2019-05-11 08:59:22.218  INFO 7052 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
-2019-05-11 08:59:22.536  INFO 7052 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 294ms. Found 9 repository interfaces.
-2019-05-11 08:59:23.578  INFO 7052 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$a2e3d825] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2019-05-11 08:59:24.631  INFO 7052 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2019-05-11 08:59:24.707  INFO 7052 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2019-05-11 08:59:24.709  INFO 7052 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.16]
-2019-05-11 08:59:24.738  INFO 7052 --- [main] o.a.catalina.core.AprLifecycleListener   : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jdk-11.0.2\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Program Files/Java/jdk-11.0.2/bin/server;C:/Program Files/Java/jdk-11.0.2/bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\ManagementStudio\;C:\Program Files\nodejs\;C:\Program Files\Java\jdk-11.0.2\bin;C:\Users\BePro\Downloads\apache-maven-3.6.0\bin;C:\Gradle\gradle-5.4\bin;C:\Users\BePro\Downloads\apache-tomcat-8.5.35\lib;C:\Users\BePro\AppData\Local\Microsoft\WindowsApps;C:\Users\BePro\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\BePro\AppData\Roaming\npm;C:\Users\BePro\AppData\Local\GitHubDesktop\bin;C:\Users\BePro\Desktop;;.]
-2019-05-11 08:59:25.277  INFO 7052 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2019-05-11 08:59:25.278 DEBUG 7052 --- [main] o.s.web.context.ContextLoader            : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2019-05-11 08:59:25.278  INFO 7052 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 9018 ms
-2019-05-11 08:59:25.890  INFO 7052 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2019-05-11 08:59:26.489  INFO 7052 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2019-05-11 08:59:26.816  INFO 7052 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
-	name: default
-	...]
-2019-05-11 08:59:27.143  INFO 7052 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.7.Final}
-2019-05-11 08:59:27.147  INFO 7052 --- [main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
-2019-05-11 08:59:27.712  INFO 7052 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
-2019-05-11 08:59:28.227  INFO 7052 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-2019-05-11 08:59:29.903  INFO 7052 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2019-05-11 08:59:30.889  INFO 7052 --- [main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
-2019-05-11 08:59:31.892  INFO 7052 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
-
-Using generated security password: c5052d79-fbda-43b1-948b-b32c9e49a999
-
-2019-05-11 08:59:32.247 DEBUG 7052 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/**/favicon.ico] in 'faviconHandlerMapping'
-2019-05-11 08:59:32.289  WARN 7052 --- [main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2019-05-11 08:59:32.427 DEBUG 7052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 48 mappings in 'requestMappingHandlerMapping'
-2019-05-11 08:59:32.451 DEBUG 7052 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2019-05-11 08:59:32.493  INFO 7052 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@75c3584e, org.springframework.security.web.context.SecurityContextPersistenceFilter@5ef7ae2f, org.springframework.security.web.header.HeaderWriterFilter@774189d0, org.springframework.web.filter.CorsFilter@f7b7720, org.springframework.security.web.authentication.logout.LogoutFilter@2c51c756, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@b5bddfe, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@b75f3f4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1e0c898c, org.springframework.security.web.session.SessionManagementFilter@32f45e15, org.springframework.security.web.access.ExceptionTranslationFilter@7c07023, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@b53ce18]
-2019-05-11 08:59:32.766  INFO 7052 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
-2019-05-11 08:59:32.782 DEBUG 7052 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2019-05-11 08:59:32.878 DEBUG 7052 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2019-05-11 08:59:33.406  INFO 7052 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2019-05-11 08:59:33.410  INFO 7052 --- [main] edu.hust.HUSTServerApplication           : Started HUSTServerApplication in 19.362 seconds (JVM running for 21.042)
-2019-05-11 09:05:33.252  INFO 7052 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2019-05-11 09:05:33.255  INFO 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2019-05-11 09:05:33.255 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
-2019-05-11 09:05:33.286 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
-2019-05-11 09:05:33.286  INFO 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 31 ms
-2019-05-11 09:05:33.349 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/login", parameters={}
-2019-05-11 09:05:33.375 DEBUG 7052 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.checkLogin(java.lang.String)
-2019-05-11 09:05:33.434 DEBUG 7052 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"password":"1234","email":"adminTest1@gmail.com"}"]
-2019-05-11 09:05:33.885 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 09:05:33.887 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [edu.hust.model.Account@706fc8c3]
-2019-05-11 09:05:33.903 DEBUG 7052 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 09:05:57.002 DEBUG 7052 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/createMultipleAccount", parameters={}
-2019-05-11 09:05:57.004 DEBUG 7052 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.createMultipleAccount(java.lang.String)
-2019-05-11 09:05:57.009 DEBUG 7052 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["[{"id":0,"username":"TÃªn tÃ i khoáº£n","password":"Máº­t kháº©u","role":3,"isActive":2,"email":"Email","im (truncated)...]
-2019-05-11 09:05:57.286 DEBUG 7052 --- [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 09:05:57.286 DEBUG 7052 --- [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "200", "description" : "1"}]
-2019-05-11 09:05:57.289 DEBUG 7052 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 09:44:10.448  INFO 12360 --- [main] e.hust.CourseDatabase1ApplicationTests   : Starting CourseDatabase1ApplicationTests on DESKTOP-GV5GR2J with PID 12360 (started by ADMIN in G:\HUST_DO_AN5\HUST-do-an)
-2019-05-11 09:44:10.459  INFO 12360 --- [main] e.hust.CourseDatabase1ApplicationTests   : No active profile set, falling back to default profiles: default
-2019-05-11 09:44:10.779 DEBUG 12360 --- [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@4ae33a11
-2019-05-11 09:44:13.636  INFO 12360 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
-2019-05-11 09:44:14.025  INFO 12360 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 370ms. Found 9 repository interfaces.
-2019-05-11 09:44:15.166  INFO 12360 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$9d196d26] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2019-05-11 09:44:15.870  INFO 12360 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2019-05-11 09:44:16.212  INFO 12360 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2019-05-11 09:44:16.430  INFO 12360 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
-	name: default
-	...]
-2019-05-11 09:44:16.599  INFO 12360 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.7.Final}
-2019-05-11 09:44:16.604  INFO 12360 --- [main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
-2019-05-11 09:44:17.145  INFO 12360 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
-2019-05-11 09:44:17.823  INFO 12360 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-2019-05-11 09:44:19.599  INFO 12360 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2019-05-11 09:44:20.733  INFO 12360 --- [main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
-2019-05-11 09:44:22.270  INFO 12360 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
-
-Using generated security password: 2bc3c621-4a24-48c5-bce4-601f1909dcb3
-
-2019-05-11 09:44:22.818 DEBUG 12360 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/**/favicon.ico] in 'faviconHandlerMapping'
-2019-05-11 09:44:22.847  WARN 12360 --- [main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2019-05-11 09:44:23.109 DEBUG 12360 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 48 mappings in 'requestMappingHandlerMapping'
-2019-05-11 09:44:23.168 DEBUG 12360 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2019-05-11 09:44:23.290  INFO 12360 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@53f94afe, org.springframework.security.web.context.SecurityContextPersistenceFilter@69356aca, org.springframework.security.web.header.HeaderWriterFilter@282240, org.springframework.web.filter.CorsFilter@304e1e4e, org.springframework.security.web.authentication.logout.LogoutFilter@7e84a52b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7ce760af, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@675bf541, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7d4e424e, org.springframework.security.web.session.SessionManagementFilter@6e5b3642, org.springframework.security.web.access.ExceptionTranslationFilter@7dfab58d, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@478cc5f1]
-2019-05-11 09:44:24.467  INFO 12360 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
-2019-05-11 09:44:24.516 DEBUG 12360 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2019-05-11 09:44:24.616 DEBUG 12360 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2019-05-11 09:44:25.328  INFO 12360 --- [main] e.hust.CourseDatabase1ApplicationTests   : Started CourseDatabase1ApplicationTests in 16.122 seconds (JVM running for 19.328)
-2019-05-11 09:44:25.831 DEBUG 12360 --- [Thread-1] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@4ae33a11, started on Sat May 11 09:44:10 ICT 2019
-2019-05-11 09:44:25.835  INFO 12360 --- [Thread-1] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
-2019-05-11 09:44:25.848  INFO 12360 --- [Thread-1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2019-05-11 09:44:25.855  INFO 12360 --- [Thread-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2019-05-11 09:44:25.873  INFO 12360 --- [Thread-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2019-05-11 12:16:28.468  INFO 10732 --- [main] edu.hust.HUSTServerApplication           : Starting HUSTServerApplication on DESKTOP-GV5GR2J with PID 10732 (G:\HUST_DO_AN5\HUST-do-an\target\classes started by ADMIN in G:\HUST_DO_AN5\HUST-do-an)
-2019-05-11 12:16:28.474  INFO 10732 --- [main] edu.hust.HUSTServerApplication           : No active profile set, falling back to default profiles: default
-2019-05-11 12:16:32.319  INFO 10732 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
-2019-05-11 12:16:32.951  INFO 10732 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 614ms. Found 9 repository interfaces.
-2019-05-11 12:16:34.463  INFO 10732 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$745441aa] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2019-05-11 12:16:35.727  INFO 10732 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2019-05-11 12:16:35.793  INFO 10732 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2019-05-11 12:16:35.796  INFO 10732 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.16]
-2019-05-11 12:16:35.814  INFO 10732 --- [main] o.a.catalina.core.AprLifecycleListener   : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jdk-11.0.3\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Java\jdk1.8.0_201\bin;C:\Program Files\TortoiseGit\bin;C:\Program Files\Git\cmd;C:\Users\ADMIN\AppData\Local\Android\Sdk\platform-tools;C:\Program Files\nodejs;C:\Users\ADMIN\AppData\Roaming\npm;C:\Users\ADMIN\AppData\Local\Microsoft\WindowsApps;C:\Program Files\nodejs;C:\Users\ADMIN\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\ADMIN\AppData\Local\GitHubDesktop\bin;.]
-2019-05-11 12:16:36.313  INFO 10732 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2019-05-11 12:16:36.313 DEBUG 10732 --- [main] o.s.web.context.ContextLoader            : Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
-2019-05-11 12:16:36.314  INFO 10732 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 7555 ms
-2019-05-11 12:16:36.891  INFO 10732 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2019-05-11 12:16:37.280  INFO 10732 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2019-05-11 12:16:37.470  INFO 10732 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
-	name: default
-	...]
-2019-05-11 12:16:37.704  INFO 10732 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.3.7.Final}
-2019-05-11 12:16:37.710  INFO 10732 --- [main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
-2019-05-11 12:16:38.242  INFO 10732 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
-2019-05-11 12:16:38.888  INFO 10732 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-2019-05-11 12:16:40.868  INFO 10732 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2019-05-11 12:16:41.889  INFO 10732 --- [main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
-2019-05-11 12:16:43.695  INFO 10732 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
-
-Using generated security password: dc85fdd1-7828-4d12-bfb5-cc86c945f718
-
-2019-05-11 12:16:43.949 DEBUG 10732 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/**/favicon.ico] in 'faviconHandlerMapping'
-2019-05-11 12:16:43.978  WARN 10732 --- [main] aWebConfiguration$JpaWebMvcConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2019-05-11 12:16:44.114 DEBUG 10732 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 48 mappings in 'requestMappingHandlerMapping'
-2019-05-11 12:16:44.145 DEBUG 10732 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2019-05-11 12:16:44.218  INFO 10732 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6dcc7696, org.springframework.security.web.context.SecurityContextPersistenceFilter@59db8216, org.springframework.security.web.header.HeaderWriterFilter@10230657, org.springframework.web.filter.CorsFilter@45ac973, org.springframework.security.web.authentication.logout.LogoutFilter@5c8d631, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@33bf2602, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@463a1f47, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@28b7646, org.springframework.security.web.session.SessionManagementFilter@2f6d8c9, org.springframework.security.web.access.ExceptionTranslationFilter@160cf225, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@183a84f4]
-2019-05-11 12:16:44.670  INFO 10732 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
-2019-05-11 12:16:44.702 DEBUG 10732 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2019-05-11 12:16:44.871 DEBUG 10732 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2019-05-11 12:16:45.292  INFO 10732 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2019-05-11 12:16:45.301  INFO 10732 --- [main] edu.hust.HUSTServerApplication           : Started HUSTServerApplication in 18.471 seconds (JVM running for 21.082)
-2019-05-11 12:16:53.826  INFO 10732 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2019-05-11 12:16:53.829  INFO 10732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2019-05-11 12:16:53.830 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
-2019-05-11 12:16:53.857 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
-2019-05-11 12:16:53.866  INFO 10732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 36 ms
-2019-05-11 12:16:53.933 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : PUT "/accounts?updateUser=false", parameters={masked}
-2019-05-11 12:16:53.945 DEBUG 10732 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.updateAccountInfo(java.lang.String,java.lang.String,boolean,java.lang.String)
-2019-05-11 12:16:54.105 DEBUG 10732 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"student@gmail.com","password":"abc","imei":"867079020223901","username":"Nguy?n H?u Th?ng (truncated)...]
-2019-05-11 12:16:54.582 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 12:16:54.583 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "200", "description" : "Updating account info successes!"}]
-2019-05-11 12:16:54.623 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 12:17:49.464 DEBUG 10732 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : PUT "/accounts?updateUser=false", parameters={masked}
-2019-05-11 12:17:49.467 DEBUG 10732 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.updateAccountInfo(java.lang.String,java.lang.String,boolean,java.lang.String)
-2019-05-11 12:17:49.470 DEBUG 10732 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"student@gmail.com","password":"abc","username":"Nguy?n H?u Th?ng", "imei":"86707902022390 (truncated)...]
-2019-05-11 12:17:49.541 DEBUG 10732 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 12:17:49.542 DEBUG 10732 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "200", "description" : "Updating account info successes!"}]
-2019-05-11 12:17:49.553 DEBUG 10732 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 13:44:36.133  WARN 10732 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=17m58s857ms471µs300ns).
-2019-05-11 15:34:13.104  WARN 10732 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h4m7s123ms507µs100ns).
-2019-05-11 20:32:02.081  WARN 10732 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=7m48s80ms585µs100ns).
-2019-05-11 20:32:44.596 DEBUG 10732 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : POST "/login", parameters={}
-2019-05-11 20:32:44.614 DEBUG 10732 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.checkLogin(java.lang.String)
-2019-05-11 20:32:44.674 DEBUG 10732 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"student@gmail.com","password":"abc"}"]
-2019-05-11 20:32:44.876 DEBUG 10732 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:32:44.879 DEBUG 10732 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [edu.hust.model.Account@149ce92d]
-2019-05-11 20:32:44.889 DEBUG 10732 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 20:32:45.993 DEBUG 10732 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/timetable?role=3&accountID=1&semesterID=1", parameters={masked}
-2019-05-11 20:32:45.995 DEBUG 10732 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.UncategorizedController.getTimeTable(int,int,int)
-2019-05-11 20:32:46.259 DEBUG 10732 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:32:46.260 DEBUG 10732 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[edu.hust.model.ClassRoom@4af68584, edu.hust.model.ClassRoom@1d3205ae, edu.hust.model.ClassRoom@2fed (truncated)...]
-2019-05-11 20:32:46.353 DEBUG 10732 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 20:35:36.989 DEBUG 10732 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : PUT "/accounts?updateUser=false", parameters={masked}
-2019-05-11 20:35:36.993 DEBUG 10732 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.updateAccountInfo(java.lang.String,java.lang.String,boolean,java.lang.String)
-2019-05-11 20:35:37.006 DEBUG 10732 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"teacher@gmail.com","password":"abc","username":"Nguy?n H?u Th?ng", "imei":"86707902022390 (truncated)...]
-2019-05-11 20:35:37.032 DEBUG 10732 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:35:37.034 DEBUG 10732 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "17", "description" : "Updating account info failed because the email is already used (truncated)...]
-2019-05-11 20:35:37.039 DEBUG 10732 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
-2019-05-11 20:35:55.122 DEBUG 10732 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : PUT "/accounts?updateUser=false", parameters={masked}
-2019-05-11 20:35:55.129 DEBUG 10732 --- [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.updateAccountInfo(java.lang.String,java.lang.String,boolean,java.lang.String)
-2019-05-11 20:35:55.132 DEBUG 10732 --- [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"teacher@gmail.com","password":"abc","username":"Nguy?n H?u Th?ng", "imei":"86707902022390 (truncated)...]
-2019-05-11 20:35:55.416 DEBUG 10732 --- [http-nio-8080-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:35:55.417 DEBUG 10732 --- [http-nio-8080-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "11", "description" : "Authentication has failed or has not yet been provided!"}]
-2019-05-11 20:35:55.450 DEBUG 10732 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 401 UNAUTHORIZED
-2019-05-11 20:36:14.126 DEBUG 10732 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : PUT "/accounts?updateUser=false", parameters={masked}
-2019-05-11 20:36:14.129 DEBUG 10732 --- [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.updateAccountInfo(java.lang.String,java.lang.String,boolean,java.lang.String)
-2019-05-11 20:36:14.135 DEBUG 10732 --- [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"teacher@gmail.com","password":"abc","username":"Nguy?n H?u Th?ng", "imei":"86707902022390 (truncated)...]
-2019-05-11 20:36:14.202 DEBUG 10732 --- [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:36:14.203 DEBUG 10732 --- [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "18", "description" : "Updating account info failed because this account is not allow (truncated)...]
-2019-05-11 20:36:14.210 DEBUG 10732 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
-2019-05-11 20:36:38.181 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : PUT "/accounts?updateUser=false", parameters={masked}
-2019-05-11 20:36:38.186 DEBUG 10732 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.updateAccountInfo(java.lang.String,java.lang.String,boolean,java.lang.String)
-2019-05-11 20:36:38.192 DEBUG 10732 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"teacher@gmail.com","password":"abc","username":"Nguy?n H?u Th?ng", "imei":"86707902022390 (truncated)...]
-2019-05-11 20:36:38.312 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:36:38.313 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "200", "description" : "Updating account info successes!"}]
-2019-05-11 20:36:38.319 DEBUG 10732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 20:44:31.679 DEBUG 10732 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/login", parameters={}
-2019-05-11 20:44:31.745 DEBUG 10732 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.checkLogin(java.lang.String)
-2019-05-11 20:44:31.824 DEBUG 10732 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"teacher@gmail.com","password":"abc"}"]
-2019-05-11 20:44:32.109 DEBUG 10732 --- [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:44:32.113 DEBUG 10732 --- [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [edu.hust.model.Account@25ff82e4]
-2019-05-11 20:44:32.133 DEBUG 10732 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 20:44:34.001 DEBUG 10732 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/timetable?role=2&accountID=2&semesterID=1", parameters={masked}
-2019-05-11 20:44:34.005 DEBUG 10732 --- [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.UncategorizedController.getTimeTable(int,int,int)
-2019-05-11 20:44:34.457 DEBUG 10732 --- [http-nio-8080-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:44:34.460 DEBUG 10732 --- [http-nio-8080-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[edu.hust.model.ClassRoom@6eb7c721, edu.hust.model.ClassRoom@52a40bcd, edu.hust.model.ClassRoom@53d9 (truncated)...]
-2019-05-11 20:44:34.509 DEBUG 10732 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 20:47:37.711 DEBUG 10732 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : POST "/teacherRollCall", parameters={}
-2019-05-11 20:47:37.732 DEBUG 10732 --- [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.TeacherClassController.rollCall(java.lang.String)
-2019-05-11 20:47:37.762 DEBUG 10732 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"teacherID":2,"classID":2,"roomID":1,"gpsLong":105.8528009,"gpsLa":21.0018493}"]
-2019-05-11 20:47:37.965 DEBUG 10732 --- [http-nio-8080-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:47:37.966 DEBUG 10732 --- [http-nio-8080-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "81", "description" : "Teacher roll call failed because timing is not in valid range! (truncated)...]
-2019-05-11 20:47:37.969 DEBUG 10732 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
-2019-05-11 20:48:33.157 DEBUG 10732 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : POST "/login", parameters={}
-2019-05-11 20:48:33.169 DEBUG 10732 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.checkLogin(java.lang.String)
-2019-05-11 20:48:33.178 DEBUG 10732 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"teacher@gmail.com","password":"abc"}"]
-2019-05-11 20:48:33.254 DEBUG 10732 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:48:33.256 DEBUG 10732 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [edu.hust.model.Account@464d35b1]
-2019-05-11 20:48:33.270 DEBUG 10732 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 20:48:34.373 DEBUG 10732 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/timetable?role=2&accountID=2&semesterID=1", parameters={masked}
-2019-05-11 20:48:34.378 DEBUG 10732 --- [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.UncategorizedController.getTimeTable(int,int,int)
-2019-05-11 20:48:34.457 DEBUG 10732 --- [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:48:34.457 DEBUG 10732 --- [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[edu.hust.model.ClassRoom@37dd0aff, edu.hust.model.ClassRoom@280ac51e, edu.hust.model.ClassRoom@f8a0 (truncated)...]
-2019-05-11 20:48:34.712 DEBUG 10732 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 20:48:53.169 DEBUG 10732 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/teacherRollCall", parameters={}
-2019-05-11 20:48:53.171 DEBUG 10732 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.TeacherClassController.rollCall(java.lang.String)
-2019-05-11 20:48:53.175 DEBUG 10732 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"teacherID":2,"classID":2,"roomID":1,"gpsLong":105.8528268,"gpsLa":21.0018722}"]
-2019-05-11 20:48:54.733 DEBUG 10732 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:48:54.737 DEBUG 10732 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "200", "description" : "[B@516e393"}]
-2019-05-11 20:48:54.744 DEBUG 10732 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
-2019-05-11 20:49:21.605 DEBUG 10732 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : POST "/teacherRollCall", parameters={}
-2019-05-11 20:49:21.619 DEBUG 10732 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.TeacherClassController.rollCall(java.lang.String)
-2019-05-11 20:49:21.627 DEBUG 10732 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"teacherID":2,"classID":2,"roomID":1,"gpsLong":105.8528268,"gpsLa":21.0018722}"]
-2019-05-11 20:49:21.674 DEBUG 10732 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json]
-2019-05-11 20:49:21.675 DEBUG 10732 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "81", "description" : "Teacher roll call failed because timing is not in valid range! (truncated)...]
-2019-05-11 20:49:21.679 DEBUG 10732 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 08:45:25.370  WARN 16544 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8h28m44s246ms496µs100ns).
+2019-05-13 12:06:47.786 DEBUG 16544 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/login", parameters={}
+2019-05-13 12:06:47.835 DEBUG 16544 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.checkLogin(java.lang.String)
+2019-05-13 12:06:47.900 DEBUG 16544 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"password":"1234","email":"admin@gmail.com"}"]
+2019-05-13 12:06:48.130 DEBUG 16544 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 12:06:48.132 DEBUG 16544 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [edu.hust.model.Account@75188084]
+2019-05-13 12:06:48.173 DEBUG 16544 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2019-05-13 14:21:39.673 DEBUG 16544 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : POST "/login", parameters={}
+2019-05-13 14:21:39.705 DEBUG 16544 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.checkLogin(java.lang.String)
+2019-05-13 14:21:39.771 DEBUG 16544 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"password":"1234","email":"admin@gmail.com"}"]
+2019-05-13 14:21:39.987 DEBUG 16544 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:21:39.988 DEBUG 16544 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [edu.hust.model.Account@76682d8f]
+2019-05-13 14:21:40.008 DEBUG 16544 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2019-05-13 14:21:46.680 DEBUG 16544 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/semesters/all", parameters={}
+2019-05-13 14:21:46.682 DEBUG 16544 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.SemesterController.getAllSemester()
+2019-05-13 14:21:46.767 DEBUG 16544 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:21:46.768 DEBUG 16544 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[edu.hust.model.Semester@7e733bbf, edu.hust.model.Semester@112de39a, edu.hust.model.Semester@386fe45 (truncated)...]
+2019-05-13 14:21:46.773 DEBUG 16544 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2019-05-13 14:21:49.145 DEBUG 16544 --- [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:21:49.168 DEBUG 16544 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:21:49.170 DEBUG 16544 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : POST "/studentGeneralReport?adminID=-1", parameters={masked}
+2019-05-13 14:21:49.172 DEBUG 16544 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:21:49.184 DEBUG 16544 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"","semesterID":"1","beginAt":"","finishAt":"","fileType":"pdf"}"]
+2019-05-13 14:21:49.189 DEBUG 16544 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:21:49.189 DEBUG 16544 --- [http-nio-8080-exec-8] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "110", "description" : "Get report failed because Id can not be less than 1!"}]
+2019-05-13 14:21:49.192 DEBUG 16544 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 14:21:57.019 DEBUG 16544 --- [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:21:57.022 DEBUG 16544 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : POST "/studentGeneralReport?adminID=-1", parameters={masked}
+2019-05-13 14:21:57.022 DEBUG 16544 --- [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:21:57.027 DEBUG 16544 --- [http-nio-8080-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"","semesterID":"1","beginAt":"","finishAt":"","fileType":"xls"}"]
+2019-05-13 14:21:57.028 DEBUG 16544 --- [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:21:57.029 DEBUG 16544 --- [http-nio-8080-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "110", "description" : "Get report failed because Id can not be less than 1!"}]
+2019-05-13 14:21:57.031 DEBUG 16544 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 14:21:58.078 DEBUG 16544 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:21:58.079 DEBUG 16544 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/studentGeneralReport?adminID=-1", parameters={masked}
+2019-05-13 14:21:58.080 DEBUG 16544 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:21:58.083 DEBUG 16544 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"","semesterID":"1","beginAt":"","finishAt":"","fileType":"xls"}"]
+2019-05-13 14:21:58.086 DEBUG 16544 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:21:58.086 DEBUG 16544 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "110", "description" : "Get report failed because Id can not be less than 1!"}]
+2019-05-13 14:21:58.089 DEBUG 16544 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 14:22:10.548 DEBUG 16544 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:22:10.551 DEBUG 16544 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/studentGeneralReport?adminID=-1", parameters={masked}
+2019-05-13 14:22:10.553 DEBUG 16544 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:22:10.556 DEBUG 16544 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"admin@gmail.com","semesterID":"1","beginAt":"2019-04-28","finishAt":"2019-05-13","fileTyp (truncated)...]
+2019-05-13 14:22:10.557 DEBUG 16544 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:22:10.558 DEBUG 16544 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "110", "description" : "Get report failed because Id can not be less than 1!"}]
+2019-05-13 14:22:10.561 DEBUG 16544 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 14:26:17.513 DEBUG 16544 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:26:17.518 DEBUG 16544 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/studentGeneralReport?adminID=-1", parameters={masked}
+2019-05-13 14:26:17.520 DEBUG 16544 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:26:17.527 DEBUG 16544 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"admin@gmail.com","semesterID":"9","beginAt":"2019-04-28","finishAt":"2019-05-13","fileTyp (truncated)...]
+2019-05-13 14:26:17.532 DEBUG 16544 --- [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:26:17.532 DEBUG 16544 --- [http-nio-8080-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "110", "description" : "Get report failed because Id can not be less than 1!"}]
+2019-05-13 14:26:17.541 DEBUG 16544 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 14:26:18.394 DEBUG 16544 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:26:18.400 DEBUG 16544 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : POST "/studentGeneralReport?adminID=-1", parameters={masked}
+2019-05-13 14:26:18.403 DEBUG 16544 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:26:18.412 DEBUG 16544 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"admin@gmail.com","semesterID":"9","beginAt":"2019-04-28","finishAt":"2019-05-13","fileTyp (truncated)...]
+2019-05-13 14:26:18.413 DEBUG 16544 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:26:18.413 DEBUG 16544 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "110", "description" : "Get report failed because Id can not be less than 1!"}]
+2019-05-13 14:26:18.415 DEBUG 16544 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 14:26:21.675 DEBUG 16544 --- [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:26:21.682 DEBUG 16544 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : POST "/studentGeneralReport?adminID=-1", parameters={masked}
+2019-05-13 14:26:21.683 DEBUG 16544 --- [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:26:21.688 DEBUG 16544 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"admin@gmail.com","semesterID":"6","beginAt":"2019-04-28","finishAt":"2019-05-13","fileTyp (truncated)...]
+2019-05-13 14:26:21.692 DEBUG 16544 --- [http-nio-8080-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:26:21.693 DEBUG 16544 --- [http-nio-8080-exec-5] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "110", "description" : "Get report failed because Id can not be less than 1!"}]
+2019-05-13 14:26:21.698 DEBUG 16544 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 14:26:22.465 DEBUG 16544 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:26:22.466 DEBUG 16544 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : POST "/studentGeneralReport?adminID=-1", parameters={masked}
+2019-05-13 14:26:22.470 DEBUG 16544 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.ReportController.getStudentGeneralReport(int,java.lang.String)
+2019-05-13 14:26:22.476 DEBUG 16544 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"email":"admin@gmail.com","semesterID":"6","beginAt":"2019-04-28","finishAt":"2019-05-13","fileTyp (truncated)...]
+2019-05-13 14:26:22.480 DEBUG 16544 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:26:22.482 DEBUG 16544 --- [http-nio-8080-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{"errorCode" : "110", "description" : "Get report failed because Id can not be less than 1!"}]
+2019-05-13 14:26:22.483 DEBUG 16544 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2019-05-13 14:27:26.914 DEBUG 16544 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/courses/all", parameters={}
+2019-05-13 14:27:26.957 DEBUG 16544 --- [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.CourseController.getAllCourse()
+2019-05-13 14:27:27.423 DEBUG 16544 --- [http-nio-8080-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:27:27.426 DEBUG 16544 --- [http-nio-8080-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[edu.hust.model.Course@6360f212, edu.hust.model.Course@3d51f98b]]
+2019-05-13 14:27:27.741 DEBUG 16544 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2019-05-13 14:27:38.936 DEBUG 16544 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/courses/all", parameters={}
+2019-05-13 14:27:38.938 DEBUG 16544 --- [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.CourseController.getAllCourse()
+2019-05-13 14:27:38.975 DEBUG 16544 --- [http-nio-8080-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 14:27:38.976 DEBUG 16544 --- [http-nio-8080-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[edu.hust.model.Course@7a5d974c, edu.hust.model.Course@3e6af834]]
+2019-05-13 14:27:38.980 DEBUG 16544 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2019-05-13 15:28:59.722 DEBUG 16544 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/login", parameters={}
+2019-05-13 15:28:59.818 DEBUG 16544 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to public org.springframework.http.ResponseEntity<?> edu.hust.controller.AccountController.checkLogin(java.lang.String)
+2019-05-13 15:29:00.000 DEBUG 16544 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to ["{"password":"1234","email":"admin@gmail.com"}"]
+2019-05-13 15:29:01.002 DEBUG 16544 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [text/plain, application/json, application/*+json, */*] and supported [application/json, application/*+json, application/json, application/*+json]
+2019-05-13 15:29:01.054 DEBUG 16544 --- [http-nio-8080-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [edu.hust.model.Account@b58c360]
+2019-05-13 15:29:01.090 DEBUG 16544 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
