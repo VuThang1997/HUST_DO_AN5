@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.hust.enumData.IsLearning;
+import edu.hust.model.Account;
 import edu.hust.model.ClassRoom;
 import edu.hust.model.StudentClass;
 import edu.hust.repository.ClassRoomRepository;
@@ -58,8 +59,7 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 	}
 
 	@Override
-	public String checkStudentHasAuthority(int studentID, int classID, int roomID, String identifyString,
-			String imei) {
+	public String checkStudentHasAuthority(int studentID, int classID, int roomID, String identifyString, String imei) {
 		Optional<StudentClass> studentClass = this.studentClassRepository.findByStudentIDAndClassIDAndStatus(studentID,
 				classID, IsLearning.LEARNING.getValue());
 
@@ -70,8 +70,8 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 		StudentClass instance = studentClass.get();
 		String classIdentifyString = instance.getClassInstance().getIdentifyString();
-		//String studentImei = instance.getAccount().getImei();
-		
+		// String studentImei = instance.getAccount().getImei();
+
 		// check if identifyString is incorrect
 		if (!classIdentifyString.equals(identifyString)) {
 			System.out.println("\n\nMile 2");
@@ -91,7 +91,7 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		// check if student has already roll call
 		// dateAndTime co dinh dang: Year - dayInYear - secondInDay
 		String isChecked = instance.getIsChecked();
-		
+
 		if (!checkIsCheckedValid(isChecked, classRoom.getBeginAt(), classRoom.getFinishAt())) {
 			System.out.println("\n\nMile 4");
 			return "You have already rollcalled before";
@@ -128,17 +128,18 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		}
 
 		instance.setListRollCall(listRollCall);
-		
+
 		isChecked = rollCallAt.getYear() + GeneralValue.regexForSplitDate + rollCallAt.getDayOfYear()
 				+ GeneralValue.regexForSplitDate + rollCallAt.toLocalTime().toSecondOfDay();
 		instance.setIsChecked(isChecked);
 		this.studentClassRepository.save(instance);
 
-		//create a blacklist's record if imei is different
+		// create a blacklist's record if imei is different
 		if (!instance.getAccount().getEmail().equals(imei)) {
-			//this.blacklistService.createNewRecord(instance, imei);
-			//return "Warning: System has created a record in blacklist for your incorrect IMEI!";
-			
+			// this.blacklistService.createNewRecord(instance, imei);
+			// return "Warning: System has created a record in blacklist for your incorrect
+			// IMEI!";
+
 			return "Sorry! It seem like you are using other's device!";
 		}
 		return null;
@@ -206,8 +207,8 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 	@Override
 	public boolean checkStudentIsLearning(String studentEmail, int classID) {
-		Optional<StudentClass> studentClass = this.studentClassRepository.findByStudentEmailAndClassIDAndStatus(studentEmail,
-				classID, IsLearning.LEARNING.getValue());
+		Optional<StudentClass> studentClass = this.studentClassRepository
+				.findByStudentEmailAndClassIDAndStatus(studentEmail, classID, IsLearning.LEARNING.getValue());
 		if (studentClass.isEmpty()) {
 			return false;
 		}
@@ -215,4 +216,105 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		return true;
 	}
 
+	@Override
+	public String checkTimetableConflict(Account account, int classID) {
+		List<StudentClass> listClasses = this.studentClassRepository.findByStudentIDAndStatus(account.getId(),
+				IsLearning.LEARNING.getValue());
+		if (listClasses == null || listClasses.isEmpty()) {
+			// no conflict can happen
+			return null;
+		}
+		
+		//check if student has already studied in this class
+		for (StudentClass target: listClasses) {
+			if (target.getClassInstance().getId() == classID) {
+				return "Student has already studied in this class";
+			}
+		}
+		
+		List<ClassRoom> listClassRoom = this.classRoomRepository.findByClassID(classID);
+		if (listClassRoom == null || listClassRoom.isEmpty()) {
+			// this class has no lesson => no conflict
+			//this situation is for special class
+			return null;
+		}
+		
+		//a week has 5 weekdays from Monday to Friday; int[0] and int[1] are not used
+		//all weekdays have lessons are marked as 1
+		int[] arrayOfWeekdayLearning = {-1, -1, 0, 0, 0, 0, 0};
+		int tmpValue = -1;
+		for (ClassRoom tmpClassRoom: listClassRoom) {
+			tmpValue = tmpClassRoom.getWeekday();
+			if (arrayOfWeekdayLearning[tmpValue] == 0) {
+				arrayOfWeekdayLearning[tmpValue] = 1;
+			}
+		}
+		
+		List<ClassRoom> listClassRoomNeedCheck = null;
+		int tmpClassID = -1;
+		int tmpWeekday = -1;
+		for (StudentClass tmpStudentClass: listClasses) {
+			tmpClassID = tmpStudentClass.getClassInstance().getId();
+			listClassRoomNeedCheck = this.classRoomRepository.findByClassID(tmpClassID);
+			
+			if (listClassRoomNeedCheck == null || listClassRoomNeedCheck.isEmpty()) {
+				continue;
+			}
+			
+			for (ClassRoom tmpClassRoom: listClassRoomNeedCheck) {
+				tmpWeekday = tmpClassRoom.getWeekday();
+				if (arrayOfWeekdayLearning[tmpValue] == 0) {
+					//if not be overlapped day => no need to check
+					continue;
+				}
+				
+				for (ClassRoom target: listClassRoom) {
+					if (target.getWeekday() != tmpWeekday) {
+						continue;
+					}
+					
+					//when 2 classroom is learned in the same day
+					if (!checkTwoDurationConflict(target.getBeginAt(), tmpClassRoom.getBeginAt(),
+							target.getFinishAt(), tmpClassRoom.getFinishAt())) {
+						return "Conflict happened";
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+
+	@Override
+	public boolean checkTwoDurationConflict(LocalTime begin1, LocalTime begin2, LocalTime finish1, LocalTime finish2) {
+		
+		//check if 2 duration are partly overlapped
+		if (begin1.isAfter(begin2) && begin1.isBefore(finish2)) {
+			return false;
+		}
+		
+		if (finish1.isAfter(begin2) && finish1.isBefore(finish2)) {
+			return false;
+		} 
+		
+		//check if 1 duration is totally overlapped by the other
+		if (begin1.isBefore(begin2) && finish1.isAfter(finish2)) {
+			return false;
+		}
+		
+		if (begin2.isBefore(begin1) && finish2.isAfter(finish1)) {
+			return false;
+		}
+		
+		return true;
+	}
+
+	@Override
+	public void saveNewStudentClass(StudentClass studentClass) {
+		this.studentClassRepository.save(studentClass);
+		return;
+		
+	}
+
+	
 }

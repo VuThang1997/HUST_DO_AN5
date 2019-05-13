@@ -116,8 +116,8 @@ public class UncategorizedController {
 		return ResponseEntity.ok(listClassRoom);
 	}
 
-//	@PostMapping("/checkTeacherRollCallToday")
-//	@Scheduled(cron = "0 0 20 * * ?")
+	@PostMapping("/checkTeacherRollCallToday")
+	@Scheduled(cron = "0 1 20 * * ?")
 	public ResponseEntity<?> checkTeacherRollCallToday() {
 		
 		ReportError report = null;
@@ -141,13 +141,14 @@ public class UncategorizedController {
 		LocalDateTime now = null;
 		List<ClassRoom> listClassRoom = null;
 
-//		// only admins have permission to access this API errorMessage =
+		// only admins have permission to access this API errorMessage =
 //		errorMessage = this.validationAccountData.validateRoleData(role);
 //		if (errorMessage != null || role != AccountRole.ADMIN.getValue()) {
 //			report = new ReportError(11, "Authentication has failed or has not yet been provided!");
 //			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 //		}
 
+		//comment for testing
 		now = LocalDateTime.now(); // currentTime = now.toLocalTime();
 //		if (now.toLocalTime().isBefore(AfternoonTimeFrame.FRAME12.getValue())) {
 //			report = new ReportError(102, "Check roll call today failed because of current time is not valid! ");
@@ -248,7 +249,7 @@ public class UncategorizedController {
 
 	@SuppressWarnings("deprecation")
 	@PostMapping("/checkStudentRollCallToday")
-//	@Scheduled(cron = "0 0 20 * * ?")
+	@Scheduled(cron = "0 1 20 * * ?")
 	public ResponseEntity<?> checkStudentRollCallToday() {
 		
 		ReportError report = null;
@@ -276,11 +277,12 @@ public class UncategorizedController {
 		Map<ClassRoom, Boolean> mapClassRoomRollCalled = null;
 		ClassRoom instanceClassRoom = null;
 
+		//comment for testing
 		now = LocalDateTime.now(); // currentTime = now.toLocalTime();
-		if (now.toLocalTime().isBefore(AfternoonTimeFrame.FRAME12.getValue())) {
-			report = new ReportError(102, "Check roll call today failed because of current time is not valid! ");
-			return ResponseEntity.badRequest().body(report);
-		}
+//		if (now.toLocalTime().isBefore(AfternoonTimeFrame.FRAME12.getValue())) {
+//			report = new ReportError(102, "Check roll call today failed because of current time is not valid! ");
+//			return ResponseEntity.badRequest().body(report);
+//		}
 
 		// Notice: weekday of java = weekday of mySQL - 1
 		currentDay = now.getDayOfWeek().getValue() + 1;
