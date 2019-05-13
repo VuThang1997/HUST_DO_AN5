@@ -32,4 +32,7 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, Inte
 	
 	@Query("SELECT sc FROM StudentClass sc WHERE sc.account.email = ?1 AND sc.classInstance.semester.semesterID = ?2 and sc.isLearning = ?3")
 	List<StudentClass> getListClass(String studentEmail, int semesterID, int value);
+
+	@Query("SELECT sc FROM StudentClass sc WHERE sc.account.id = ?1 and sc.isLearning = ?2")
+	List<StudentClass> findByStudentIDAndStatus(int studentID, int isLearning);
 }

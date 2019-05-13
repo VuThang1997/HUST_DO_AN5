@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import edu.hust.model.Account;
 import edu.hust.model.ClassRoom;
 import edu.hust.model.StudentClass;
 
@@ -43,4 +44,10 @@ public interface StudentClassService {
 	boolean checkIsCheckedValid(String isChecked, LocalTime beginAt, LocalTime finishAt);
 
 	boolean checkStudentIsLearning(String studentEmail, int classID);
+
+	String checkTimetableConflict(Account account, int classID);
+	
+	boolean checkTwoDurationConflict(LocalTime begin1, LocalTime begin2, LocalTime finish1, LocalTime finish2);
+
+	void saveNewStudentClass(StudentClass studentClass);
 }

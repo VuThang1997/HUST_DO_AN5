@@ -69,6 +69,18 @@ public class ReportServiceImpl1 {
 			indexOfYear = listRollCall.indexOf("" + beginYear);
 
 			// indexOfYear should never be -1
+			if (indexOfYear == -1) {
+				studentRecord = new GeneralStudentRecord();
+				studentRecord.setClassName(studentClass.getClassInstance().getClassName());
+				studentRecord.setCourseName(studentClass.getClassInstance().getCourse().getCourseName());
+				studentRecord.setSumOfAbsent(0);
+				studentRecord.setSumOfFogettingPhone(0);
+				studentRecord.setSumOfSick(0);
+				studentRecord.setSumOfLessons(0);
+
+				listRecord.add(studentRecord);
+				continue;
+			}
 			listRollCall = listRollCall.substring(indexOfYear);
 
 			if (beginYear != finishYear) {

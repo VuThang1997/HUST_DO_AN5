@@ -49,7 +49,6 @@ public class TeacherClassController {
 	private ValidationAccountData validationAccountData;
 	private ValidationRoomData validationRoomData;
 	private JsonMapUtil jsonMapUtil;
-	private RoomService roomService;
 
 	public TeacherClassController() {
 		super();
@@ -72,7 +71,7 @@ public class TeacherClassController {
 		this.teacherClassService = teacherClassService;
 		this.studentClassService = studentClassService;
 		this.accountService = accountService;
-		this.roomService = roomService;
+		//this.roomService = roomService;
 		this.validationRoomData = validationRoomData;
 		this.validationTeacherClassData = validationTeacherClassData;
 		this.classService = classService;
@@ -214,10 +213,8 @@ public class TeacherClassController {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
-                        
-                        if (jsonMap.get("reason")!= null){
+
 			reason = Integer.parseInt(jsonMap.get("reason").toString());
-                        }
 			errorMessage = this.teacherClassService.checkReasonValid(reason);
 			if (errorMessage != null) {
 				report = new ReportError(80, "Teacher roll call failed because " + errorMessage);
