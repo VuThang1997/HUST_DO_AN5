@@ -601,8 +601,13 @@ public class AccountController {
 
 				this.accountService.saveAccount(tmpAccount);
 			}
-
-			report = new ReportError(200, "" + invalidAccount + "+" + infoOfRow);
+                           
+                        if (invalidAccount == 0) {
+                            report = new ReportError(200, "" + invalidAccount+ "-0");
+                        } else {
+                            report = new ReportError(200, "" + invalidAccount + "-" + infoOfRow);
+                        }
+			
 			return ResponseEntity.ok(report);
 
 		} catch (Exception e) {

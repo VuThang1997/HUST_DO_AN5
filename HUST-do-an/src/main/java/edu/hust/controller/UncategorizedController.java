@@ -31,6 +31,7 @@ import edu.hust.service.TeacherClassService;
 import edu.hust.utils.GeneralValue;
 import edu.hust.utils.ValidationAccountData;
 import edu.hust.utils.ValidationSemesterData;
+import java.util.ArrayList;
 
 @RestController
 public class UncategorizedController {
@@ -109,8 +110,8 @@ public class UncategorizedController {
 		}
 
 		if (listClassRoom == null) {
-			report = new ReportError(101, "No record for this semester!");
-			return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+                    listClassRoom = new ArrayList<>();
+		    return ResponseEntity.ok(listClassRoom);
 		}
 
 		return ResponseEntity.ok(listClassRoom);

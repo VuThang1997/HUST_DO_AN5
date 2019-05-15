@@ -71,7 +71,9 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		StudentClass instance = studentClass.get();
 		String classIdentifyString = instance.getClassInstance().getIdentifyString();
 		// String studentImei = instance.getAccount().getImei();
-
+                if(classIdentifyString == null){
+                    return "You have to wait until teacher rollcall";
+                }
 		// check if identifyString is incorrect
 		if (!classIdentifyString.equals(identifyString)) {
 			System.out.println("\n\nMile 2");
@@ -108,14 +110,21 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		String newValue = null;
 		String listRollCall = null;
 		String isChecked = null;
-
+                
 		if (studentClass.isEmpty()) {
 			return "Not found student-class";
 		}
 
 		instance = studentClass.get();
 		listRollCall = instance.getListRollCall();
+                // create a blacklist's record if imei is different
+		if (!instance.getAccount().getImei().equals(imei)) {
+			// this.blacklistService.createNewRecord(instance, imei);
+			// return "Warning: System has created a record in blacklist for your incorrect
+			// IMEI!";
 
+			return "Sorry! It seem like you are using other's device!";
+		}
 		newValue = "" + rollCallAt.getYear();
 		newValue += GeneralValue.regexForSplitDate + rollCallAt.getDayOfYear();
 		newValue += GeneralValue.regexForSplitDate + rollCallAt.toLocalTime().toSecondOfDay()
@@ -134,14 +143,7 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		instance.setIsChecked(isChecked);
 		this.studentClassRepository.save(instance);
 
-		// create a blacklist's record if imei is different
-		if (!instance.getAccount().getEmail().equals(imei)) {
-			// this.blacklistService.createNewRecord(instance, imei);
-			// return "Warning: System has created a record in blacklist for your incorrect
-			// IMEI!";
-
-			return "Sorry! It seem like you are using other's device!";
-		}
+		
 		return null;
 
 	}
