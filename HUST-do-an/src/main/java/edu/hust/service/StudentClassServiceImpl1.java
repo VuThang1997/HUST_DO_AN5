@@ -380,6 +380,10 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 				continue;
 			}
 		}
+                
+                if (listStudentEmail == null || listStudentEmail.isEmpty()) {
+                    return null;
+                }
 
 		listStudentEmail.add(listOfInvalidRows);
 		return listStudentEmail;
