@@ -35,7 +35,7 @@ import edu.hust.service.ClassService;
 import edu.hust.service.ReportServiceImpl1;
 import edu.hust.service.SemesterService;
 import edu.hust.utils.GeneralValue;
-import edu.hust.utils.JsonMapUtil;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationAccountData;
 import edu.hust.utils.ValidationClassData;
 import edu.hust.utils.ValidationSemesterData;
@@ -51,7 +51,7 @@ public class ReportController {
 	private ValidationAccountData validationAccountData;
 	private ValidationClassData validationClassData;
 	private ValidationSemesterData validationSemesterData;
-	private JsonMapUtil jsonMapUtil;
+	private FrequentlyUtils frequentlyUtils;
 	private BaseService baseService;
 
 	@Autowired
@@ -59,12 +59,11 @@ public class ReportController {
 
 	public ReportController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Autowired
 	public ReportController(@Qualifier("ValidationAccountDataImpl1") ValidationAccountData validationAccountData,
-			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils,
 			@Qualifier("SemesterServiceImpl1") SemesterService semesterService,
 			@Qualifier("AccountServiceImpl1") AccountService accountService,
 			@Qualifier("ValidationSemesterDataImpl1") ValidationSemesterData validationSemesterData,
@@ -74,7 +73,7 @@ public class ReportController {
 		super();
 		// this.reportService = reportService;
 		this.validationAccountData = validationAccountData;
-		this.jsonMapUtil = jsonMapUtil;
+		this.frequentlyUtils = frequentlyUtils;
 		this.accountService = accountService;
 		this.validationSemesterData = validationSemesterData;
 		this.baseService = baseService;
@@ -104,7 +103,7 @@ public class ReportController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "semesterID", "beginAt", "finishAt", "fileType")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "semesterID", "beginAt", "finishAt", "fileType")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -230,7 +229,7 @@ public class ReportController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "classID", "beginAt", "finishAt", "fileType")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "classID", "beginAt", "finishAt", "fileType")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}

@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,18 +20,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.hust.enumData.IsLearning;
 import edu.hust.model.Account;
+import edu.hust.model.Class;
 import edu.hust.model.ReportError;
 import edu.hust.model.StudentClass;
 import edu.hust.service.AccountService;
 import edu.hust.service.ClassService;
 import edu.hust.service.RoomService;
 import edu.hust.service.StudentClassService;
-import edu.hust.utils.JsonMapUtil;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationAccountData;
 import edu.hust.utils.ValidationRoomData;
 import edu.hust.utils.ValidationStudentClassData;
-import edu.hust.model.Class;
 
+@CrossOrigin
 @RestController
 public class StudentClassController {
 
@@ -38,20 +40,19 @@ public class StudentClassController {
 	private ClassService classService;
 	private AccountService accountService;
 	private RoomService roomService;
-	private JsonMapUtil jsonMapUtil;
+	private FrequentlyUtils frequentlyUtils;
 	private ValidationRoomData validationRoomData;
 	private ValidationAccountData validationAccountData;
 	private ValidationStudentClassData validationStudentClassData;
 
 	public StudentClassController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Autowired
 	public StudentClassController(@Qualifier("StudentClassServiceImpl1") StudentClassService studentClassService,
 			@Qualifier("RoomServiceImpl1") RoomService roomService,
-			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils,
 			@Qualifier("ValidationRoomDataImpl1") ValidationRoomData validationRoomData,
 			@Qualifier("ValidationStudentClassDataImpl1") ValidationStudentClassData validationStudentClassData,
 			@Qualifier("ValidationAccountDataImpl1") ValidationAccountData validationAccountData,
@@ -62,7 +63,7 @@ public class StudentClassController {
 		this.roomService = roomService;
 		this.validationRoomData = validationRoomData;
 		this.validationStudentClassData = validationStudentClassData;
-		this.jsonMapUtil = jsonMapUtil;
+		this.frequentlyUtils = frequentlyUtils;
 		this.validationAccountData = validationAccountData;
 		this.accountService = accountService;
 		this.classService = classService;
@@ -95,13 +96,13 @@ public class StudentClassController {
 //				report = new ReportError(1, "You have to fill all required information!");
 //				return ResponseEntity.badRequest().body(report);
 //			}
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "studentID", "classID", "roomID", "gpsLong", "gpsLa",
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "studentID", "classID", "roomID", "gpsLong", "gpsLa",
 					"imei")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "identifyString")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "identifyString")) {
 				report = new ReportError(1, "You have to scan QR code before rollcall!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -191,70 +192,118 @@ public class StudentClassController {
 	}
 
 	@PostMapping(value = "/createMultipleStudentClass")
-	public ResponseEntity<?> createMultipleStudentClass (@RequestBody String studentEmailInfo) {
+	public ResponseEntity<?> createMultipleStudentClass(@RequestBody String studentEmailInfo) {
 		ObjectMapper objectMapper = null;
 		List<String> listStudentEmail = null;
-		String errorMessage = null;
 		ReportError report;
 		Account account = null;
 		int classID = -1;
 		int invalidAccount = 0;
-		int rowCounter = 1; // Excel table: first row = info of field
 		String infoOfRow = "";
 		StudentClass studentClass = null;
 		Class classInstance = null;
-		String tmpEmail = null;
 
 		try {
 			objectMapper = new ObjectMapper();
 			listStudentEmail = objectMapper.readValue(studentEmailInfo, new TypeReference<List<String>>() {
 			});
-			
-			//classID is stored in the last element of list
-			classID = Integer.parseInt(listStudentEmail.get(listStudentEmail.size() - 1));
+
+			classID = this.studentClassService.getClassIDInLastElement(listStudentEmail);
 			classInstance = this.classService.findClassByID(classID);
 
-			for (int i = 0; i < listStudentEmail.size() - 1; i++) {
-				tmpEmail = listStudentEmail.get(i);
-				System.out.println("==== Tmp email = " + tmpEmail);
-				rowCounter++;
-				
-				errorMessage = this.validationAccountData.validateUsernameData(tmpEmail);
-				if (errorMessage != null) {
-					System.out.println(errorMessage);
-					invalidAccount++;
-					infoOfRow += (i+2) + ", ";
-					continue;
+			List<String> filteredList = this.studentClassService.filterListEmail(listStudentEmail, classID);
+
+			if (filteredList == null || filteredList.isEmpty()) {
+				report = new ReportError(200, "All accounts are invalid!");
+			} else {
+				for (int i = 0; i < filteredList.size() - 1; i++) {
+					account = this.accountService.findAccountByEmail(filteredList.get(i));
+					System.out.println("============= account.id = " + account.getId());
+
+					studentClass = new StudentClass();
+					studentClass.setAccount(account);
+					studentClass.setIsLearning(IsLearning.LEARNING.getValue());
+					studentClass.setClassInstance(classInstance);
+
+					this.studentClassService.saveNewStudentClass(studentClass);
 				}
 
-				//check if this student exists
-				account = this.accountService.findAccountByEmail(tmpEmail);
-				if (account == null 
-						|| this.studentClassService.checkStudentIsLearning(account.getId(), classID)) {
-					
-					System.out.println("Account not exist or this student is not learning");
-					invalidAccount++;
-					infoOfRow += (i+2) + ", ";
-					continue;
-				}
-				
-				errorMessage = this.studentClassService.checkTimetableConflict(account, classID);
-				if (errorMessage != null) {
-					System.out.println("=========== Timetable conflict");
-					invalidAccount++;
-					infoOfRow += (i+2) + ", ";
-					continue;
-				}
-				
-				studentClass = new StudentClass();
-				studentClass.setAccount(account);
-				studentClass.setIsLearning(IsLearning.LEARNING.getValue());
-				studentClass.setClassInstance(classInstance);
-				
-				this.studentClassService.saveNewStudentClass(studentClass);
+				report = new ReportError(200, "" + invalidAccount + "-" + infoOfRow);
 			}
 
-			report = new ReportError(200, "" + invalidAccount + "-" + infoOfRow);
+			System.out.println("report body = " + report.getDescription());
+			return ResponseEntity.ok(report);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			report = new ReportError(2, "Error happened when jackson deserialization info!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
+		}
+	}
+
+	@PostMapping(value = "/studentClasses")
+	public ResponseEntity<?> addNewStudentClass(@RequestBody String studentClassInfo) {
+		ObjectMapper objectMapper = null;
+		Map<String, Object> jsonMap = null;
+		ReportError report;
+
+		try {
+			objectMapper = new ObjectMapper();
+			jsonMap = objectMapper.readValue(studentClassInfo, new TypeReference<Map<String, Object>>() {
+			});
+
+			// check request body has enough info in right JSON format
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "studentEmail", "classID")) {
+				report = new ReportError(1, "Email and password are required!");
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			int classID = Integer.parseInt(jsonMap.get("classID").toString());
+			String studentEmail = jsonMap.get("studentEmail").toString();
+			String errorMessage = this.studentClassService.addNewStudentClass(studentEmail, classID);
+
+			if (errorMessage != null) {
+				report = new ReportError(400, errorMessage);
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			report = new ReportError(200, "Successful!");
+			return ResponseEntity.ok(report);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			report = new ReportError(2, "Error happened when jackson deserialization info!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
+		}
+	}
+
+	@PostMapping(value = "/rollcallMultipleStudent")
+	public ResponseEntity<?> rollcallMultipleStudent(@RequestParam(value = "classID", required = true) int classID,
+			@RequestBody String rollcallInfo) {
+
+		ObjectMapper objectMapper = null;
+		List<String> listStudentEmail = null;
+		ReportError report;
+		int invalidAccount = 0;
+
+		try {
+			objectMapper = new ObjectMapper();
+			listStudentEmail = objectMapper.readValue(rollcallInfo, new TypeReference<List<String>>() {
+			});
+
+			List<String> filteredList = this.studentClassService
+											.checkListRollcallEmail(listStudentEmail, classID);
+
+			if (filteredList == null || filteredList.isEmpty()) {
+				report = new ReportError(200, "All accounts are invalid!");
+			} else {
+				for (int i = 0; i < filteredList.size() - 1; i++) {
+					this.studentClassService.rollcallByEmailAndClassID(filteredList.get(i), classID);
+				}
+
+				report = new ReportError(200, filteredList.get(filteredList.size() - 1));
+			}
+			
 			System.out.println("report body = " + report.getDescription());
 			return ResponseEntity.ok(report);
 

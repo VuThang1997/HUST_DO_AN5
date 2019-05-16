@@ -29,7 +29,7 @@ import edu.hust.model.Semester;
 import edu.hust.service.ClassService;
 import edu.hust.service.CourseService;
 import edu.hust.service.SemesterService;
-import edu.hust.utils.JsonMapUtil;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationClassData;
 import edu.hust.utils.ValidationCourseData;
 import edu.hust.utils.ValidationData;
@@ -42,19 +42,18 @@ public class ClassController {
 	private ValidationData validationData;
 	private ValidationCourseData validationCourseData;
 	private ValidationClassData validationClassData;
-	private JsonMapUtil jsonMapUtil;
+	private FrequentlyUtils frequentlyUtils;
 	private SemesterService semesterService;
 	private CourseService courseService;
 
 	public ClassController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Autowired
 	public ClassController(@Qualifier("ClassServiceImpl1") ClassService classService,
 			@Qualifier("ValidationDataImpl1") ValidationData validationData,
-			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils,
 			@Qualifier("SemesterServiceImpl1") SemesterService semesterService,
 			@Qualifier("CourseServiceImpl1") CourseService courseService,
 			@Qualifier("ValidationClassDataImpl1") ValidationClassData validationClassData,
@@ -62,7 +61,7 @@ public class ClassController {
 		super();
 		this.classService = classService;
 		this.validationData = validationData;
-		this.jsonMapUtil = jsonMapUtil;
+		this.frequentlyUtils = frequentlyUtils;
 		this.semesterService = semesterService;
 		this.courseService = courseService;
 		this.validationClassData = validationClassData;
@@ -91,7 +90,7 @@ public class ClassController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "className", "maxStudent", "numberOfLessons", "courseID",
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "className", "maxStudent", "numberOfLessons", "courseID",
 					"semesterID")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
@@ -209,7 +208,7 @@ public class ClassController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "className", "maxStudent", "numberOfLessons",
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "id", "className", "maxStudent", "numberOfLessons",
 					"courseID", "semesterID")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);

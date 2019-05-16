@@ -31,7 +31,7 @@ import edu.hust.service.ClassService;
 import edu.hust.service.RoomService;
 import edu.hust.service.StudentClassService;
 import edu.hust.service.TeacherClassService;
-import edu.hust.utils.JsonMapUtil;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationClassRoomData;
 import edu.hust.utils.ValidationData;
 
@@ -46,17 +46,16 @@ public class ClassRoomController {
 	private TeacherClassService teacherClassService;
 	private ValidationData validationData;
 	private ValidationClassRoomData validationClassRoomData;
-	private JsonMapUtil jsonMapUtil;
+	private FrequentlyUtils frequentlyUtils;
 
 	public ClassRoomController() {
 		super();
-		// TODO Auto-generated constructorstub
 	}
 
 	@Autowired
 	public ClassRoomController(@Qualifier("ClassRoomServiceImpl1") ClassRoomService classRoomService,
 			@Qualifier("ValidationDataImpl1") ValidationData validationData,
-			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils,
 			@Qualifier("ClassServiceImpl1") ClassService classService,
 			@Qualifier("RoomServiceImpl1") RoomService roomService,
 			@Qualifier("ValidationClassRoomDataImpl1") ValidationClassRoomData validationClassRoomData,
@@ -66,7 +65,7 @@ public class ClassRoomController {
 		this.classRoomService = classRoomService;
 		this.validationData = validationData;
 		this.validationClassRoomData = validationClassRoomData;
-		this.jsonMapUtil = jsonMapUtil;
+		this.frequentlyUtils = frequentlyUtils;
 		this.classService = classService;
 		this.roomService = roomService;
 		this.studentClassService = studentClassService;
@@ -94,7 +93,7 @@ public class ClassRoomController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "beginAt", "finishAt", "weekday", "classID", "roomID")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "beginAt", "finishAt", "weekday", "classID", "roomID")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -200,7 +199,7 @@ public class ClassRoomController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "beginAt", "finishAt", "weekday", "classID",
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "id", "beginAt", "finishAt", "weekday", "classID",
 					"roomID")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);

@@ -1,8 +1,9 @@
 package edu.hust.utils;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
-public interface JsonMapUtil {
+public interface FrequentlyUtils {
 
 	/**
 	 * @param jsonMap - a Map contains some keys
@@ -10,4 +11,7 @@ public interface JsonMapUtil {
 	 * @return true if the map contains all keys; 
 	 */
 	boolean checkKeysExist(Map<String, Object> jsonMap, String... args);
+	
+	
+	String makeRollcallRecord(LocalDateTime rollcallAt);
 }

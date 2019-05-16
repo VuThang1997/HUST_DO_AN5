@@ -21,31 +21,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.hust.model.ReportError;
 import edu.hust.model.Semester;
 import edu.hust.service.SemesterService;
-import edu.hust.utils.JsonMapUtil;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationData;
 import edu.hust.utils.ValidationSemesterData;
 
 @RestController
 public class SemesterController {
 
-	private JsonMapUtil jsonMapUtil;
+	private FrequentlyUtils frequentlyUtils;
 	private ValidationData validationData;
 	private SemesterService semesterService;
 	private ValidationSemesterData validationSemesterData;
 
 	public SemesterController() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Autowired
 	public SemesterController(@Qualifier("SemesterServiceImpl1") SemesterService semesterService,
-			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils,
 			@Qualifier("ValidationDataImpl1") ValidationData validationData,
 			@Qualifier("ValidationSemesterDataImpl1") ValidationSemesterData validationSemesterData) {
 		super();
 		this.semesterService = semesterService;
-		this.jsonMapUtil = jsonMapUtil;
+		this.frequentlyUtils = frequentlyUtils;
 		this.validationData = validationData;
 		this.validationSemesterData = validationSemesterData;
 	}
@@ -67,7 +67,7 @@ public class SemesterController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "semesterName", "beginDate", "endDate")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "semesterName", "beginDate", "endDate")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -181,7 +181,7 @@ public class SemesterController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "semesterName", "beginDate", "endDate")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "id", "semesterName", "beginDate", "endDate")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}

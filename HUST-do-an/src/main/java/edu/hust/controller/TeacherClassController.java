@@ -32,7 +32,7 @@ import edu.hust.service.ClassService;
 import edu.hust.service.RoomService;
 import edu.hust.service.StudentClassService;
 import edu.hust.service.TeacherClassService;
-import edu.hust.utils.JsonMapUtil;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationAccountData;
 import edu.hust.utils.ValidationRoomData;
 import edu.hust.utils.ValidationTeacherClassData;
@@ -48,18 +48,17 @@ public class TeacherClassController {
 	private ClassService classService;
 	private ValidationAccountData validationAccountData;
 	private ValidationRoomData validationRoomData;
-	private JsonMapUtil jsonMapUtil;
+	private FrequentlyUtils frequentlyUtils;
 
 	public TeacherClassController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Autowired
 	public TeacherClassController(@Qualifier("TeacherClassServiceImpl1") TeacherClassService teacherClassService,
 			@Qualifier("StudentClassServiceImpl1") StudentClassService studentClassService,
 			@Qualifier("AccountServiceImpl1") AccountService accountService,
-			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils,
 			@Qualifier("ValidationTeacherClassDataImpl1") ValidationTeacherClassData validationTeacherClassData,
 			@Qualifier("ValidationRoomDataImpl1") ValidationRoomData validationRoomData,
 			@Qualifier("ClassServiceImpl1") ClassService classService,
@@ -77,7 +76,7 @@ public class TeacherClassController {
 		this.classService = classService;
 		// this.validationStudentClassData = validationStudentClassData;
 		this.validationAccountData = validationAccountData;
-		this.jsonMapUtil = jsonMapUtil;
+		this.frequentlyUtils = frequentlyUtils;
 
 	}
 
@@ -109,7 +108,7 @@ public class TeacherClassController {
 //				return ResponseEntity.badRequest().body(report);
 //			}
 
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "teacherID", "classID", "roomID")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -209,7 +208,7 @@ public class TeacherClassController {
 			jsonMap = objectMapper.readValue(info, new TypeReference<Map<String, Object>>() {
 			});
 
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "studentEmail", "reason")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "teacherID", "classID", "roomID", "studentEmail", "reason")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -306,7 +305,7 @@ public class TeacherClassController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "teacherID", "classID")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "teacherID", "classID")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}

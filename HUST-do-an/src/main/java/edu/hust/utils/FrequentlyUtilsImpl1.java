@@ -1,5 +1,6 @@
 package edu.hust.utils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,8 +9,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@Qualifier("JsonMapUtilImpl1")
-public class JsonMapUtilImpl1 implements JsonMapUtil {
+@Qualifier("FrequentlyUtilsImpl1")
+public class FrequentlyUtilsImpl1 implements FrequentlyUtils {
 
 	@Override
 	public boolean checkKeysExist(Map<String, Object> jsonMap, String... args) {
@@ -22,6 +23,15 @@ public class JsonMapUtilImpl1 implements JsonMapUtil {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String makeRollcallRecord(LocalDateTime rollcallAt) {
+		String newValue = "" + rollcallAt.getYear();
+		newValue += GeneralValue.regexForSplitDate + rollcallAt.getDayOfYear();
+		newValue += GeneralValue.regexForSplitDate + rollcallAt.toLocalTime().toSecondOfDay();
+		
+		return newValue;
 	}
 
 }

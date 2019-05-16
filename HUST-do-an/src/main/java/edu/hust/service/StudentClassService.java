@@ -50,4 +50,35 @@ public interface StudentClassService {
 	boolean checkTwoDurationConflict(LocalTime begin1, LocalTime begin2, LocalTime finish1, LocalTime finish2);
 
 	void saveNewStudentClass(StudentClass studentClass);
+
+	
+	/**
+	 * Get the classID which is put in last element of list email (for purpose of hacking)
+	 * @param listStudentEmail
+	 * @return -1 if error happen; an unsigned int if success
+	 */
+	int getClassIDInLastElement(List<String> listStudentEmail);
+
+	
+	/**
+	 * Filter all emails which is invalid; 
+	 * list of invalid rows is stored in the last element of return list
+	 * @param listStudentEmail
+	 * @return a List of email (String)
+	 */
+	List<String> filterListEmail(List<String> listStudentEmail, int classID);
+
+	String addNewStudentClass(String studentEmail, int classID);
+
+	/**
+	 * Filter all emails which is invalid; 
+	 * list of invalid rows is stored in the last element of return list
+	 * @param listStudentEmail
+	 * @param classID
+	 * @return
+	 */
+	List<String> checkListRollcallEmail(List<String> listStudentEmail, int classID);
+
+	String rollcallByEmailAndClassID(String studentEmail, int classID);
+
 }

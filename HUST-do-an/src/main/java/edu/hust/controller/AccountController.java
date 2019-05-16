@@ -28,7 +28,7 @@ import edu.hust.model.ReportError;
 import edu.hust.model.User;
 import edu.hust.service.AccountService;
 import edu.hust.utils.GeneralValue;
-import edu.hust.utils.JsonMapUtil;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationAccountData;
 import edu.hust.utils.ValidationData;
 
@@ -39,16 +39,16 @@ public class AccountController {
 	private AccountService accountService;
 	private ValidationAccountData validationAccountData;
 	private ValidationData validationData;
-	private JsonMapUtil jsonMapUtil;
+	private FrequentlyUtils frequentlyUtils;
 
 	@Autowired
 	public AccountController(@Qualifier("AccountServiceImpl1") AccountService accountService,
 			@Qualifier("ValidationDataImpl1") ValidationData validationData,
-			@Qualifier("JsonMapUtilImpl1") JsonMapUtil jsonMapUtil,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils,
 			@Qualifier("ValidationAccountDataImpl1") ValidationAccountData validationAccountData) {
 		this.accountService = accountService;
 		this.validationData = validationData;
-		this.jsonMapUtil = jsonMapUtil;
+		this.frequentlyUtils = frequentlyUtils;
 		this.validationAccountData = validationAccountData;
 	}
 
@@ -67,7 +67,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "password")) {
 				report = new ReportError(1, "Email and password are required!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -122,7 +122,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "username", "role", "password", "userInfo")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "username", "role", "password", "userInfo")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -177,7 +177,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "role", "password")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "role", "password")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -221,7 +221,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "role", "password")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "role", "password")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -323,13 +323,13 @@ public class AccountController {
 
 			// check request body has enough info in right JSON format
 			if (updateUser == false) {
-				if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password", "username", "imei")) {
+				if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "password", "username", "imei")) {
 					report = new ReportError(1, "You have to fill all required information!");
 					return ResponseEntity.badRequest().body(report);
 				}
 
 			} else {
-				if (!this.jsonMapUtil.checkKeysExist(jsonMap, "email", "password", "username", "imei", "birthday",
+				if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "password", "username", "imei", "birthday",
 						"phone", "address", "fullName")) {
 					report = new ReportError(1, "You have to fill all required information!");
 					return ResponseEntity.badRequest().body(report);
@@ -420,7 +420,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "birthday", "phone", "address", "fullName")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "id", "birthday", "phone", "address", "fullName")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -481,7 +481,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.jsonMapUtil.checkKeysExist(jsonMap, "id", "birthday", "phone", "address", "fullName")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "id", "birthday", "phone", "address", "fullName")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}

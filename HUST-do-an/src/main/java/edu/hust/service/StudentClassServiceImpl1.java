@@ -3,6 +3,7 @@ package edu.hust.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,20 +13,27 @@ import org.springframework.stereotype.Service;
 
 import edu.hust.enumData.IsLearning;
 import edu.hust.model.Account;
+import edu.hust.model.Class;
 import edu.hust.model.ClassRoom;
 import edu.hust.model.StudentClass;
 import edu.hust.repository.ClassRoomRepository;
 import edu.hust.repository.StudentClassRepository;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.GeneralValue;
+import edu.hust.utils.ValidationAccountData;
 
 @Service
 @Qualifier("StudentClassServiceImpl1")
 public class StudentClassServiceImpl1 implements StudentClassService {
 
 	private ClassRoomService classRoomService;
+	private FrequentlyUtils frequentlyUtils;
+	private ClassService classService;
+	private AccountService accountService;
 	private BlacklistService blacklistService;
 	private ClassRoomRepository classRoomRepository;
 	private StudentClassRepository studentClassRepository;
+	private ValidationAccountData validationAccountData;
 
 	public StudentClassServiceImpl1() {
 		super();
@@ -35,12 +43,20 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 	@Autowired
 	public StudentClassServiceImpl1(@Qualifier("ClassRoomServiceImpl1") ClassRoomService classRoomService,
 			@Qualifier("BlacklistServiceImpl1") BlacklistService blacklistService,
-			ClassRoomRepository classRoomRepository, StudentClassRepository studentClassRepository) {
+			@Qualifier("AccountServiceImpl1") AccountService accountService, ClassRoomRepository classRoomRepository,
+			StudentClassRepository studentClassRepository,
+			@Qualifier("ValidationAccountDataImpl1") ValidationAccountData validationAccountData,
+			@Qualifier("ClassServiceImpl1") ClassService classService,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils) {
 		super();
 		this.classRoomRepository = classRoomRepository;
 		this.studentClassRepository = studentClassRepository;
 		this.classRoomService = classRoomService;
 		this.blacklistService = blacklistService;
+		this.validationAccountData = validationAccountData;
+		this.accountService = accountService;
+		this.classService = classService;
+		this.frequentlyUtils = frequentlyUtils;
 	}
 
 	@Override
@@ -71,9 +87,9 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		StudentClass instance = studentClass.get();
 		String classIdentifyString = instance.getClassInstance().getIdentifyString();
 		// String studentImei = instance.getAccount().getImei();
-                if(classIdentifyString == null){
-                    return "You have to wait until teacher rollcall";
-                }
+		if (classIdentifyString == null) {
+			return "You have to wait until teacher rollcall";
+		}
 		// check if identifyString is incorrect
 		if (!classIdentifyString.equals(identifyString)) {
 			System.out.println("\n\nMile 2");
@@ -110,14 +126,14 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		String newValue = null;
 		String listRollCall = null;
 		String isChecked = null;
-                
+
 		if (studentClass.isEmpty()) {
 			return "Not found student-class";
 		}
 
 		instance = studentClass.get();
 		listRollCall = instance.getListRollCall();
-                // create a blacklist's record if imei is different
+		// create a blacklist's record if imei is different
 		if (!instance.getAccount().getImei().equals(imei)) {
 			// this.blacklistService.createNewRecord(instance, imei);
 			// return "Warning: System has created a record in blacklist for your incorrect
@@ -125,9 +141,8 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 			return "Sorry! It seem like you are using other's device!";
 		}
-		newValue = "" + rollCallAt.getYear();
-		newValue += GeneralValue.regexForSplitDate + rollCallAt.getDayOfYear();
-		newValue += GeneralValue.regexForSplitDate + rollCallAt.toLocalTime().toSecondOfDay()
+		
+		newValue = this.frequentlyUtils.makeRollcallRecord(rollCallAt)
 				+ GeneralValue.regexForSplitListRollCall;
 
 		if (listRollCall == null) {
@@ -138,12 +153,10 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 		instance.setListRollCall(listRollCall);
 
-		isChecked = rollCallAt.getYear() + GeneralValue.regexForSplitDate + rollCallAt.getDayOfYear()
-				+ GeneralValue.regexForSplitDate + rollCallAt.toLocalTime().toSecondOfDay();
+		isChecked = newValue;
 		instance.setIsChecked(isChecked);
 		this.studentClassRepository.save(instance);
 
-		
 		return null;
 
 	}
@@ -226,88 +239,88 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 			// no conflict can happen
 			return null;
 		}
-		
-		//check if student has already studied in this class
-		for (StudentClass target: listClasses) {
+
+		// check if student has already studied in this class
+		for (StudentClass target : listClasses) {
 			if (target.getClassInstance().getId() == classID) {
 				return "Student has already studied in this class";
 			}
 		}
-		
+
 		List<ClassRoom> listClassRoom = this.classRoomRepository.findByClassID(classID);
 		if (listClassRoom == null || listClassRoom.isEmpty()) {
 			// this class has no lesson => no conflict
-			//this situation is for special class
+			// this situation is for special class
 			return null;
 		}
-		
-		//a week has 5 weekdays from Monday to Friday; int[0] and int[1] are not used
-		//all weekdays have lessons are marked as 1
-		int[] arrayOfWeekdayLearning = {-1, -1, 0, 0, 0, 0, 0};
+
+		// a week has 5 weekdays from Monday to Friday; int[0] and int[1] are not used
+		// all weekdays have lessons are marked as 1
+		int[] arrayOfWeekdayLearning = { -1, -1, 0, 0, 0, 0, 0 };
 		int tmpValue = -1;
-		for (ClassRoom tmpClassRoom: listClassRoom) {
+		for (ClassRoom tmpClassRoom : listClassRoom) {
 			tmpValue = tmpClassRoom.getWeekday();
 			if (arrayOfWeekdayLearning[tmpValue] == 0) {
 				arrayOfWeekdayLearning[tmpValue] = 1;
 			}
 		}
-		
+
 		List<ClassRoom> listClassRoomNeedCheck = null;
 		int tmpClassID = -1;
 		int tmpWeekday = -1;
-		for (StudentClass tmpStudentClass: listClasses) {
+		for (StudentClass tmpStudentClass : listClasses) {
 			tmpClassID = tmpStudentClass.getClassInstance().getId();
 			listClassRoomNeedCheck = this.classRoomRepository.findByClassID(tmpClassID);
-			
+
 			if (listClassRoomNeedCheck == null || listClassRoomNeedCheck.isEmpty()) {
 				continue;
 			}
-			
-			for (ClassRoom tmpClassRoom: listClassRoomNeedCheck) {
+
+			for (ClassRoom tmpClassRoom : listClassRoomNeedCheck) {
 				tmpWeekday = tmpClassRoom.getWeekday();
 				if (arrayOfWeekdayLearning[tmpValue] == 0) {
-					//if not be overlapped day => no need to check
+					// if not be overlapped day => no need to check
 					continue;
 				}
-				
-				for (ClassRoom target: listClassRoom) {
+
+				for (ClassRoom target : listClassRoom) {
 					if (target.getWeekday() != tmpWeekday) {
 						continue;
 					}
-					
-					//when 2 classroom is learned in the same day
-					if (!checkTwoDurationConflict(target.getBeginAt(), tmpClassRoom.getBeginAt(),
-							target.getFinishAt(), tmpClassRoom.getFinishAt())) {
+
+					// when 2 classroom is learned in the same day
+					if (!checkTwoDurationConflict(target.getBeginAt(), tmpClassRoom.getBeginAt(), target.getFinishAt(),
+							tmpClassRoom.getFinishAt())) {
 						return "Conflict happened";
 					}
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
 	@Override
 	public boolean checkTwoDurationConflict(LocalTime begin1, LocalTime begin2, LocalTime finish1, LocalTime finish2) {
-		
-		//check if 2 duration are partly overlapped
+
+		// check if 2 duration are partly overlapped
 		if (begin1.isAfter(begin2) && begin1.isBefore(finish2)) {
 			return false;
 		}
-		
+
 		if (finish1.isAfter(begin2) && finish1.isBefore(finish2)) {
 			return false;
-		} 
-		
-		//check if 1 duration is totally overlapped by the other
+		}
+
+		// check if 1 duration is totally overlapped by the other
 		if (begin1.isBefore(begin2) && finish1.isAfter(finish2)) {
 			return false;
 		}
-		
+
 		if (begin2.isBefore(begin1) && finish2.isAfter(finish1)) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -315,8 +328,169 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 	public void saveNewStudentClass(StudentClass studentClass) {
 		this.studentClassRepository.save(studentClass);
 		return;
-		
+
 	}
 
-	
+	@Override
+	public int getClassIDInLastElement(List<String> listStudentEmail) {
+		try {
+			int indexOfLastElement = listStudentEmail.size() - 1;
+			return Integer.parseInt(listStudentEmail.get(indexOfLastElement));
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
+
+	@Override
+	public List<String> filterListEmail(List<String> listStudentEmail, int classID) {
+		Iterator<String> listIte = listStudentEmail.iterator();
+		String tmpEmail = null;
+		String errorMessage = null;
+		String listOfInvalidRows = "";
+		Account account = null;
+
+		// the 1st row of file excel is header => list email begin from 2nd row
+		int rowCounter = 1;
+		while (listIte.hasNext()) {
+			tmpEmail = listIte.next();
+			rowCounter++;
+			System.out.println("========== Tmp email = " + tmpEmail);
+
+			errorMessage = this.validationAccountData.validateEmailData(tmpEmail);
+			if (errorMessage != null) {
+				System.out.println("============= email is invalid = " + errorMessage);
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+
+			account = this.accountService.findAccountByEmail(tmpEmail);
+			if (account == null || this.checkStudentIsLearning(account.getId(), classID)) {
+				System.out.println("Account not exist or this student is learning");
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+
+			errorMessage = this.checkTimetableConflict(account, classID);
+			if (errorMessage != null) {
+				System.out.println("=========== Timetable conflict");
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+		}
+
+		listStudentEmail.add(listOfInvalidRows);
+		return listStudentEmail;
+	}
+
+	@Override
+	public String addNewStudentClass(String studentEmail, int classID) {
+
+		String errorMessage = null;
+		errorMessage = this.validationAccountData.validateEmailData(studentEmail);
+		if (errorMessage != null) {
+			return errorMessage;
+		}
+
+		Account account = this.accountService.findAccountByEmail(studentEmail);
+		if (account == null) {
+			return "This account is not existed";
+		}
+
+		Class classInstance = this.classService.findClassByID(classID);
+		if (classInstance == null) {
+			return "This class is not existed";
+		}
+
+		if (this.checkStudentIsLearning(account.getId(), classID)) {
+			return "Student has already assigned this class";
+		}
+
+		errorMessage = this.checkTimetableConflict(account, classID);
+		if (errorMessage != null) {
+			return "This class is conflict with other classes!";
+		}
+
+		StudentClass studentClass = new StudentClass();
+		studentClass.setAccount(account);
+		studentClass.setClassInstance(classInstance);
+		studentClass.setIsLearning(IsLearning.LEARNING.getValue());
+		this.studentClassRepository.save(studentClass);
+
+		return null;
+	}
+
+	@Override
+	public List<String> checkListRollcallEmail(List<String> listStudentEmail, int classID) {
+		Iterator<String> listIte = listStudentEmail.iterator();
+		String tmpEmail = null;
+		String errorMessage = null;
+		String listOfInvalidRows = "";
+		Account account = null;
+
+		// the 1st row of file excel is header => list email begin from 2nd row
+		int rowCounter = 1;
+		while (listIte.hasNext()) {
+			tmpEmail = listIte.next();
+			rowCounter++;
+			System.out.println("========== Tmp email = " + tmpEmail);
+
+			errorMessage = this.validationAccountData.validateEmailData(tmpEmail);
+			if (errorMessage != null) {
+				System.out.println("============= email is invalid = " + errorMessage);
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+
+			account = this.accountService.findAccountByEmail(tmpEmail);
+			if (account == null || !this.checkStudentIsLearning(account.getId(), classID)) {
+				System.out.println("Account not exist or this student is not learning the class");
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+		}
+
+		listStudentEmail.add(listOfInvalidRows);
+		return listStudentEmail;
+	}
+
+	@Override
+	public String rollcallByEmailAndClassID(String studentEmail, int classID) {
+		String newValue = null;
+		String listRollCall = null;
+		String isChecked = null;
+
+		Optional<StudentClass> studentClass = this.studentClassRepository
+				.findByStudentEmailAndClassIDAndStatus(studentEmail, classID, IsLearning.LEARNING.getValue());
+		if (studentClass.isEmpty()) {
+			return "Not found student-class";
+		}
+
+		StudentClass instance = studentClass.get();
+		listRollCall = instance.getListRollCall();
+
+		LocalDateTime rollcallAt = LocalDateTime.now();
+		newValue = this.frequentlyUtils.makeRollcallRecord(rollcallAt) 
+					+ GeneralValue.regexForSplitListRollCall;
+
+		if (listRollCall == null) {
+			listRollCall = newValue;
+		} else {
+			listRollCall += newValue;
+		}
+
+		instance.setListRollCall(listRollCall);
+
+		isChecked = newValue;
+		instance.setIsChecked(isChecked);
+		this.studentClassRepository.save(instance);
+
+		return null;
+
+	}
+
 }
