@@ -23,7 +23,7 @@ public class BaseService {
 	 */
 	public String getFolderSymLink(String fileName) {
 		try {
-            String pathCreateSymlink = GeneralValue.LINK_FOLDER_REPORT_IN_SERVER;
+            String pathCreateSymlink = GeneralValue.LINK_OUT_REPORT_IN_SERVER;
             if (!pathCreateSymlink.endsWith("/")) {
                 pathCreateSymlink += File.separator;
             }

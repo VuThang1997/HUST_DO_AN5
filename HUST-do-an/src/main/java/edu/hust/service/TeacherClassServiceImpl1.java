@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import edu.hust.enumData.IsLearning;
 import edu.hust.enumData.IsTeaching;
 import edu.hust.enumData.SpecialRollCall;
+import edu.hust.model.Account;
 import edu.hust.model.Class;
 import edu.hust.model.ClassRoom;
 import edu.hust.model.StudentClass;
@@ -27,7 +28,9 @@ import edu.hust.repository.ClassRepository;
 import edu.hust.repository.ClassRoomRepository;
 import edu.hust.repository.StudentClassRepository;
 import edu.hust.repository.TeacherClassRepository;
+import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.GeneralValue;
+import edu.hust.utils.ValidationAccountData;
 
 @Service
 @Transactional
@@ -35,22 +38,29 @@ import edu.hust.utils.GeneralValue;
 public class TeacherClassServiceImpl1 implements TeacherClassService {
 
 	private ClassRoomService classRoomService;
+	private AccountService accountService;
 	private StudentClassService studentClassService;
 	private ClassRepository classRepository;
 	private ClassRoomRepository classRoomRepository;
 	private TeacherClassRepository teacherClassRepository;
 	private StudentClassRepository studentClassRepository;
+	private ValidationAccountData validationAccountData;
+	private ClassService classService;
+	private FrequentlyUtils frequentlyUtils;
 
 	public TeacherClassServiceImpl1() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Autowired
 	public TeacherClassServiceImpl1(@Qualifier("ClassRoomServiceImpl1") ClassRoomService classRoomService,
+			@Qualifier("AccountServiceImpl1") AccountService accountService,
 			@Qualifier("StudentClassServiceImpl1") StudentClassService studentClassService,
 			ClassRoomRepository classRoomRepository, TeacherClassRepository teacherClassRepository,
-			ClassRepository classRepository, StudentClassRepository studentClassRepository) {
+			ClassRepository classRepository, StudentClassRepository studentClassRepository,
+			@Qualifier("ClassServiceImpl1") ClassService classService,
+			@Qualifier("ValidationAccountDataImpl1") ValidationAccountData validationAccountData,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils) {
 		super();
 		this.classRoomRepository = classRoomRepository;
 		this.teacherClassRepository = teacherClassRepository;
@@ -58,6 +68,10 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 		this.studentClassService = studentClassService;
 		this.classRepository = classRepository;
 		this.studentClassRepository = studentClassRepository;
+		this.validationAccountData = validationAccountData;
+		this.accountService = accountService;
+		this.classService = classService;
+		this.frequentlyUtils = frequentlyUtils;
 	}
 
 	@Override
@@ -263,13 +277,13 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 		ClassRoom classRoomInstance = classRoom.get();
 		studentClassInstance = studentClass.get();
 		String classIsChecked = studentClassInstance.getClassInstance().getIsChecked();
-		
-		//checkedTime empty => this class is still not rollcall => not allow teacher
+
+		// checkedTime empty => this class is still not rollcall => not allow teacher
 		if (classIsChecked == null || classIsChecked.isBlank()) {
 			return false;
 		}
-		
-		//check if teacher has triggered rollcall process before
+
+		// check if teacher has triggered rollcall process before
 		// => check isChecked of class is in this lessons's duration
 		String[] partsOfTime = classIsChecked.split(GeneralValue.regexForSplitDate);
 		int year = Integer.parseInt(partsOfTime[0]);
@@ -280,12 +294,11 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 			return false;
 		}
 		LocalTime checkedTime = LocalTime.ofSecondOfDay(secondOfDay);
-		if (checkedTime.isBefore(classRoomInstance.getBeginAt()) || checkedTime.isAfter(classRoomInstance.getFinishAt())) {
-			return false;			
+		if (checkedTime.isBefore(classRoomInstance.getBeginAt())
+				|| checkedTime.isAfter(classRoomInstance.getFinishAt())) {
+			return false;
 		}
-		
-		
-		
+
 		if (studentClassInstance.getClassInstance().getIdentifyString() == null) {
 			return false;
 		}
@@ -302,10 +315,10 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 		newValue = "" + rollCallAt.getYear();
 		newValue += GeneralValue.regexForSplitDate + rollCallAt.getDayOfYear();
 		newValue += GeneralValue.regexForSplitDate + rollCallAt.toLocalTime().toSecondOfDay();
-		
+
 		if (reason == SpecialRollCall.SICK.getValue()) {
 			newValue += GeneralValue.markForPermission + GeneralValue.regexForSplitListRollCall;
-			
+
 		} else if (reason == SpecialRollCall.FORGOT_PHONE.getValue()) {
 			newValue += GeneralValue.markForNotBringPhone + GeneralValue.regexForSplitListRollCall;
 		}
@@ -397,12 +410,12 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 				tmpFinishAt = classRoom2.getFinishAt();
 
 				// check if conflict between 2 durations may happen
-				//2 type of conflict: beginAt or finishAt violate duration of other class-room
-				//or duration of this class-room is contains duration of other class-room
+				// 2 type of conflict: beginAt or finishAt violate duration of other class-room
+				// or duration of this class-room is contains duration of other class-room
 				if ((beginAt.isAfter(tmpBeginAt) && beginAt.isBefore(tmpFinishAt))
 						|| (finishAt.isAfter(tmpBeginAt) && finishAt.isBefore(tmpFinishAt))
 						|| (beginAt.isBefore(tmpBeginAt) && finishAt.isAfter(tmpFinishAt))) {
-					
+
 					return false;
 				}
 			}
@@ -443,11 +456,134 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 
 	@Override
 	public List<TeacherClass> findByCurrentTeacherID(int teacherID) {
-		List<TeacherClass> listRecords = this.teacherClassRepository.findByCurrentTeacherID(teacherID, IsTeaching.TEACHING.getValue());
+		List<TeacherClass> listRecords = this.teacherClassRepository.findByCurrentTeacherID(teacherID,
+				IsTeaching.TEACHING.getValue());
 		if (listRecords == null || listRecords.isEmpty()) {
 			return null;
 		}
 		return listRecords;
+	}
+
+	@Override
+	public String addNewTeacherClass(String teacherEmail, int classID) {
+		String errorMessage = null;
+		errorMessage = this.validationAccountData.validateEmailData(teacherEmail);
+		if (errorMessage != null) {
+			return errorMessage;
+		}
+
+		Account account = this.accountService.findAccountByEmail(teacherEmail);
+		if (account == null) {
+			return "This account is not existed";
+		}
+
+		Class classInstance = this.classService.findClassByID(classID);
+		if (classInstance == null) {
+			return "This class is not existed";
+		}
+
+		if (this.checkTeacherIsTeaching(teacherEmail, classID)) {
+			return "Teacher has already taught this class";
+		}
+
+		errorMessage = this.checkTimetableConflict(account, classID);
+		if (errorMessage != null) {
+			return "This class is conflict with other classes!";
+		}
+
+		TeacherClass teacherClass = new TeacherClass();
+		teacherClass.setAccount(account);
+		teacherClass.setClassInstance(classInstance);
+		teacherClass.setIsTeaching(IsTeaching.TEACHING.getValue());
+		this.teacherClassRepository.save(teacherClass);
+
+		return null;
+	}
+
+	@Override
+	public boolean checkTeacherIsTeaching(String teacherEmail, int classID) {
+		System.out.println("=========== classID = " + classID);
+		Optional<TeacherClass> teacherClassOpt = this.teacherClassRepository.findByClassIDAndStatus(classID,
+				IsTeaching.TEACHING.getValue());
+
+		if (teacherClassOpt.isEmpty()) {
+			return false;
+		}
+
+		TeacherClass teacherClass = teacherClassOpt.get();
+		if (teacherClass.getAccount().getEmail().equalsIgnoreCase(teacherEmail)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String checkTimetableConflict(Account account, int classID) {
+		List<TeacherClass> listClasses = this.teacherClassRepository.findByCurrentTeacherID(account.getId(),
+				IsTeaching.TEACHING.getValue());
+		if (listClasses == null || listClasses.isEmpty()) {
+			// no conflict can happen
+			return null;
+		}
+
+		// check if teacher is teaching class
+		for (TeacherClass target : listClasses) {
+			if (target.getClassInstance().getId() == classID) {
+				return "Teacher has already taught this class!";
+			}
+		}
+
+		List<ClassRoom> listClassRoom = this.classRoomRepository.findByClassID(classID);
+		if (listClassRoom == null || listClassRoom.isEmpty()) {
+			// this class has no lesson => no conflict
+			// this situation is for special class
+			return null;
+		}
+
+		// a week has 5 weekdays from Monday to Friday; int[0] and int[1] are not used
+		// all weekdays have lessons are marked as 1
+		int[] arrayOfWeekdayLearning = { -1, -1, 0, 0, 0, 0, 0 };
+		int tmpValue = -1;
+		for (ClassRoom tmpClassRoom : listClassRoom) {
+			tmpValue = tmpClassRoom.getWeekday();
+			if (arrayOfWeekdayLearning[tmpValue] == 0) {
+				arrayOfWeekdayLearning[tmpValue] = 1;
+			}
+		}
+
+		List<ClassRoom> listClassRoomNeedCheck = null;
+		int tmpClassID = -1;
+		int tmpWeekday = -1;
+		for (TeacherClass tmpTeacherClass : listClasses) {
+			tmpClassID = tmpTeacherClass.getClassInstance().getId();
+			listClassRoomNeedCheck = this.classRoomRepository.findByClassID(tmpClassID);
+
+			if (listClassRoomNeedCheck == null || listClassRoomNeedCheck.isEmpty()) {
+				continue;
+			}
+
+			for (ClassRoom tmpClassRoom : listClassRoomNeedCheck) {
+				tmpWeekday = tmpClassRoom.getWeekday();
+				if (arrayOfWeekdayLearning[tmpValue] == 0) {
+					// if not be overlapped day => no need to check
+					continue;
+				}
+
+				for (ClassRoom target : listClassRoom) {
+					if (target.getWeekday() != tmpWeekday) {
+						continue;
+					}
+
+					// when 2 classroom is learned in the same day
+					if (!this.frequentlyUtils.checkTwoTimeConflict(target.getBeginAt(), tmpClassRoom.getBeginAt(),
+							target.getFinishAt(), tmpClassRoom.getFinishAt())) {
+						return "Conflict happened";
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 }

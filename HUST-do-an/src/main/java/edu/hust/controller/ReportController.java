@@ -82,6 +82,131 @@ public class ReportController {
 		this.validationClassData = validationClassData;
 	}
 
+	@RequestMapping(value = "/teacherGeneralReport", method = RequestMethod.POST)
+	public ResponseEntity<?> getTeacherGeneralReport(@RequestParam(value = "adminID", required = true) int adminID,
+			@RequestBody String reportParams) {
+		ReportOutput output = new ReportOutput();
+		String errorMessage = this.validationAccountData.validateIdData(adminID);
+		ReportError report = null;
+		if (errorMessage != null) {
+			report = new ReportError(110, "Get report failed because " + errorMessage);
+			return ResponseEntity.badRequest().body(report);
+		}
+
+		Map<String, Object> jsonMap = null;
+		ObjectMapper objectMapper = null;
+		String fileName = null;
+
+		try {
+			objectMapper = new ObjectMapper();
+			jsonMap = objectMapper.readValue(reportParams, new TypeReference<Map<String, Object>>() {
+			});
+
+			// check request body has enough info in right JSON format
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "semesterID", "beginAt", "finishAt", "fileType")) {
+				report = new ReportError(1, "You have to fill all required information!");
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			System.out.println("\n\nMile 1");
+			Account tmpAccount = this.accountService.findAccountByID(adminID);
+			if (tmpAccount == null || (tmpAccount.getRole() != AccountRole.ADMIN.getValue()
+					&& tmpAccount.getRole() != AccountRole.TEACHER.getValue())) {
+				report = new ReportError(111, "Only admin and teacher has authority to use this API!");
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			System.out.println("\n\nMile 2");
+			String teacherEmail = jsonMap.get("email").toString();
+			errorMessage = this.validationAccountData.validateEmailData(teacherEmail);
+			if (errorMessage != null) {
+				report = new ReportError(110, "Get report failed because " + errorMessage);
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			System.out.println("\n\nMile 3");
+			Account account = this.accountService.findAccountByEmail(teacherEmail);
+			if (account == null || account.getRole() != AccountRole.STUDENT.getValue()) {
+				report = new ReportError(112, "This email address is not valid!");
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			System.out.println("\n\nMile 4");
+			System.out.println("\n\n user info = " + account.getUserInfo());
+			String[] studentInfo = account.getUserInfo().split(GeneralValue.regexForSplitUserInfo);
+			System.out.println("\n\n full name = " + studentInfo[0]);
+
+			jsonMap.put("studentName", studentInfo[0]);
+
+			System.out.println("\n\nMile 5");
+			int semesterID = Integer.parseInt(jsonMap.get("semesterID").toString());
+			errorMessage = this.validationSemesterData.validateIdData(semesterID);
+			if (errorMessage != null) {
+				report = new ReportError(110, "Get report failed because " + errorMessage);
+				return ResponseEntity.badRequest().body(report);
+			}
+			
+			Semester semester = this.semesterService.findSemesterById(semesterID);
+			if (semester == null) {
+				report = new ReportError(110, "Get report failed because no semester exists! ");
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			String fileType = jsonMap.get("fileType").toString();
+			System.out.println("\n\n file type = " + fileType);
+			if (!fileType.equalsIgnoreCase(GeneralValue.FILE_TYPE_XLSX) && !fileType.equalsIgnoreCase(GeneralValue.FILE_TYPE_XLS)
+					&& !fileType.equalsIgnoreCase(GeneralValue.FILE_TYPE_PDF)) {
+				report = new ReportError(110, "Get report failed because file type is inccorrect");
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			LocalDate beginAt = LocalDate.parse(jsonMap.get("beginAt").toString());
+			LocalDate finishAt = LocalDate.parse(jsonMap.get("finishAt").toString());
+			
+			if (beginAt.isAfter(finishAt)) {
+				report = new ReportError(110, "Begin date cannot is larger than Finish date!");
+				return ResponseEntity.badRequest().body(report);
+			}
+			
+			if (beginAt.isBefore(semester.getBeginDate()) || beginAt.isAfter(semester.getEndDate())) {
+				beginAt = semester.getBeginDate();
+			}
+			if (finishAt.isBefore(semester.getBeginDate()) || finishAt.isAfter(semester.getEndDate())) {
+				finishAt = semester.getEndDate();
+			}
+
+			fileName = GeneralValue.GENERAL_REPORT_FOR_TEACHER + "_" + account.getEmail() + "_"
+					+ LocalDate.now();
+
+			String symlinkInServer = this.baseService.getFolderSymLink(fileName);
+
+			String reportPath = BirtRuner.runBirtReport(GeneralValue.GENERAL_REPORT_FOR_TEACHER_TEMPLATE, jsonMap,
+					fileName, symlinkInServer);
+
+			System.out.println("\n\n reportPath = " + reportPath);
+			//String symbolicLink = BaseService.genSymLink(reportPath);
+			String symbolicLink = null;
+
+			if (symbolicLink == null || symbolicLink.isBlank()) {
+				// logger.info("GEN SYMBOLICLINK ERROR");
+				output.setErrorCode(GeneralValue.GEN_SYMBOLIC_FAIL);
+				output.setDescription("Generate symbolic link failed!");
+			}
+//			} else {
+//			// logger.info("link file : " + symbolicLink);
+//				output.setLinkFile(symbolicLink);
+//			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			report = new ReportError(2, "Error happened when jackson deserialization info!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
+		}
+		
+		output.setDescription(fileName);
+		return ResponseEntity.status(200).body(output);
+	}
+	
 	@RequestMapping(value = "/studentGeneralReport", method = RequestMethod.POST)
 	public ResponseEntity<?> getStudentGeneralReport(@RequestParam(value = "adminID", required = true) int adminID,
 			@RequestBody String reportParams) {
@@ -204,8 +329,6 @@ public class ReportController {
 		output.setDescription(fileName);
 		return ResponseEntity.status(200).body(output);
 	}
-	
-	
 	
 	@RequestMapping(value = "/classDetailReport", method = RequestMethod.POST)
 	public ResponseEntity<?> getClassDetailReport(@RequestParam(value = "adminID", required = true) int adminID,

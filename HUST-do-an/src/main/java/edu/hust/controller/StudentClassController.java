@@ -210,6 +210,7 @@ public class StudentClassController {
 
 			classID = this.studentClassService.getClassIDInLastElement(listStudentEmail);
 			classInstance = this.classService.findClassByID(classID);
+			listStudentEmail.remove(listStudentEmail.size() -1 );
 
 			List<String> filteredList = this.studentClassService.filterListEmail(listStudentEmail, classID);
 
@@ -227,8 +228,18 @@ public class StudentClassController {
 
 					this.studentClassService.saveNewStudentClass(studentClass);
 				}
-
+				
 				report = new ReportError(200, "" + invalidAccount + "-" + infoOfRow);
+                
+                String listOfInvalidRow = filteredList.get(filteredList.size() - 1);
+                int counter = 0;
+                for (int i = 0; i < listOfInvalidRow.length(); i++) {
+                if (listOfInvalidRow.charAt(i) == ',') {
+                    counter ++;
+                }
+             }
+             report = new ReportError(200, "" + counter + "-" + listOfInvalidRow);
+             
 			}
 
 			System.out.println("report body = " + report.getDescription());

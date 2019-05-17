@@ -37,9 +37,11 @@ public class GeneralValue {
 	public static final int maxTimesForUpdatingImei = 3;
 	
 	//Report
+	public static final String GENERAL_REPORT_FOR_TEACHER="GeneralReportForTeacher";
 	public static final String GENERAL_REPORT_FOR_STUDENT="GeneralReportForStudent";
 	public static final String REPORT_FOR_CLASS="ReportForClass";
 	public static final String GENERAL_REPORT_FOR_STUDENT_TEMPLATE = "GeneralReportForStudent.rpttemplate";
+	public static final String GENERAL_REPORT_FOR_TEACHER_TEMPLATE = "GeneralReportForTeacher.rpttemplate";
 	public static final String REPORT_FOR_CLASS_TEMPLATE = "ReportForClass.rpttemplate";
 	
 	public static final String FILE_TYPE_XLS = "xls";
