@@ -96,7 +96,7 @@ public class SemesterController {
 				return ResponseEntity.badRequest().body(report);
 			}
 			
-			if (!this.semesterService.checkSemesterTimeDuplicate(beginDate, endDate, semester.getSemesterName())) {
+			if (!this.semesterService.checkSemesterTimeDuplicate(beginDate, endDate, semesterName)) {
 				report = new ReportError(32, "This semester's duration violate another semester's duration!");
 				return ResponseEntity.badRequest().body(report);
 			}
