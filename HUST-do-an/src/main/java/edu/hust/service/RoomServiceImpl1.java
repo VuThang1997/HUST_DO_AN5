@@ -1,6 +1,7 @@
 
 package edu.hust.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +126,17 @@ public class RoomServiceImpl1 implements RoomService {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public List<Room> findAllSemester() {
+		List<Room> listRoom = this.roomRepository.findAll();
+		if (listRoom == null || listRoom.isEmpty()) {
+			return null;
+		}
+		
+		System.out.println("================list room size = " + listRoom.size());
+		return listRoom;
 	}
 
 }

@@ -46,18 +46,12 @@ public class AccountServiceImpl1 implements AccountService {
 	}
 
 	@Override
-	public boolean deactivateAccount(String email, String password, int role) {
-		Optional<Account> account = this.accountRepository.findByEmailAndPassword(email, password);
+	public boolean deactivateAccount(String email) {
+		Optional<Account> account = this.accountRepository.findByEmail(email);
 		if (account.isPresent()) {
 			Account target = account.get();
 			
-			//only admin has full right to disable all types of account;
-			//student and teacher just can only disable their own type of account
-			if (role != AccountRole.ADMIN.getValue() && role != target.getRole()) {
-				return false;
-			}
-			
-			target.setIsActive(AccountStatus.INACTIVE.getValue());
+			target.setIsActive(AccountStatus.DISABLE.getValue());
 			this.accountRepository.save(target);
 			return true;
 		}

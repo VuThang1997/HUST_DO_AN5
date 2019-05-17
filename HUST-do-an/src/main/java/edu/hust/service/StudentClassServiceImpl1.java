@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.hust.enumData.IsLearning;
+import edu.hust.enumData.SpecialRollCall;
 import edu.hust.model.Account;
 import edu.hust.model.Class;
 import edu.hust.model.ClassRoom;
+import edu.hust.model.ReportError;
 import edu.hust.model.StudentClass;
 import edu.hust.repository.ClassRoomRepository;
 import edu.hust.repository.StudentClassRepository;
@@ -141,9 +143,8 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 			return "Sorry! It seem like you are using other's device!";
 		}
-		
-		newValue = this.frequentlyUtils.makeRollcallRecord(rollCallAt)
-				+ GeneralValue.regexForSplitListRollCall;
+
+		newValue = this.frequentlyUtils.makeRollcallRecord(rollCallAt) + GeneralValue.regexForSplitListRollCall;
 
 		if (listRollCall == null) {
 			listRollCall = newValue;
@@ -423,21 +424,23 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 	}
 
 	@Override
-	public List<String> checkListRollcallEmail(List<String> listStudentEmail, int classID) {
-		Iterator<String> listIte = listStudentEmail.iterator();
-		String tmpEmail = null;
+	public List<ReportError> checkListRollcallEmail(List<ReportError> listStudentRollcall, int classID) {
+		Iterator<ReportError> listIte = listStudentRollcall.iterator();
+		ReportError tmpReport = null;
 		String errorMessage = null;
 		String listOfInvalidRows = "";
 		Account account = null;
+		int tmpReason = -1;
+		boolean isReasonValid;
 
 		// the 1st row of file excel is header => list email begin from 2nd row
 		int rowCounter = 1;
 		while (listIte.hasNext()) {
-			tmpEmail = listIte.next();
+			tmpReport = listIte.next();
 			rowCounter++;
-			System.out.println("========== Tmp email = " + tmpEmail);
+			System.out.println("========== Tmp email = " + tmpReport);
 
-			errorMessage = this.validationAccountData.validateEmailData(tmpEmail);
+			errorMessage = this.validationAccountData.validateEmailData(tmpReport.getDescription());
 			if (errorMessage != null) {
 				System.out.println("============= email is invalid = " + errorMessage);
 				listOfInvalidRows += rowCounter + ", ";
@@ -445,7 +448,24 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 				continue;
 			}
 
-			account = this.accountService.findAccountByEmail(tmpEmail);
+			// check if reason is in list special rollcall
+			tmpReason = tmpReport.getErrorCode();
+			isReasonValid = false;
+			for (SpecialRollCall value : SpecialRollCall.values()) {
+				if (tmpReason == value.getValue()) {
+					isReasonValid = true;
+					break;
+				}
+			}
+
+			if (isReasonValid == false) {
+				System.out.println("============= reason is invalid = " + tmpReason);
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+
+			account = this.accountService.findAccountByEmail(tmpReport.getDescription());
 			if (account == null || !this.checkStudentIsLearning(account.getId(), classID)) {
 				System.out.println("Account not exist or this student is not learning the class");
 				listOfInvalidRows += rowCounter + ", ";
@@ -454,28 +474,53 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 			}
 		}
 
-		listStudentEmail.add(listOfInvalidRows);
-		return listStudentEmail;
+		if (listStudentRollcall == null || listStudentRollcall.isEmpty()) {
+			return null;
+		}
+
+		// store list of invalid rows in the last element => controller retrieve
+		listStudentRollcall.add(new ReportError(-1, listOfInvalidRows));
+		return listStudentRollcall;
 	}
 
 	@Override
-	public String rollcallByEmailAndClassID(String studentEmail, int classID) {
+	public String rollcallByEmailAndClassID(ReportError studentRollcall, int classID, int roomID) {
 		String newValue = null;
 		String listRollCall = null;
 		String isChecked = null;
+		int tmpReason = studentRollcall.getErrorCode();
 
-		Optional<StudentClass> studentClass = this.studentClassRepository
-				.findByStudentEmailAndClassIDAndStatus(studentEmail, classID, IsLearning.LEARNING.getValue());
+		Optional<StudentClass> studentClass = this.studentClassRepository.findByStudentEmailAndClassIDAndStatus(
+				studentRollcall.getDescription(), classID, IsLearning.LEARNING.getValue());
 		if (studentClass.isEmpty()) {
 			return "Not found student-class";
+		}
+		
+		// Check teacher generate time in valid limit
+		// Notice: weekday of java = weekday of mySQL - 1
+		LocalDateTime rollcallAt = LocalDateTime.now();
+		int weekday = rollcallAt.toLocalDate().getDayOfWeek().getValue() + 1;
+		LocalTime checkTime = rollcallAt.toLocalTime();
+		Optional<ClassRoom> classRoomOpt = this.classRoomRepository.findByClassIDAndRoomIDAndWeekday(classID, roomID, weekday, checkTime);
+		if (classRoomOpt.isEmpty()) {
+			return "Not in lesson's duration!";
 		}
 
 		StudentClass instance = studentClass.get();
 		listRollCall = instance.getListRollCall();
 
-		LocalDateTime rollcallAt = LocalDateTime.now();
-		newValue = this.frequentlyUtils.makeRollcallRecord(rollcallAt) 
-					+ GeneralValue.regexForSplitListRollCall;
+		
+		newValue = this.frequentlyUtils.makeRollcallRecord(rollcallAt);
+		isChecked = newValue;
+		
+		//use if-else if because in future may have other reason
+		if (tmpReason == SpecialRollCall.SICK.getValue()) {
+			newValue += GeneralValue.markForPermission;
+		} else if (tmpReason == SpecialRollCall.FORGOT_PHONE.getValue()) {
+			newValue += GeneralValue.markForNotBringPhone;
+		}
+		
+		newValue += GeneralValue.regexForSplitListRollCall;
 
 		if (listRollCall == null) {
 			listRollCall = newValue;
@@ -485,7 +530,7 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 		instance.setListRollCall(listRollCall);
 
-		isChecked = newValue;
+		
 		instance.setIsChecked(isChecked);
 		this.studentClassRepository.save(instance);
 

@@ -278,30 +278,43 @@ public class StudentClassController {
 	}
 
 	@PostMapping(value = "/rollcallMultipleStudent")
-	public ResponseEntity<?> rollcallMultipleStudent(@RequestParam(value = "classID", required = true) int classID,
+	public ResponseEntity<?> rollcallMultipleStudent(
+			@RequestParam(value = "classID", required = true) int classID,
+			@RequestParam(value = "roomID", required = true) int roomID,
 			@RequestBody String rollcallInfo) {
 
 		ObjectMapper objectMapper = null;
-		List<String> listStudentEmail = null;
+		List<ReportError> listStudentRollcall = null;
 		ReportError report;
-		int invalidAccount = 0;
 
 		try {
 			objectMapper = new ObjectMapper();
-			listStudentEmail = objectMapper.readValue(rollcallInfo, new TypeReference<List<String>>() {
+			listStudentRollcall = objectMapper.readValue(rollcallInfo, new TypeReference<List<ReportError>>() {
 			});
 
-			List<String> filteredList = this.studentClassService
-											.checkListRollcallEmail(listStudentEmail, classID);
+			List<ReportError> filteredList = this.studentClassService
+											.checkListRollcallEmail(listStudentRollcall, classID);
 
 			if (filteredList == null || filteredList.isEmpty()) {
 				report = new ReportError(200, "All accounts are invalid!");
 			} else {
 				for (int i = 0; i < filteredList.size() - 1; i++) {
-					this.studentClassService.rollcallByEmailAndClassID(filteredList.get(i), classID);
+					this.studentClassService.rollcallByEmailAndClassID(filteredList.get(i), classID, roomID);
 				}
-
-				report = new ReportError(200, filteredList.get(filteredList.size() - 1));
+					
+				String listOfInvalidRows = filteredList.get(filteredList.size() - 1).getDescription();
+				if (listOfInvalidRows.equalsIgnoreCase("0-")) {
+					report = new ReportError(200, listOfInvalidRows);
+				
+				} else {
+					int counter = 0;
+					for (int i = 0; i < listOfInvalidRows.length(); i++) {
+						if (listOfInvalidRows.charAt(i) == ',') {
+							counter ++;
+						}
+					}
+					report = new ReportError(200, counter + "-" + listOfInvalidRows);
+				}
 			}
 			
 			System.out.println("report body = " + report.getDescription());
@@ -313,4 +326,39 @@ public class StudentClassController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
 	}
+	
+//	@PostMapping(value = "/rollcallStudentByEmail")
+//	public ResponseEntity<?> rollcallStudentByEmail(@RequestParam(value = "classID", required = true) int classID,
+//			@RequestBody String studentEmail) {
+//
+//		ObjectMapper objectMapper = null;
+//		ReportError report;
+//		int invalidAccount = 0;
+//
+//		try {
+//			objectMapper = new ObjectMapper();
+//
+//			List<String> filteredList = this.studentClassService
+//											.checkListRollcallEmail(listStudentEmail, classID);
+//
+//			if (filteredList == null || filteredList.isEmpty()) {
+//				report = new ReportError(200, "All accounts are invalid!");
+//			} else {
+//				for (int i = 0; i < filteredList.size() - 1; i++) {
+//					this.studentClassService.rollcallByEmailAndClassID(filteredList.get(i), classID);
+//				}
+//
+//				report = new ReportError(200, filteredList.get(filteredList.size() - 1));
+//			}
+//			
+//			System.out.println("report body = " + report.getDescription());
+//			return ResponseEntity.ok(report);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			report = new ReportError(2, "Error happened when jackson deserialization info!");
+//			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
+//		}
+//	}
+	
 }

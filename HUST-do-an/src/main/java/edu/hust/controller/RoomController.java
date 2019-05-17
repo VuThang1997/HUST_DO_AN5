@@ -3,12 +3,14 @@ package edu.hust.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +26,7 @@ import edu.hust.service.RoomService;
 import edu.hust.utils.ValidationData;
 import edu.hust.utils.ValidationRoomData;
 
+@CrossOrigin
 @RestController
 public class RoomController {
 
@@ -126,6 +129,15 @@ public class RoomController {
 		}
 
 		return ResponseEntity.ok(room);
+	}
+	
+	@RequestMapping(value = "/rooms/all", method = RequestMethod.GET)
+	public ResponseEntity<?> getAllRooms() {
+		List<Room> listRooms = this.roomService.findAllSemester();
+		if (listRooms == null) {
+			return ResponseEntity.badRequest().body("No data founded!");
+		}
+		return ResponseEntity.ok(listRooms);
 	}
 
 	@RequestMapping(value = "/rooms", method = RequestMethod.PUT)

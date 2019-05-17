@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.hust.model.Account;
 import edu.hust.model.ClassRoom;
+import edu.hust.model.ReportError;
 import edu.hust.model.StudentClass;
 
 /**
@@ -77,8 +78,8 @@ public interface StudentClassService {
 	 * @param classID
 	 * @return
 	 */
-	List<String> checkListRollcallEmail(List<String> listStudentEmail, int classID);
+	List<ReportError> checkListRollcallEmail(List<ReportError> listStudentRollcall, int classID);
 
-	String rollcallByEmailAndClassID(String studentEmail, int classID);
+	String rollcallByEmailAndClassID(ReportError studentRollcall, int classID, int roomID);
 
 }

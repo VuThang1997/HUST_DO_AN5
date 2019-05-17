@@ -1,6 +1,8 @@
 
 package edu.hust.service;
 
+import java.util.List;
+
 import edu.hust.model.Room;
 
 public interface RoomService {
@@ -32,5 +34,7 @@ public interface RoomService {
 	Room findRoomByName(String roomName);
 
 	Room findRoomByMacAddr(String macAddress);
+
+	List<Room> findAllSemester();
 
 }

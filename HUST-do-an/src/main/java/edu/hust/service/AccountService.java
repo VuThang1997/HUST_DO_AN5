@@ -34,7 +34,7 @@ public interface AccountService {
 	
 	Account findAccountByID(int id);
 	
-	boolean deactivateAccount(String email, String password, int role);
+	boolean deactivateAccount(String email);
 	
 	boolean activateAccount(String email, String password, int role);
 

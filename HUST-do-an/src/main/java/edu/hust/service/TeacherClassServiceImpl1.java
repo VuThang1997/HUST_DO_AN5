@@ -260,7 +260,32 @@ public class TeacherClassServiceImpl1 implements TeacherClassService {
 			return false;
 		}
 
+		ClassRoom classRoomInstance = classRoom.get();
 		studentClassInstance = studentClass.get();
+		String classIsChecked = studentClassInstance.getClassInstance().getIsChecked();
+		
+		//checkedTime empty => this class is still not rollcall => not allow teacher
+		if (classIsChecked == null || classIsChecked.isBlank()) {
+			return false;
+		}
+		
+		//check if teacher has triggered rollcall process before
+		// => check isChecked of class is in this lessons's duration
+		String[] partsOfTime = classIsChecked.split(GeneralValue.regexForSplitDate);
+		int year = Integer.parseInt(partsOfTime[0]);
+		int dayOfYear = Integer.parseInt(partsOfTime[1]);
+		int secondOfDay = Integer.parseInt(partsOfTime[2]);
+		LocalDate checkedDay = LocalDate.ofYearDay(year, dayOfYear);
+		if (!checkedDay.isEqual(LocalDate.now())) {
+			return false;
+		}
+		LocalTime checkedTime = LocalTime.ofSecondOfDay(secondOfDay);
+		if (checkedTime.isBefore(classRoomInstance.getBeginAt()) || checkedTime.isAfter(classRoomInstance.getFinishAt())) {
+			return false;			
+		}
+		
+		
+		
 		if (studentClassInstance.getClassInstance().getIdentifyString() == null) {
 			return false;
 		}

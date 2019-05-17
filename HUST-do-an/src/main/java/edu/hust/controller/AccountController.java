@@ -87,6 +87,11 @@ public class AccountController {
 				report = new ReportError(11, "Email or password is incorrect!");
 				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 			}
+			
+			if (account.getIsActive() != AccountStatus.ACTIVE.getValue()) {
+				report = new ReportError(19, "Account must be activated!");
+				return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
+			}
 
 			// in the first login, student will be redirect to Update info page
 			if (account.getRole() == AccountRole.STUDENT.getValue()) {
@@ -161,14 +166,12 @@ public class AccountController {
 		}
 	}
 
-	@RequestMapping(value = "/deactivateAccount", method = RequestMethod.PATCH)
+	@RequestMapping(value = "/deactivateAccount", method = RequestMethod.PUT)
 	public ResponseEntity<?> disableAccount(@RequestBody String requestInfo) {
 		Map<String, Object> jsonMap = null;
 		ObjectMapper objectMapper = null;
 		String errorMessage = null;
 		String email = null;
-		String password = null;
-		int role = -1;
 		ReportError report;
 
 		try {
@@ -177,7 +180,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "role", "password")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -189,10 +192,9 @@ public class AccountController {
 			}
 
 			email = jsonMap.get("email").toString();
-			password = jsonMap.get("password").toString();
-			role = Integer.parseInt(jsonMap.get("role").toString());
-			if (this.accountService.deactivateAccount(email, password, role)) {
-				return ResponseEntity.ok("Deactivate account successful!");
+			if (this.accountService.deactivateAccount(email)) {
+				report = new ReportError(200, "Deactivate account successful!");
+				return ResponseEntity.ok(report);
 			}
 
 			report = new ReportError(11, "Authentication has failed or has not yet been provided!");

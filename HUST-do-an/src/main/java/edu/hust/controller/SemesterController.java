@@ -129,6 +129,18 @@ public class SemesterController {
 		return ResponseEntity.ok(semester);
 	}
 	
+	@RequestMapping(value = "/semesters/id", method = RequestMethod.GET)
+	public ResponseEntity<?> getSemesterInfoByID(
+			@RequestParam(value = "semesterID", required = true) int semesterID) {
+		ReportError report;
+		Semester semester = this.semesterService.findSemesterById(semesterID);
+		if (semester == null) {
+			report = new ReportError(33, "This semester do not exist yet!");
+			return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+		}
+		return ResponseEntity.ok(semester);
+	}
+	
 	@RequestMapping(value = "/semesters/all", method = RequestMethod.GET)
 	public ResponseEntity<?> getAllSemester() {
 		List<Semester> listSemester = this.semesterService.findAllSemester();
