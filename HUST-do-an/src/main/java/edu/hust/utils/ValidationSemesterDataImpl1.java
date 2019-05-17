@@ -26,22 +26,22 @@ public class ValidationSemesterDataImpl1 implements ValidationSemesterData {
 		}
 		
 		//semesterName = year + 1( or 2 or 3)
-		String year = semesterName.substring(0, 4);
-		String sequence = semesterName.substring(4);
-		try {
-			int parseYear = Integer.parseInt(year);
-			if (parseYear < 2015) {
-				return "Info of year in semesterName is out of valid range!";
-			}
-			
-			int parseSequence = Integer.parseInt(sequence);
-			if (parseSequence < 1 || parseSequence > GeneralValue.semestersInYear) {
-				return "Sequence of this semester is out of valid range!";
-			}
-		} catch(NumberFormatException e) {
-			e.printStackTrace();
-			return "Cannot parse info in semesterName to number!";
-		}
+//		String year = semesterName.substring(0, 4);
+//		String sequence = semesterName.substring(4);
+//		try {
+//			int parseYear = Integer.parseInt(year);
+//			if (parseYear < 2015) {
+//				return "Info of year in semesterName is out of valid range!";
+//			}
+//			
+//			int parseSequence = Integer.parseInt(sequence);
+//			if (parseSequence < 1 || parseSequence > GeneralValue.semestersInYear) {
+//				return "Sequence of this semester is out of valid range!";
+//			}
+//		} catch(NumberFormatException e) {
+//			e.printStackTrace();
+//			return "Cannot parse info in semesterName to number!";
+//		}
 		
 		return null;
 	}
@@ -60,9 +60,10 @@ public class ValidationSemesterDataImpl1 implements ValidationSemesterData {
 	@Override
 	public String validateEndDateData(LocalDate endDate, LocalDate beginDate, int sequenceOfSemester) {
 		long semesterLength = ChronoUnit.DAYS.between(beginDate, endDate) + 1;
+
 		
-		if (semesterLength < 1) {
-			return "endDate must be greater than beginDate";
+		if (endDate.isBefore(beginDate)) {
+			return "endDate must be after beginDate";
 		}
 		
 		if (sequenceOfSemester == GeneralValue.sequenceOfSummerSemester) {

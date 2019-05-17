@@ -207,8 +207,8 @@ public class StudentClassController {
 			objectMapper = new ObjectMapper();
 			listStudentEmail = objectMapper.readValue(studentEmailInfo, new TypeReference<List<String>>() {
 			});
+
 			classID = this.studentClassService.getClassIDInLastElement(listStudentEmail);
-                        listStudentEmail.remove(listStudentEmail.size() -1 );
 			classInstance = this.classService.findClassByID(classID);
 
 			List<String> filteredList = this.studentClassService.filterListEmail(listStudentEmail, classID);
@@ -227,15 +227,8 @@ public class StudentClassController {
 
 					this.studentClassService.saveNewStudentClass(studentClass);
 				}
-                                
-                                String listOfInvalidRow = filteredList.get(filteredList.size() - 1);
-                                int counter = 0;
-                                for (int i = 0; i < listOfInvalidRow.length(); i++) {
-                                    if (listOfInvalidRow.charAt(i) == ',') {
-                                        counter ++;
-                                    }
-                                }
-				report = new ReportError(200, "" + counter + "-" + listOfInvalidRow);
+
+				report = new ReportError(200, "" + invalidAccount + "-" + infoOfRow);
 			}
 
 			System.out.println("report body = " + report.getDescription());

@@ -47,8 +47,6 @@ public interface StudentClassService {
 	boolean checkStudentIsLearning(String studentEmail, int classID);
 
 	String checkTimetableConflict(Account account, int classID);
-	
-	boolean checkTwoDurationConflict(LocalTime begin1, LocalTime begin2, LocalTime finish1, LocalTime finish2);
 
 	void saveNewStudentClass(StudentClass studentClass);
 

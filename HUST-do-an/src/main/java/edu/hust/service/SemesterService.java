@@ -13,7 +13,7 @@ public interface SemesterService {
 
 	void addNewSemester(Semester semester);
 
-	boolean checkSemesterTimeDuplicate(LocalDate beginDate);
+	boolean checkSemesterTimeDuplicate(LocalDate beginDate, LocalDate endDate, String semesterName);
 
 	boolean checkSemesterDependant(String semesterName);
 

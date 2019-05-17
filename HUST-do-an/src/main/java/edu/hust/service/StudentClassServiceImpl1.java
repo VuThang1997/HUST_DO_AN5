@@ -290,8 +290,8 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 					}
 
 					// when 2 classroom is learned in the same day
-					if (!checkTwoDurationConflict(target.getBeginAt(), tmpClassRoom.getBeginAt(), target.getFinishAt(),
-							tmpClassRoom.getFinishAt())) {
+					if (!this.frequentlyUtils.checkTwoTimeConflict(target.getBeginAt(), tmpClassRoom.getBeginAt(),
+							target.getFinishAt(), tmpClassRoom.getFinishAt())) {
 						return "Conflict happened";
 					}
 				}
@@ -299,30 +299,6 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		}
 
 		return null;
-	}
-
-	@Override
-	public boolean checkTwoDurationConflict(LocalTime begin1, LocalTime begin2, LocalTime finish1, LocalTime finish2) {
-
-		// check if 2 duration are partly overlapped
-		if (begin1.isAfter(begin2) && begin1.isBefore(finish2)) {
-			return false;
-		}
-
-		if (finish1.isAfter(begin2) && finish1.isBefore(finish2)) {
-			return false;
-		}
-
-		// check if 1 duration is totally overlapped by the other
-		if (begin1.isBefore(begin2) && finish1.isAfter(finish2)) {
-			return false;
-		}
-
-		if (begin2.isBefore(begin1) && finish2.isAfter(finish1)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override
@@ -381,10 +357,6 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 				continue;
 			}
 		}
-                
-                if (listStudentEmail == null || listStudentEmail.isEmpty()) {
-                    return null;
-                }
 
 		listStudentEmail.add(listOfInvalidRows);
 		return listStudentEmail;
@@ -499,13 +471,14 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		if (studentClass.isEmpty()) {
 			return "Not found student-class";
 		}
-		
+
 		// Check teacher generate time in valid limit
 		// Notice: weekday of java = weekday of mySQL - 1
 		LocalDateTime rollcallAt = LocalDateTime.now();
 		int weekday = rollcallAt.toLocalDate().getDayOfWeek().getValue() + 1;
 		LocalTime checkTime = rollcallAt.toLocalTime();
-		Optional<ClassRoom> classRoomOpt = this.classRoomRepository.findByClassIDAndRoomIDAndWeekday(classID, roomID, weekday, checkTime);
+		Optional<ClassRoom> classRoomOpt = this.classRoomRepository.findByClassIDAndRoomIDAndWeekday(classID, roomID,
+				weekday, checkTime);
 		if (classRoomOpt.isEmpty()) {
 			return "Not in lesson's duration!";
 		}
@@ -513,17 +486,16 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 		StudentClass instance = studentClass.get();
 		listRollCall = instance.getListRollCall();
 
-		
 		newValue = this.frequentlyUtils.makeRollcallRecord(rollcallAt);
 		isChecked = newValue;
-		
-		//use if-else if because in future may have other reason
+
+		// use if-else if because in future may have other reason
 		if (tmpReason == SpecialRollCall.SICK.getValue()) {
 			newValue += GeneralValue.markForPermission;
 		} else if (tmpReason == SpecialRollCall.FORGOT_PHONE.getValue()) {
 			newValue += GeneralValue.markForNotBringPhone;
 		}
-		
+
 		newValue += GeneralValue.regexForSplitListRollCall;
 
 		if (listRollCall == null) {
@@ -534,7 +506,6 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 		instance.setListRollCall(listRollCall);
 
-		
 		instance.setIsChecked(isChecked);
 		this.studentClassRepository.save(instance);
 

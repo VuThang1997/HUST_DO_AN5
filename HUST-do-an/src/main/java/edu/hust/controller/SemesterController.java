@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +26,7 @@ import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationData;
 import edu.hust.utils.ValidationSemesterData;
 
+@CrossOrigin
 @RestController
 public class SemesterController {
 
@@ -87,13 +89,14 @@ public class SemesterController {
 
 			// check if semester's time begin is duplicate
 			beginDate = LocalDate.parse(jsonMap.get("beginDate").toString());
-			if (!this.semesterService.checkSemesterTimeDuplicate(beginDate)) {
-				report = new ReportError(32, "This semester's duration violate another semester's duration!");
+			endDate = LocalDate.parse(jsonMap.get("endDate").toString());
+			
+			if (beginDate.isAfter(endDate)) {
+				report = new ReportError(35, "Begin data cannot be after end date!");
 				return ResponseEntity.badRequest().body(report);
 			}
-
-			endDate = LocalDate.parse(jsonMap.get("endDate").toString());
-			if (!this.semesterService.checkSemesterTimeDuplicate(endDate)) {
+			
+			if (!this.semesterService.checkSemesterTimeDuplicate(beginDate, endDate, semester.getSemesterName())) {
 				report = new ReportError(32, "This semester's duration violate another semester's duration!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -204,14 +207,15 @@ public class SemesterController {
 				return ResponseEntity.badRequest().body(report);
 			}
 
+			id = Integer.parseInt(jsonMap.get("id").toString());
 			semesterName = jsonMap.get("semesterName").toString();
 			semester = this.semesterService.findSemesterByName(semesterName);
-			if (semester != null) {
+			if (semester != null && semester.getSemesterID() != id) {
 				report = new ReportError(31, "This semester name has already been used!");
 				return ResponseEntity.badRequest().body(report);
 			}
 			
-			id = Integer.parseInt(jsonMap.get("id").toString());
+			
 			semester = this.semesterService.findSemesterById(id);
 			if (semester == null) {
 				report = new ReportError(33, "This semester do not exist yet!");
@@ -220,16 +224,12 @@ public class SemesterController {
 
 			// check if semester's time begin is duplicate
 			beginDate = LocalDate.parse(jsonMap.get("beginDate").toString());
-			if (!this.semesterService.checkSemesterTimeDuplicate(beginDate)) {
+			endDate = LocalDate.parse(jsonMap.get("endDate").toString());
+			if (!this.semesterService.checkSemesterTimeDuplicate(beginDate, endDate, semesterName)) {
 				report = new ReportError(32, "This semester's duration violate another semester's duration!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
-			endDate = LocalDate.parse(jsonMap.get("endDate").toString());
-			if (!this.semesterService.checkSemesterTimeDuplicate(endDate)) {
-				report = new ReportError(32, "This semester's duration violate another semester's duration!");
-				return ResponseEntity.badRequest().body(report);
-			}
 
 			semester = new Semester(id, semesterName, beginDate, endDate);
 			this.semesterService.updateSemesterInfo(semester);

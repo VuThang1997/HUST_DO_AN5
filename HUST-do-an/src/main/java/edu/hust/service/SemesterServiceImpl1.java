@@ -12,6 +12,7 @@ import edu.hust.model.Class;
 import edu.hust.model.Semester;
 import edu.hust.repository.ClassRepository;
 import edu.hust.repository.SemesterRepository;
+import edu.hust.utils.FrequentlyUtils;
 
 @Service
 @Qualifier("SemesterServiceImpl1")
@@ -19,6 +20,7 @@ public class SemesterServiceImpl1 implements SemesterService {
 
 	private SemesterRepository semesterRepository;
 	private ClassRepository classRepository;
+	private FrequentlyUtils frequentlyUtils;
 
 	public SemesterServiceImpl1() {
 		super();
@@ -26,10 +28,14 @@ public class SemesterServiceImpl1 implements SemesterService {
 	}
 
 	@Autowired
-	public SemesterServiceImpl1(SemesterRepository semesterRepository, ClassRepository classRepository) {
+	public SemesterServiceImpl1(
+			SemesterRepository semesterRepository, 
+			ClassRepository classRepository,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils) {
 		super();
 		this.semesterRepository = semesterRepository;
 		this.classRepository = classRepository;
+		this.frequentlyUtils = frequentlyUtils;
 	}
 	
 	@Override
@@ -57,12 +63,26 @@ public class SemesterServiceImpl1 implements SemesterService {
 	}
 
 	@Override
-	public boolean checkSemesterTimeDuplicate(LocalDate beginDate) {
-		List<Semester> listSemester = this.semesterRepository.checkSemesterDuplicate(beginDate);
+	public boolean checkSemesterTimeDuplicate(LocalDate beginDate, LocalDate endDate, String semesterName) {
+		List<Semester> listSemester = this.semesterRepository.findAll();
+		System.out.println("list semester = " + listSemester);
 		if (listSemester == null || listSemester.isEmpty()) {
+			// no conflict can happen
 			return true;
 		}
-		return false;
+		
+		//check if semester have conflict with another semester
+		for (Semester semester: listSemester) {
+			//you must exclude the semester itself
+			if (semester.getSemesterName().equalsIgnoreCase(semesterName)) {
+				continue;
+			}
+			if (!this.frequentlyUtils.checkTwoDateConflict(beginDate, 
+					semester.getBeginDate(), endDate, semester.getEndDate())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

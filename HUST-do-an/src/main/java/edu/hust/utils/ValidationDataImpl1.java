@@ -128,13 +128,13 @@ public class ValidationDataImpl1 implements ValidationData {
 				endDate = LocalDate.parse(mapKeys.get("endDate").toString());
 				
 				errorMessage = this.validationSemesterData.validateSemesterNameData(semesterName);
+				int validYear = Integer.parseInt(semesterName.substring(0, 4));
 				if (errorMessage == null) {
-					int validYear = Integer.parseInt(semesterName.substring(0, 4));
+					System.out.println("================ valid Year = " + validYear);
 					errorMessage = this.validationSemesterData.validateBeginDateData(beginDate, validYear);
 				}
 				if (errorMessage == null) {
-					int sequenceOfSemester = Integer.parseInt(semesterName.substring(4));
-					errorMessage = this.validationSemesterData.validateEndDateData(endDate, beginDate, sequenceOfSemester);
+					errorMessage = this.validationSemesterData.validateEndDateData(endDate, beginDate, validYear);
 				}	
 			} catch (DateTimeParseException e) {
 				e.printStackTrace();
