@@ -31,5 +31,7 @@ public interface ClassRoomService {
 	List<ClassRoom> getListClassRoomByClassID(int classID);
 
 	List<Room> getListRoomByClassID(int classID);
+
+	List<ClassRoom> checkListClassRoom(List<ClassRoom> listClassRoom, int roomID);
 	
 }

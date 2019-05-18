@@ -115,6 +115,12 @@ public class ClassController {
 				report = new ReportError(33, "This semester do not exist!");
 				return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
 			}
+			
+			className = jsonMap.get("className").toString();
+			if (this.classService.findClassByClassName(className) != null) {
+				report = new ReportError(33, "Semester name is duplicate!");
+				return new ResponseEntity<>(report, HttpStatus.CONFLICT);
+			}
 
 			addingDate = LocalDate.now();
 			if (addingDate.isAfter(semester.getBeginDate().plusDays(14))) {
@@ -124,8 +130,6 @@ public class ClassController {
 
 			numberOfLessons = Integer.parseUnsignedInt(jsonMap.get("numberOfLessons").toString());
 			maxStudent = Integer.parseUnsignedInt(jsonMap.get("maxStudent").toString());
-			className = jsonMap.get("className").toString();
-			
 
 			classInstance = new Class(className, maxStudent, numberOfLessons);
 			classInstance.setCurrentLesson(0);
@@ -155,7 +159,7 @@ public class ClassController {
 		}
 
 		Class classInstance = this.classService.findClassByID(classID);
-		if (classInstance != null) {
+		if (classInstance == null) {
 			report = new ReportError(63, "This class do not exist!");
 			return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
 		}
@@ -226,42 +230,46 @@ public class ClassController {
 				report = new ReportError(63, "This class do not exist!");
 				return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
 			}
-
-			courseID = Integer.parseUnsignedInt(jsonMap.get("courseID").toString());
-			if (classInstance.getCourse().getCourseID() != courseID) {
-				course = this.courseService.getCourseInfo(courseID);
-				if (course == null) {
-					report = new ReportError(43, "This course do not exist!");
-					return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
-				}
-			} else {
-				course = classInstance.getCourse();
-			}
-
-			semesterId = Integer.parseUnsignedInt(jsonMap.get("semesterID").toString());
-			if (classInstance.getSemester().getSemesterID() != semesterId) {
-				semester = this.semesterService.findSemesterById(semesterId);
-				if (semester == null) {
-					report = new ReportError(33, "This semester do not exist!");
-					return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
-				}
-			} else {
-				semester = classInstance.getSemester();
-			}
 			
-			LocalDate updateDate = LocalDate.now();
-			if (updateDate.isAfter(semester.getBeginDate().plusDays(14))) {
-				report = new ReportError(65, "Updating class info do not work after semester begins 2 weeks! ");
-				return ResponseEntity.badRequest().body(report);
+			className = jsonMap.get("className").toString();
+			Class tmpClass = this.classService.findClassByClassName(className);
+			if (tmpClass != null && tmpClass.getId() != id) {
+				report = new ReportError(64, "Class name is duplicate!");
+				return new ResponseEntity<>(report, HttpStatus.CONFLICT);
 			}
+			classInstance.setClassName(className);
+
+//			courseID = Integer.parseInt(jsonMap.get("courseID").toString());
+//			if (classInstance.getCourse().getCourseID() != courseID) {
+//				course = this.courseService.getCourseInfo(courseID);
+//				if (course == null) {
+//					report = new ReportError(43, "This course do not exist!");
+//					return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+//				}
+//			}
+
+//			semesterId = Integer.parseInt(jsonMap.get("semesterID").toString());
+//			if (classInstance.getSemester().getSemesterID() != semesterId) {
+//				semester = this.semesterService.findSemesterById(semesterId);
+//				if (semester == null) {
+//					report = new ReportError(33, "This semester do not exist!");
+//					return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+//				}
+//			} else {
+//				semester = classInstance.getSemester();
+//			}
+			
+//			LocalDate updateDate = LocalDate.now();
+//			if (updateDate.isAfter(semester.getBeginDate().plusDays(14))) {
+//				report = new ReportError(65, "Updating class info do not work after semester begins 2 weeks! ");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 
 			numberOfLessons = Integer.parseUnsignedInt(jsonMap.get("numberOfLessons").toString());
 			maxStudent = Integer.parseUnsignedInt(jsonMap.get("maxStudent").toString());
-			className = jsonMap.get("className").toString();
-
-			classInstance = new Class(className, maxStudent, numberOfLessons);
-			classInstance.setCourse(course);
-			classInstance.setSemester(semester);
+			
+			classInstance.setNumberOfLessons(numberOfLessons);
+			classInstance.setMaxStudent(maxStudent);
 
 			this.classService.updateClassInfo(classInstance);
 			report = new ReportError(200, "Updating class info successes!");

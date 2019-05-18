@@ -2,6 +2,7 @@
 package edu.hust.service;
 
 import java.time.LocalTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,24 +10,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import edu.hust.model.Account;
 import edu.hust.model.ClassRoom;
 import edu.hust.model.Room;
 import edu.hust.repository.ClassRoomRepository;
+import edu.hust.utils.FrequentlyUtils;
+import edu.hust.utils.ValidationAccountData;
+import edu.hust.utils.ValidationClassData;
 
 @Service
 @Qualifier("ClassRoomServiceImpl1")
 public class ClassRoomServiceImpl1 implements ClassRoomService {
 
 	private ClassRoomRepository classRoomRepository;
+	private ValidationClassData validationClassData;
+	private FrequentlyUtils frequentlyUtils;
+
 	public ClassRoomServiceImpl1() {
 		super();
 		// TODO Auto-generated constructor stub }
 	}
 
 	@Autowired
-	public ClassRoomServiceImpl1(ClassRoomRepository classRoomRepository) {
+	public ClassRoomServiceImpl1(ClassRoomRepository classRoomRepository,
+			@Qualifier("ValidationClassDataImpl1") ValidationClassData validationClassData,
+			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils) {
+
 		super();
 		this.classRoomRepository = classRoomRepository;
+		this.validationClassData = validationClassData;
+		this.frequentlyUtils = frequentlyUtils;
 	}
 
 	@Override
@@ -48,23 +61,25 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 	public ClassRoom getInfoClassRoom(int classID, int roomID, int weekday, LocalTime checkTime) {
 		Optional<ClassRoom> classRoom = this.classRoomRepository.findByClassIDAndRoomIDAndWeekday(classID, roomID,
 				weekday, checkTime);
-		
+
 		return classRoom.isPresent() ? classRoom.get() : null;
 	}
 
 	@Override
 	public List<ClassRoom> checkClassAvailable(int classID, int weekday, LocalTime beginAt, LocalTime finishAt) {
-		List<ClassRoom> listClass = this.classRoomRepository.findClassesByIdAndWeekdayAndDuration(classID, weekday, beginAt, finishAt);
+		List<ClassRoom> listClass = this.classRoomRepository.findClassesByIdAndWeekdayAndDuration(classID, weekday,
+				beginAt, finishAt);
 		if (listClass == null || listClass.isEmpty()) {
 			return null;
 		}
-		
+
 		return listClass;
 	}
 
 	@Override
 	public List<ClassRoom> checkRoomAvailable(int roomID, int weekday, LocalTime beginAt, LocalTime finishAt) {
-		List<ClassRoom> listRoom = this.classRoomRepository.findRoomByIdAndWeekdayAndDuration(roomID, weekday, beginAt, finishAt);
+		List<ClassRoom> listRoom = this.classRoomRepository.findRoomByIdAndWeekdayAndDuration(roomID, weekday, beginAt,
+				finishAt);
 		if (listRoom == null || listRoom.isEmpty()) {
 			return null;
 		}
@@ -91,11 +106,11 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 		try {
 			this.classRoomRepository.deleteById(classRoom.getId());
 			return true;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 	}
 
 	@Override
@@ -123,6 +138,108 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 			return null;
 		}
 		return listRoom;
+	}
+
+	@Override
+	public List<ClassRoom> checkListClassRoom(List<ClassRoom> listClassRoom, int roomID) {
+		Iterator<ClassRoom> listIte = listClassRoom.iterator();
+		String errorMessage = null;
+		String listOfInvalidRows = "";
+		ClassRoom tmpClassRoom = null;
+		int weekday = -1;
+		List<ClassRoom> tmpList = null;
+		LocalTime beginAt = null;
+		LocalTime finishAt = null;
+
+		// the 1st row of file excel is header => list email begin from 2nd row
+		int rowCounter = 1;
+		boolean isConflict = false;
+		while (listIte.hasNext()) {
+			tmpClassRoom = listIte.next();
+			rowCounter++;
+			System.out.println("========== row  = " + rowCounter);
+
+			errorMessage = this.validationClassData
+					.validateClassNameData(tmpClassRoom.getClassInstance().getClassName());
+			if (errorMessage != null) {
+				System.out.println("============= email is invalid = " + errorMessage);
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+
+			weekday = tmpClassRoom.getWeekday();
+			if (weekday < 2 || weekday > 6 ) {
+				System.out.println("============= weekday is invalid: weekday =  " + weekday);
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+			
+			beginAt = tmpClassRoom.getBeginAt();
+			finishAt = tmpClassRoom.getFinishAt();
+			if (beginAt == null || finishAt == null) {
+				System.out.println("============= beginAt or finishAt is nul");
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+
+			if (beginAt.isAfter(finishAt)) {
+				System.out.println("============= beginAt is after finishAt");
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+			
+			//check if 2 in the same time frame
+			
+			int tmpClassID = tmpClassRoom.getClassInstance().getId();
+			
+			tmpList = this.classRoomRepository.findByWeekday(tmpClassRoom.getWeekday());
+			for (ClassRoom tmpTarget: tmpList) {
+				if (tmpTarget.getClassInstance().getId() != tmpClassID) {
+					continue;
+				}
+				
+				if (!this.frequentlyUtils.checkTwoTimeConflict(beginAt, tmpTarget.getBeginAt(), 
+						finishAt, tmpTarget.getFinishAt())) {
+					System.out.println("============= class is conflict ");
+					listOfInvalidRows += rowCounter + ", ";
+					isConflict = true;
+					listIte.remove();
+					break;
+				}
+			}
+			
+			if (isConflict == false) {
+				tmpList = this.classRoomRepository.findAllByRoomID(roomID);
+				for (ClassRoom tmpTarget: tmpList) {
+					if (tmpTarget.getClassInstance().getId() != tmpClassID) {
+						continue;
+					}
+					
+					if (!this.frequentlyUtils.checkTwoTimeConflict(beginAt, tmpTarget.getBeginAt(), 
+							finishAt, tmpTarget.getFinishAt())) {
+						System.out.println("============= room is conflict");
+						listOfInvalidRows += rowCounter + ", ";
+						isConflict = true;
+						listIte.remove();
+						break;
+					}
+				}
+			}
+
+		}
+		
+		if (listClassRoom == null || listClassRoom.isEmpty()) {
+			return null;
+		}
+		
+		ClassRoom lastRow = new ClassRoom();
+		lastRow.getClassInstance().setIdentifyString(listOfInvalidRows);
+		listClassRoom.add(lastRow);
+		return listClassRoom;
 	}
 
 }

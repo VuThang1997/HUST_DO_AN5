@@ -2,6 +2,7 @@
 package edu.hust.controller;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -340,4 +341,54 @@ public class ClassRoomController {
 		return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
 	}
 
+	
+	
+	@PostMapping("/createMultipleClassRoom")
+	public ResponseEntity<?> createMultipleClassRoom( @RequestBody String requestBody, 
+			@RequestParam(value = "roomID", required = true) int roomID) {
+
+		String errorMessage = null;
+		ReportError report = null;
+		ObjectMapper objectMapper = null;
+		List<ClassRoom> listClassRoom = null;
+		
+		try {
+			objectMapper = new ObjectMapper();
+			listClassRoom = objectMapper.readValue(requestBody, new TypeReference<List<ClassRoom>>() {
+			});
+
+			List<ClassRoom> filteredList = this.classRoomService
+											.checkListClassRoom(listClassRoom, roomID);
+
+			if (filteredList == null || filteredList.isEmpty()) {
+				report = new ReportError(200, "All accounts are invalid!");
+			} else {
+				for (int i = 0; i < filteredList.size() - 1; i++) {
+					this.classRoomService.addNewClassRoom(filteredList.get(i));
+				}
+					
+				String listOfInvalidRows = filteredList.get(filteredList.size() - 1).getClassInstance().getIdentifyString();
+				if (listOfInvalidRows.equalsIgnoreCase("0-")) {
+					report = new ReportError(200, listOfInvalidRows);
+				
+				} else {
+					int counter = 1;
+					for (int i = 0; i < listOfInvalidRows.length(); i++) {
+						if (listOfInvalidRows.charAt(i) == ',') {
+							counter ++;
+						}
+					}
+					report = new ReportError(200, counter + "-" + listOfInvalidRows);
+				}
+			}
+			
+			System.out.println("report body = " + report.getDescription());
+			return ResponseEntity.ok(report);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			report = new ReportError(2, "Error happened when jackson deserialization info!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
+		}
+	}
 }

@@ -14,7 +14,7 @@ import edu.hust.model.ClassRoom;
 import edu.hust.model.Room;
 
 @Repository
-public interface ClassRoomRepository extends JpaRepository<ClassRoom, Integer>, CustomClassRoomRepository {
+public interface ClassRoomRepository extends JpaRepository<ClassRoom, Integer> {
 
 	@Query("SELECT cr FROM ClassRoom cr WHERE cr.weekday = ?2 AND cr.classInstance.id = ?1 AND ((?3 BETWEEN cr.beginAt AND cr.finishAt)"
 			+ " OR (?4 BETWEEN cr.beginAt AND cr.finishAt) OR (?3 < cr.beginAt AND cr.finishAt > ?4))")
@@ -40,5 +40,8 @@ public interface ClassRoomRepository extends JpaRepository<ClassRoom, Integer>, 
 	
 	@Query("SELECT cr FROM ClassRoom cr WHERE cr.classInstance.id = ?1 AND cr.room.id = ?2")
 	List<ClassRoom> findByClassIDAndRoomID(int classID, int roomID);
+	
+	@Query("SELECT cr FROM ClassRoom cr WHERE cr.room.id = ?1")
+	List<ClassRoom> findAllByRoomID(int roomID);
 
 }

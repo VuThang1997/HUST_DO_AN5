@@ -110,8 +110,8 @@ public class UncategorizedController {
 		}
 
 		if (listClassRoom == null) {
-                    listClassRoom = new ArrayList<>();
-		    return ResponseEntity.ok(listClassRoom);
+			listClassRoom = new ArrayList<>();
+			return ResponseEntity.ok(listClassRoom);
 		}
 
 		return ResponseEntity.ok(listClassRoom);
@@ -120,18 +120,18 @@ public class UncategorizedController {
 	@PostMapping("/checkTeacherRollCallToday")
 	@Scheduled(cron = "0 1 20 * * ?")
 	public ResponseEntity<?> checkTeacherRollCallToday() {
-		
+
 		ReportError report = null;
 		if (GeneralValue.isCheckTeacherRollcallToday == CheckRollcallStatus.CHECKED.getValue()) {
 			report = new ReportError(400, "This day has already checked!");
 			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
-		} 
-		
+		}
+
 		int currentDay = -1;
 		int indexOf = -1;
 		boolean flag = false;
 		LocalTime tmpTime = null;
-		
+
 		String errorMessage = null;
 		String tmpString = null;
 		String[] rollCallList;
@@ -149,7 +149,7 @@ public class UncategorizedController {
 //			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
 //		}
 
-		//comment for testing
+		// comment for testing
 		now = LocalDateTime.now(); // currentTime = now.toLocalTime();
 //		if (now.toLocalTime().isBefore(AfternoonTimeFrame.FRAME12.getValue())) {
 //			report = new ReportError(102, "Check roll call today failed because of current time is not valid! ");
@@ -252,13 +252,13 @@ public class UncategorizedController {
 	@PostMapping("/checkStudentRollCallToday")
 	@Scheduled(cron = "0 1 20 * * ?")
 	public ResponseEntity<?> checkStudentRollCallToday() {
-		
+
 		ReportError report = null;
 		if (GeneralValue.isCheckStudentRollcallToday == CheckRollcallStatus.CHECKED.getValue()) {
 			report = new ReportError(400, "This day has already checked!");
 			return new ResponseEntity<>(report, HttpStatus.UNAUTHORIZED);
-		} 
-		
+		}
+
 		int currentDay = -1;
 		int indexOf = -1;
 		boolean isTeacheRollCalled = false;
@@ -278,20 +278,12 @@ public class UncategorizedController {
 		Map<ClassRoom, Boolean> mapClassRoomRollCalled = null;
 		ClassRoom instanceClassRoom = null;
 
-		//comment for testing
+		// comment for testing
 		now = LocalDateTime.now(); // currentTime = now.toLocalTime();
 //		if (now.toLocalTime().isBefore(AfternoonTimeFrame.FRAME12.getValue())) {
 //			report = new ReportError(102, "Check roll call today failed because of current time is not valid! ");
 //			return ResponseEntity.badRequest().body(report);
 //		}
-
-		// Notice: weekday of java = weekday of mySQL - 1
-		currentDay = now.getDayOfWeek().getValue() + 1;
-		listClassRoom = this.classRoomService.findClassRoomByWeekday(currentDay);
-		if (listClassRoom == null) {
-			report = new ReportError(103, "No class has lessons today!");
-			return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
-		}
 
 		mapClassRoomRollCalled = new HashMap<>();
 		regexDate = now.getYear() + GeneralValue.regexForSplitDate + now.getDayOfYear()
@@ -301,11 +293,27 @@ public class UncategorizedController {
 		message2 = now.getYear() + GeneralValue.regexForSplitDate + now.getDayOfYear() + GeneralValue.regexForSplitDate
 				+ GeneralValue.markForTeacherMissing + GeneralValue.regexForSplitListRollCall;
 
+		// Notice: weekday of java = weekday of mySQL - 1
+		currentDay = now.getDayOfWeek().getValue() + 1;
+		listClassRoom = this.classRoomService.findClassRoomByWeekday(currentDay);
+		if (listClassRoom == null) {
+			report = new ReportError(103, "No class has lessons today!");
+			return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+		}
+
 		for (ClassRoom classRoom : listClassRoom) {
 			isTeacheRollCalled = false;
 			rollCallString = "";
 
 			teacherClass = this.teacherClassService.findCurrentTeacherByClassID(classRoom.getClassInstance().getId());
+			
+			//if teacher.listRollcall == null => teacher done nothing today = missing roll call
+			//=> forget call checkTeacherRollcall
+			if (teacherClass.getListRollCall() == null || teacherClass.getListRollCall().isEmpty()) {
+				report = new ReportError(104, "This API must be called after calling checkTeacherRollCallToday API!");
+				return ResponseEntity.badRequest().body(report);
+			}
+			
 			indexOf = teacherClass.getListRollCall().indexOf(regexDate);
 
 			// this API is called after checkTeacherRollCallToday => this situation
@@ -356,7 +364,22 @@ public class UncategorizedController {
 
 			for (StudentClass studentClass : listStudentClass) {
 				flag = false;
-				// rollCallString = "";
+				
+				//list = null => cant call indexOf = missing rollcall
+				//check isTeacher => mark
+				if (studentClass.getListRollCall() == null || studentClass.getListRollCall().isBlank()) {
+					if (isTeacheRollCalled == false) {
+						newRollCallList = studentClass.getListRollCall().concat(message2);
+					} else {
+						newRollCallList = studentClass.getListRollCall().concat(message1);
+					}
+
+					studentClass.setListRollCall(newRollCallList);
+					this.studentClassService.updateStudentClassInfo(studentClass);
+					continue;
+				}
+				
+				//get index of today's rollcall
 				indexOf = studentClass.getListRollCall().indexOf(regexDate);
 
 				// student has no roll call today
@@ -453,7 +476,7 @@ public class UncategorizedController {
 		report = new ReportError(200, "Check student roll call today complete!");
 		return ResponseEntity.ok(report);
 	}
-	
+
 	@Scheduled(cron = "0 0 5 * * ?")
 	public void scheduleTaskUsingCronExpression() {
 		GeneralValue.isCheckStudentRollcallToday = CheckRollcallStatus.NOT_CHECK.getValue();
