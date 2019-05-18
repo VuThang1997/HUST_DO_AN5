@@ -369,9 +369,9 @@ public class UncategorizedController {
 				//check isTeacher => mark
 				if (studentClass.getListRollCall() == null || studentClass.getListRollCall().isBlank()) {
 					if (isTeacheRollCalled == false) {
-						newRollCallList = studentClass.getListRollCall().concat(message2);
+						newRollCallList = message2;
 					} else {
-						newRollCallList = studentClass.getListRollCall().concat(message1);
+						newRollCallList = message1;
 					}
 
 					studentClass.setListRollCall(newRollCallList);
@@ -461,7 +461,7 @@ public class UncategorizedController {
 					if (rollCallString == null || rollCallString.isBlank()) {
 						newRollCallList = null;
 					} else {
-						newRollCallList = teacherClass.getListRollCall().substring(0, indexOf).concat(rollCallString);
+						newRollCallList = studentClass.getListRollCall().substring(0, indexOf).concat(rollCallString);
 					}
 
 					if (newRollCallList != null) {
