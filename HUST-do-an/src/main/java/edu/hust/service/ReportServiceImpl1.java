@@ -1,7 +1,6 @@
 package edu.hust.service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -9,10 +8,13 @@ import java.util.ListIterator;
 import org.springframework.stereotype.Service;
 
 import edu.hust.enumData.IsLearning;
+import edu.hust.enumData.IsTeaching;
 import edu.hust.external.StudentClassDAL;
 import edu.hust.model.DetailRecordForClass;
 import edu.hust.model.GeneralStudentRecord;
+import edu.hust.model.GeneralTeacherRecord;
 import edu.hust.model.StudentClass;
+import edu.hust.model.TeacherClass;
 import edu.hust.utils.GeneralValue;
 
 @Service
@@ -183,6 +185,145 @@ public class ReportServiceImpl1 {
 		return listRecord;
 	}
 	
+	public List<GeneralTeacherRecord> getListOfTeacherRecord(String teacherEmail, String semesterID,
+			String beginAtString, String finishAtString) {
+		List<TeacherClass> listTeacherClass = this.studentClassDAL.getListClassOfTeacher(teacherEmail,
+				Integer.parseInt(semesterID), IsTeaching.TEACHING.getValue());
+		if (listTeacherClass == null || listTeacherClass.isEmpty()) {
+			return null;
+		}
+
+		System.out.println("\n\n list teacher-class = " + listTeacherClass);
+
+		LocalDate beginAt = LocalDate.parse(beginAtString);
+		LocalDate finishAt = LocalDate.parse(finishAtString);
+		List<GeneralTeacherRecord> listRecord = new ArrayList<>();
+		GeneralTeacherRecord teacherRecord = null;
+		String listRollCall = null;
+		String[] listDates1 = null;
+		List<String> listDate2 = new ArrayList<>();
+		ListIterator<String> listIterator = null;
+		String tmpDayOfYearString = null;
+		int tmpDayOfYear = -1;
+		int tmpYear = -1;
+		int indexOfYear = -1;
+
+		int beginYear = beginAt.getYear();
+		int beginDayOfYear = beginAt.getDayOfYear();
+		int finishYear = finishAt.getYear();
+		int finishDayOfYear = finishAt.getDayOfYear();
+
+		int sumOfLesson = -1;
+		int sumOfAbsent = -1;
+
+		for (TeacherClass teacherClass : listTeacherClass) {
+			System.out.println("\n\nBegin filet =========================");
+			System.out.println("\n\n sumOfLesson = " + sumOfLesson);
+			sumOfLesson = 0;
+			sumOfAbsent = 0;
+
+			listRollCall = teacherClass.getListRollCall();
+			indexOfYear = listRollCall.indexOf("" + beginYear);
+
+			// indexOfYear should never be -1
+			if (indexOfYear == -1) {
+				teacherRecord = new GeneralTeacherRecord();
+				teacherRecord.setClassName(teacherClass.getClassInstance().getClassName());
+				teacherRecord.setCourseName(teacherClass.getClassInstance().getCourse().getCourseName());
+				teacherRecord.setSumOfAbsent(0);
+				teacherRecord.setSumOfLessons(0);
+
+				listRecord.add(teacherRecord);
+				continue;
+			}
+			listRollCall = listRollCall.substring(indexOfYear);
+
+			if (beginYear != finishYear) {
+				System.out.println("\n\n beginYear != finishYear");
+				indexOfYear = listRollCall.indexOf("" + (finishYear + 1));
+				if (indexOfYear != -1) {
+					listRollCall = listRollCall.substring(0, indexOfYear);
+				}
+			}
+
+			listDates1 = listRollCall.split(GeneralValue.regexForSplitListRollCall);
+
+			// format of a date: xxxx (year) - x(?) (day of year) - xxxxx(seconds in day)
+			// take the head of listRollCall (cut all elements that is before beginDate)
+			for (int i = 0; i < listDates1.length; i++) {
+				if (listDates1[i].contains(GeneralValue.markForMissingRollCall)) {
+					tmpDayOfYearString = listDates1[i].substring(5, listDates1[i].length() - 2);
+				} else {
+					tmpDayOfYearString = listDates1[i].substring(5, listDates1[i].length() - 6);
+				}
+				
+				System.out.println("\n\ntmpDayOfYearString = " + tmpDayOfYearString);
+				tmpDayOfYear = Integer.parseInt(tmpDayOfYearString);
+
+				tmpYear = Integer.parseInt(listDates1[i].substring(0, 4));
+				System.out.println("\n\n Begin Year of record = " + tmpYear);
+				
+				if (tmpYear == beginYear && tmpDayOfYear < beginDayOfYear) {
+					continue;
+				} else {
+					for (int n = i; n < listDates1.length; n++) {
+						listDate2.add(listDates1[n]);
+					}
+					break;
+				}
+			}
+
+			// take the tail of listRollCall (cut all elements that is after finishDate)
+			listIterator = listDate2.listIterator(listDate2.size());
+			while (listIterator.hasPrevious()) {
+				listRollCall = listIterator.previous();
+				tmpYear = Integer.parseInt(listRollCall.substring(0, 4));
+
+				if (tmpYear < finishYear) {
+					break;
+				}
+
+				if (listRollCall.contains(GeneralValue.markForMissingRollCall)
+						|| listRollCall.contains(GeneralValue.markForTeacherMissing)) {
+					tmpDayOfYearString = listRollCall.substring(5, listRollCall.length() - 2);
+				} else {
+					tmpDayOfYearString = listRollCall.substring(5, listRollCall.length() - 6);
+				}
+				
+				tmpDayOfYear = Integer.parseInt(tmpDayOfYearString);
+
+				if (tmpYear == finishYear) {
+					if (tmpDayOfYear > finishDayOfYear) {
+						listIterator.remove();
+					} else {
+						break;
+					}
+				} else {
+					listIterator.remove();
+				}
+			}
+
+			sumOfLesson = listDate2.size();
+			System.out.println("\n\n listDate2 = " + listDate2);
+
+			for (String rollCallRecord : listDate2) {
+				if (rollCallRecord.contains(GeneralValue.markForMissingRollCall)) {
+					sumOfAbsent++;
+				}
+			}
+
+			teacherRecord = new GeneralTeacherRecord();
+			teacherRecord.setClassName(teacherClass.getClassInstance().getClassName());
+			teacherRecord.setCourseName(teacherClass.getClassInstance().getCourse().getCourseName());
+			teacherRecord.setSumOfAbsent(sumOfAbsent);
+			teacherRecord.setSumOfLessons(sumOfLesson);
+
+			listRecord.add(teacherRecord);
+			listDate2.clear();
+		}
+
+		return listRecord;
+	}
 	
 	public List<DetailRecordForClass> getListOfClassRecord(int classID, String beginAtString, String finishAtString) {
 		List<StudentClass> listStudentClass = this.studentClassDAL.getListStudent(classID);

@@ -9,10 +9,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.hust.model.StudentClass;
 import edu.hust.enumData.IsLearning;
 import edu.hust.model.Account;
 import edu.hust.model.Course;
+import edu.hust.model.StudentClass;
+import edu.hust.model.TeacherClass;
 
 
 public class StudentClassDAL {
@@ -72,6 +73,57 @@ public class StudentClassDAL {
 			}
 			
 			return listOfStudent;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	public List<TeacherClass> getListClassOfTeacher(String teacherEmail, int semesterID, int isLearning) {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		List<TeacherClass> listOfClass = new ArrayList<>();
+		ResultSet rs = null;
+		
+		try {
+			connection = getConnecṭ();
+			ps = connection.prepareStatement("SELECT tc.ID, tc.IsChecked, tc.ListRollCall, cl.ClassName, cr.CourseName "
+					+ "FROM teacher_class AS tc, class AS cl, account AS ac, course AS cr "
+					+ "WHERE ac.Email = ? AND cl.SemesterID = ? AND tc.IsTeaching = ? AND ac.ID = tc.TeacherID AND ac.ClassID = cl.ID AND cl.CourseID = cr.ID" );
+			ps.setString(1, teacherEmail);
+			ps.setInt(2, semesterID);
+			ps.setInt(3, isLearning);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				TeacherClass teacherClass = new TeacherClass();
+				edu.hust.model.Class classInstance = new edu.hust.model.Class();
+				Course course = new Course();
+				
+				teacherClass.setId(rs.getInt("ID"));
+				teacherClass.setIsTeaching(rs.getInt("IsTeaching"));
+				teacherClass.setListRollCall(rs.getString("ListRollCall"));
+				
+				classInstance.setClassName(rs.getString("ClassName"));
+				course.setCourseName(rs.getString("CourseName"));
+				classInstance.setCourse(course);
+				
+				teacherClass.setClassInstance(classInstance);
+				
+				listOfClass.add(teacherClass);
+			}
+			
+			return listOfClass;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

@@ -287,6 +287,7 @@ public class TeacherClassController {
 		}
 	}
 
+	/*
 	@PostMapping(value = "/teacherClass")
 	public ResponseEntity<?> addTeacherClass(@RequestBody String info) {
 		int teacherID = 0;
@@ -369,7 +370,7 @@ public class TeacherClassController {
 			report = new ReportError(2, "Error happened when jackson deserialization info!");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
-	}
+	}*/
 
 	@GetMapping(value = "/teacherClass")
 	public ResponseEntity<?> getTeacherClassInfoByTeacherID(
@@ -389,5 +390,41 @@ public class TeacherClassController {
 		}
 		
 		return ResponseEntity.ok(listRecords);
+	}
+	
+	@PostMapping(value = "/teacherClass")
+	public ResponseEntity<?> addNewTeacherClass(@RequestBody String teacherClassInfo) {
+		ObjectMapper objectMapper = null;
+		Map<String, Object> jsonMap = null;
+		ReportError report;
+
+		try {
+			objectMapper = new ObjectMapper();
+			jsonMap = objectMapper.readValue(teacherClassInfo, new TypeReference<Map<String, Object>>() {
+			});
+
+			// check request body has enough info in right JSON format
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "teacherEmail", "classID")) {
+				report = new ReportError(1, "Email are required!");
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			int classID = Integer.parseInt(jsonMap.get("classID").toString());
+			String teacherEmail = jsonMap.get("teacherEmail").toString();
+			String errorMessage = this.teacherClassService.addNewTeacherClass(teacherEmail, classID);
+
+			if (errorMessage != null) {
+				report = new ReportError(400, errorMessage);
+				return ResponseEntity.badRequest().body(report);
+			}
+
+			report = new ReportError(200, "Successful!");
+			return ResponseEntity.ok(report);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			report = new ReportError(2, "Error happened when jackson deserialization info!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
+		}
 	}
 }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import edu.hust.model.Account;
 import edu.hust.model.ClassRoom;
 import edu.hust.model.TeacherClass;
 
@@ -61,4 +62,10 @@ public interface TeacherClassService {
 	String createRollcallDate(LocalDateTime rollCallAt);
 
 	List<TeacherClass> findByCurrentTeacherID(int teacherID);
+
+	String addNewTeacherClass(String teacherEmail, int classID);
+	
+	boolean checkTeacherIsTeaching(String teacherEmail, int classID);
+	
+	String checkTimetableConflict(Account account, int classID);
 }
