@@ -98,9 +98,9 @@ public class StudentClassDAL {
 		
 		try {
 			connection = getConnecṭ();
-			ps = connection.prepareStatement("SELECT tc.ID, tc.IsChecked, tc.ListRollCall, cl.ClassName, cr.CourseName "
+			ps = connection.prepareStatement("SELECT tc.ID, tc.ListRollCall, cl.ClassName, cr.CourseName "
 					+ "FROM teacher_class AS tc, class AS cl, account AS ac, course AS cr "
-					+ "WHERE ac.Email = ? AND cl.SemesterID = ? AND tc.IsTeaching = ? AND ac.ID = tc.TeacherID AND ac.ClassID = cl.ID AND cl.CourseID = cr.ID" );
+					+ "WHERE ac.Email = ? AND cl.SemesterID = ? AND tc.IsTeaching = ? AND ac.ID = tc.TeacherID AND tc.ClassID = cl.ID AND cl.CourseID = cr.ID" );
 			ps.setString(1, teacherEmail);
 			ps.setInt(2, semesterID);
 			ps.setInt(3, isLearning);
@@ -111,7 +111,6 @@ public class StudentClassDAL {
 				Course course = new Course();
 				
 				teacherClass.setId(rs.getInt("ID"));
-				teacherClass.setIsTeaching(rs.getInt("IsTeaching"));
 				teacherClass.setListRollCall(rs.getString("ListRollCall"));
 				
 				classInstance.setClassName(rs.getString("ClassName"));

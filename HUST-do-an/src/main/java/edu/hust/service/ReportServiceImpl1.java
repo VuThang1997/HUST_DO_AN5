@@ -283,8 +283,7 @@ public class ReportServiceImpl1 {
 					break;
 				}
 
-				if (listRollCall.contains(GeneralValue.markForMissingRollCall)
-						|| listRollCall.contains(GeneralValue.markForTeacherMissing)) {
+				if (listRollCall.contains(GeneralValue.markForMissingRollCall)) {
 					tmpDayOfYearString = listRollCall.substring(5, listRollCall.length() - 2);
 				} else {
 					tmpDayOfYearString = listRollCall.substring(5, listRollCall.length() - 6);

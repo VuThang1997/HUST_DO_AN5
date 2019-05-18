@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.hust.enumData.AccountRole;
 import edu.hust.model.Account;
 import edu.hust.model.GeneralStudentRecord;
+import edu.hust.model.GeneralTeacherRecord;
 import edu.hust.model.ReportError;
 import edu.hust.model.ReportOutput;
 import edu.hust.model.Semester;
@@ -126,17 +127,17 @@ public class ReportController {
 
 			System.out.println("\n\nMile 3");
 			Account account = this.accountService.findAccountByEmail(teacherEmail);
-			if (account == null || account.getRole() != AccountRole.STUDENT.getValue()) {
+			if (account == null || account.getRole() != AccountRole.TEACHER.getValue()) {
 				report = new ReportError(112, "This email address is not valid!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
 			System.out.println("\n\nMile 4");
 			System.out.println("\n\n user info = " + account.getUserInfo());
-			String[] studentInfo = account.getUserInfo().split(GeneralValue.regexForSplitUserInfo);
-			System.out.println("\n\n full name = " + studentInfo[0]);
+			String[] teacherInfo = account.getUserInfo().split(GeneralValue.regexForSplitUserInfo);
+			System.out.println("\n\n full name = " + teacherInfo[0]);
 
-			jsonMap.put("studentName", studentInfo[0]);
+			jsonMap.put("teacherName", teacherInfo[0]);
 
 			System.out.println("\n\nMile 5");
 			int semesterID = Integer.parseInt(jsonMap.get("semesterID").toString());
@@ -505,4 +506,38 @@ public class ReportController {
 
 	}
 
+	
+	/**
+	 * This method for testing with postman, not use in app
+	 * @param adminID
+	 * @param reportParams
+	 * @return
+	 */
+	@RequestMapping(value = "/reportForTeacher", method = RequestMethod.PUT)
+	public ResponseEntity<?> updateReportForTeacher(@RequestParam(value = "adminID", required = true) int adminID,
+			@RequestBody String reportParams) {
+		Map<String, Object> jsonMap = null;
+		ObjectMapper objectMapper = null;
+
+		List<GeneralTeacherRecord> listRecord = new ArrayList<>();
+
+		try {
+			objectMapper = new ObjectMapper();
+			jsonMap = objectMapper.readValue(reportParams, new TypeReference<Map<String, Object>>() {
+			});
+
+			String studentEmail = jsonMap.get("email").toString();
+			String semesterID = jsonMap.get("semesterID").toString();
+			String beginAtString = jsonMap.get("beginAt").toString();
+			String finishAtString = jsonMap.get("finishAt").toString();
+			listRecord = this.reportServiceImpl1.getListOfTeacherRecord(studentEmail, semesterID, beginAtString,
+					finishAtString);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "error");
+		}
+
+		return ResponseEntity.ok(listRecord);
+
+	}
 }
