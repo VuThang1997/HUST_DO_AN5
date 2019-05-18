@@ -19,7 +19,7 @@ public class Account implements Serializable {
 	@Column(name = "ID", length = 1)
 	private int id;
 
-	@Column(name = "Username", nullable = false, length = 20)
+	@Column(name = "Username", nullable = false, length = 30)
 	private String username;
 
 	@Column(name = "Password", nullable = false, length = 20)
