@@ -60,7 +60,7 @@ public class RoomController {
 			jsonMap.put("address", room.getAddress());
 			jsonMap.put("gpsLa", room.getGpsLatitude());
 			jsonMap.put("gpsLong", room.getGpsLongitude());
-			jsonMap.put("macAddress", room.getMacAddress());
+			//jsonMap.put("macAddress", room.getMacAddress());
 			
 			errorMessage = this.validationData.validateRoomData(jsonMap);
 			if (errorMessage != null) {
@@ -73,10 +73,10 @@ public class RoomController {
 				return ResponseEntity.badRequest().body(report);
 			}
 			
-			if (!this.roomService.checkMacAddrDuplicate(room.getMacAddress())) {
-				report = new ReportError(52, "Duplicate MAC address!");
-				return ResponseEntity.badRequest().body(report);
-			}
+//			if (!this.roomService.checkMacAddrDuplicate(room.getMacAddress())) {
+//				report = new ReportError(52, "Duplicate MAC address!");
+//				return ResponseEntity.badRequest().body(report);
+//			}
 			
 			this.roomService.addNewRoom(room);
 			report = new ReportError(200, "Adding new room success!");

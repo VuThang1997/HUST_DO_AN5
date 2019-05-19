@@ -33,5 +33,7 @@ public interface ClassRoomService {
 	List<Room> getListRoomByClassID(int classID);
 
 	List<ClassRoom> checkListClassRoom(List<ClassRoom> listClassRoom, int roomID);
+
+	boolean addNewClassRoom(ClassRoom classRoom, int roomID);
 	
 }

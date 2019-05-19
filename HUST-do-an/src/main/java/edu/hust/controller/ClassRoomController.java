@@ -354,17 +354,26 @@ public class ClassRoomController {
 		
 		try {
 			objectMapper = new ObjectMapper();
+			objectMapper.findAndRegisterModules();
 			listClassRoom = objectMapper.readValue(requestBody, new TypeReference<List<ClassRoom>>() {
 			});
 
+			//System.out.println(listClassRoom.get(0).getBeginAt());
+			//System.out.println(listClassRoom.get(0).getFinishAt());
+			
 			List<ClassRoom> filteredList = this.classRoomService
 											.checkListClassRoom(listClassRoom, roomID);
+			
+
 
 			if (filteredList == null || filteredList.isEmpty()) {
 				report = new ReportError(200, "All accounts are invalid!");
 			} else {
 				for (int i = 0; i < filteredList.size() - 1; i++) {
-					this.classRoomService.addNewClassRoom(filteredList.get(i));
+					//add all missing info
+					
+					
+					this.classRoomService.addNewClassRoom(filteredList.get(i), roomID);
 				}
 					
 				String listOfInvalidRows = filteredList.get(filteredList.size() - 1).getClassInstance().getIdentifyString();
@@ -372,7 +381,7 @@ public class ClassRoomController {
 					report = new ReportError(200, listOfInvalidRows);
 				
 				} else {
-					int counter = 1;
+					int counter = 0;
 					for (int i = 0; i < listOfInvalidRows.length(); i++) {
 						if (listOfInvalidRows.charAt(i) == ',') {
 							counter ++;

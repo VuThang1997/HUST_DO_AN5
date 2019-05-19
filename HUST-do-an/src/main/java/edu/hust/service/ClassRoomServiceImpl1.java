@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import edu.hust.model.Account;
+import edu.hust.model.Class;
 import edu.hust.model.ClassRoom;
 import edu.hust.model.Room;
+import edu.hust.repository.ClassRepository;
 import edu.hust.repository.ClassRoomRepository;
+import edu.hust.repository.RoomRepository;
 import edu.hust.utils.FrequentlyUtils;
 import edu.hust.utils.ValidationAccountData;
 import edu.hust.utils.ValidationClassData;
@@ -23,8 +26,10 @@ import edu.hust.utils.ValidationClassData;
 public class ClassRoomServiceImpl1 implements ClassRoomService {
 
 	private ClassRoomRepository classRoomRepository;
+	private RoomRepository roomRepository;
 	private ValidationClassData validationClassData;
 	private FrequentlyUtils frequentlyUtils;
+	private ClassRepository classRepository;
 
 	public ClassRoomServiceImpl1() {
 		super();
@@ -33,6 +38,7 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 
 	@Autowired
 	public ClassRoomServiceImpl1(ClassRoomRepository classRoomRepository,
+			RoomRepository roomRepository, ClassRepository classRepository,
 			@Qualifier("ValidationClassDataImpl1") ValidationClassData validationClassData,
 			@Qualifier("FrequentlyUtilsImpl1") FrequentlyUtils frequentlyUtils) {
 
@@ -40,6 +46,8 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 		this.classRoomRepository = classRoomRepository;
 		this.validationClassData = validationClassData;
 		this.frequentlyUtils = frequentlyUtils;
+		this.roomRepository = roomRepository;
+		this.classRepository = classRepository;
 	}
 
 	@Override
@@ -162,7 +170,7 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 			errorMessage = this.validationClassData
 					.validateClassNameData(tmpClassRoom.getClassInstance().getClassName());
 			if (errorMessage != null) {
-				System.out.println("============= email is invalid = " + errorMessage);
+				System.out.println("============= class name is invalid = " + errorMessage);
 				listOfInvalidRows += rowCounter + ", ";
 				listIte.remove();
 				continue;
@@ -194,7 +202,19 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 			
 			//check if 2 in the same time frame
 			
-			int tmpClassID = tmpClassRoom.getClassInstance().getId();
+			String className = tmpClassRoom.getClassInstance().getClassName();
+			System.out.println("className = " + className);
+			
+			Optional<Class> classOpt = this.classRepository.findByClassName(className);
+			if (classOpt == null || classOpt.isEmpty()) {
+				System.out.println("============= class is not exist");
+				listOfInvalidRows += rowCounter + ", ";
+				listIte.remove();
+				continue;
+			}
+			
+			int tmpClassID = classOpt.get().getId();
+			System.out.println("class id  = " + tmpClassID);
 			
 			tmpList = this.classRoomRepository.findByWeekday(tmpClassRoom.getWeekday());
 			for (ClassRoom tmpTarget: tmpList) {
@@ -237,9 +257,30 @@ public class ClassRoomServiceImpl1 implements ClassRoomService {
 		}
 		
 		ClassRoom lastRow = new ClassRoom();
+		lastRow.setClassInstance(new Class());
 		lastRow.getClassInstance().setIdentifyString(listOfInvalidRows);
 		listClassRoom.add(lastRow);
 		return listClassRoom;
+	}
+
+	@Override
+	public boolean addNewClassRoom(ClassRoom classRoom, int roomID) {
+		if (classRoom.getId() > 0) {
+			classRoom.setId(-1);
+		}
+		
+		Room room = this.roomRepository.findById(roomID).get();
+		
+		String className = classRoom.getClassInstance().getClassName();
+		System.out.println("className = " + className);
+		Class classIntance = this.classRepository.findByClassName(className).get();
+		
+		classRoom.setRoom(room);
+		classRoom.setClassInstance(classIntance);
+
+		this.classRoomRepository.save(classRoom);
+		return true;
+		
 	}
 
 }
