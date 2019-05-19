@@ -36,7 +36,7 @@ public interface AccountService {
 	
 	boolean deactivateAccount(String email);
 	
-	boolean activateAccount(String email, String password, int role);
+	boolean activateAccount(String email);
 
 	Account updateAccountInfo(Account account);
 

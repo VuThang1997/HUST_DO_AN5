@@ -207,14 +207,14 @@ public class AccountController {
 		}
 	}
 
-	@RequestMapping(value = "/activateAccount", method = RequestMethod.PATCH)
+	@RequestMapping(value = "/activateAccount", method = RequestMethod.PUT)
 	public ResponseEntity<?> activateAccount(@RequestBody String requestInfo) {
 		Map<String, Object> jsonMap = null;
 		ObjectMapper objectMapper = null;
 		String errorMessage = null;
 		String email = null;
-		String password = null;
-		int role = -1;
+//		String password = null;
+//		int role = -1;
 		ReportError report;
 
 		try {
@@ -223,7 +223,7 @@ public class AccountController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email", "role", "password")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "email")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -235,10 +235,11 @@ public class AccountController {
 			}
 
 			email = jsonMap.get("email").toString();
-			password = jsonMap.get("password").toString();
-			role = Integer.parseInt(jsonMap.get("role").toString());
-			if (this.accountService.activateAccount(email, password, role)) {
-				return ResponseEntity.ok("Activate account successful!");
+			//password = jsonMap.get("password").toString();
+			//role = Integer.parseInt(jsonMap.get("role").toString());
+			if (this.accountService.activateAccount(email)) {
+				report = new ReportError(200, "Activate account successful!");
+				return ResponseEntity.ok(report);
 			}
 
 			report = new ReportError(11, "Authentication has failed or has not yet been provided!");
