@@ -306,17 +306,18 @@ public class TeacherClassController {
 			});
 
 			// check request body has enough info in right JSON format
-			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "teacherID", "classID")) {
+			if (!this.frequentlyUtils.checkKeysExist(jsonMap, "teacherEmail", "classID")) {
 				report = new ReportError(1, "You have to fill all required information!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
-			teacherID = Integer.parseInt(jsonMap.get("teacherID").toString());
-			errorMessage = this.validationTeacherClassData.validateIdData(teacherID);
-			if (errorMessage != null) {
-				report = new ReportError(89, "Adding teacher-class failed because " + errorMessage);
-				return ResponseEntity.badRequest().body(report);
-			}
+			//teacherID = Integer.parseInt(jsonMap.get("teacherID").toString());
+			String teacherEmail = jsonMap.get("teacherEmail").toString();
+//			errorMessage = this.validationTeacherClassData.validateIdData(teacherID);
+//			if (errorMessage != null) {
+//				report = new ReportError(89, "Adding teacher-class failed because " + errorMessage);
+//				return ResponseEntity.badRequest().body(report);
+//			}
 
 			classID = Integer.parseInt(jsonMap.get("classID").toString());
 			errorMessage = this.validationTeacherClassData.validateIdData(classID);
@@ -326,7 +327,7 @@ public class TeacherClassController {
 			}
 
 			// check if the student and the class exist
-			teacherAccount = this.accountService.findAccountByID(teacherID);
+			teacherAccount = this.accountService.findAccountByEmail(teacherEmail);
 			if (teacherAccount == null || teacherAccount.getRole() != AccountRole.TEACHER.getValue()) {
 				report = new ReportError(110, "Adding teacher-class roll call failed because teacherID is invalid ");
 				return ResponseEntity.badRequest().body(report);
