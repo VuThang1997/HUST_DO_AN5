@@ -68,6 +68,18 @@ public class ReportServiceImpl1 {
 			sumOfSick = 0;
 
 			listRollCall = studentClass.getListRollCall();
+			if (listRollCall == null || listRollCall.isBlank()) {
+				studentRecord = new GeneralStudentRecord();
+				studentRecord.setClassName(studentClass.getClassInstance().getClassName());
+				studentRecord.setCourseName(studentClass.getClassInstance().getCourse().getCourseName());
+				studentRecord.setSumOfAbsent(0);
+				studentRecord.setSumOfFogettingPhone(0);
+				studentRecord.setSumOfSick(0);
+				studentRecord.setSumOfLessons(0);
+
+				listRecord.add(studentRecord);
+				continue;
+			}
 			indexOfYear = listRollCall.indexOf("" + beginYear);
 
 			// indexOfYear should never be -1
@@ -364,6 +376,19 @@ public class ReportServiceImpl1 {
 		for (StudentClass studentClass : listStudentClass) {
 			listRollCallRecord.clear();
 			listRollCallRaw = studentClass.getListRollCall();
+			
+			if (listRollCallRaw == null || listRollCallRaw.isBlank()) {
+				record = new DetailRecordForClass();
+				studentName = studentClass.getAccount().getUserInfo().split(GeneralValue.regexForSplitUserInfo)[0];
+				record.setStudentName(studentName);
+				record.setSumOfMissingRollCall(0);
+				record.setSumOfRollCall(0);
+				record.setSumOfSpecialCase(0);
+				record.setEmail(studentClass.getAccount().getEmail());
+				record.setSumOfLessons(0);
+				listRecords.add(record);
+				continue;
+			}
 			
 			//cut the head of list to latest record of beginYear
 			indexOfSubString = listRollCallRaw.indexOf("" + beginYear);
