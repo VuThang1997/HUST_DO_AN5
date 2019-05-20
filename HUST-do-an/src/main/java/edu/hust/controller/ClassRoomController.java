@@ -2,7 +2,6 @@
 package edu.hust.controller;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -177,6 +176,25 @@ public class ClassRoomController {
 		report = new ReportError(74, "This class-room do not exist!");
 		return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
 	}
+	
+	@GetMapping("/classroomsForClass")
+	public ResponseEntity<?> getInfoClassRoomForClass(@RequestParam(value = "classID", required = true) int classID) {
+		String errorMessage = null;
+		ReportError report = null;
+		errorMessage = this.validationClassRoomData.validateIdData(classID);
+		if (errorMessage != null) {
+			report = new ReportError(73, "Getting class-room info failed because " + errorMessage);
+			return ResponseEntity.badRequest().body(report);
+		}
+
+		List<ClassRoom> classRooms = this.classRoomService.getListClassRoomByClassID(classID);
+		if (classRooms != null && !classRooms.isEmpty()) {
+			return ResponseEntity.ok(classRooms);
+		}
+
+		report = new ReportError(74, "This class do not have any lesson!");
+		return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
+	}
 
 	@PutMapping("/classrooms")
 	public ResponseEntity<?> updateInfoClassRoom(@RequestBody String infoClassRoom) {
@@ -228,7 +246,7 @@ public class ClassRoomController {
 				if (classInstance == null) {
 					report = new ReportError(63, "This class do not exist!");
 					return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
-				}
+				} 
 				classRoom.setClassInstance(classInstance);
 			}
 

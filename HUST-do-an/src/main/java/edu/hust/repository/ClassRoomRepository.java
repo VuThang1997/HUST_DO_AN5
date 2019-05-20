@@ -17,11 +17,11 @@ import edu.hust.model.Room;
 public interface ClassRoomRepository extends JpaRepository<ClassRoom, Integer> {
 
 	@Query("SELECT cr FROM ClassRoom cr WHERE cr.weekday = ?2 AND cr.classInstance.id = ?1 AND ((?3 BETWEEN cr.beginAt AND cr.finishAt)"
-			+ " OR (?4 BETWEEN cr.beginAt AND cr.finishAt) OR (?3 < cr.beginAt AND cr.finishAt > ?4))")
+			+ " OR (?4 BETWEEN cr.beginAt AND cr.finishAt) OR (?3 < cr.beginAt AND cr.finishAt > ?4) OR (?3 > cr.beginAt AND cr.finishAt < ?4))")
 	List<ClassRoom> findClassesByIdAndWeekdayAndDuration(int classID, int weekday, LocalTime beginAt, LocalTime finishAt);
 
 	@Query("SELECT cr FROM ClassRoom cr WHERE cr.weekday = ?2 AND cr.room.id = ?1 AND ((?3 BETWEEN cr.beginAt AND cr.finishAt)"
-			+ " OR (?4 BETWEEN cr.beginAt AND cr.finishAt) OR (?3 < cr.beginAt AND cr.finishAt > ?4))")
+			+ " OR (?4 BETWEEN cr.beginAt AND cr.finishAt) OR (?3 < cr.beginAt AND cr.finishAt > ?4) OR (?3 > cr.beginAt AND cr.finishAt < ?4))")
 	List<ClassRoom> findRoomByIdAndWeekdayAndDuration(int roomID, int weekday, LocalTime beginAt, LocalTime finishAt);
 
 	List<ClassRoom> findByWeekday(int weekday);
