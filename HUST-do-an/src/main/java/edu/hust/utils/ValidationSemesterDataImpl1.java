@@ -51,7 +51,7 @@ public class ValidationSemesterDataImpl1 implements ValidationSemesterData {
 		int year = beginDate.getYear();
 		
 		//year must be in range validYear - 1
-		if (year == validYear || year == validYear - 1) {
+		if (year == validYear || year == validYear + 1) {
 			return null;
 		}
 		return "BeginDate is out of valid range!";

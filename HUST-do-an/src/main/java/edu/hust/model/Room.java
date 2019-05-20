@@ -35,7 +35,7 @@ public class Room implements Serializable {
 	private double gpsLongitude;
 	
 	//Mac address of wifi access point of this room
-	@Column(name = "MacAddress", nullable = false, unique = true)
+	@Column(name = "MacAddress", nullable = true)
 	private String macAddress;
 
 	public Room() {
