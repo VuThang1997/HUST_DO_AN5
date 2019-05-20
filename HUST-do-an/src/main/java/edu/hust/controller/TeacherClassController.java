@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.hust.enumData.AccountRole;
 import edu.hust.enumData.IsTeaching;
 import edu.hust.model.Account;
 import edu.hust.model.Class;
@@ -286,9 +287,8 @@ public class TeacherClassController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
 	}
-
-	/*
-	@PostMapping(value = "/teacherClass")
+	
+	@PostMapping(value = "/teacherClassByWeb")
 	public ResponseEntity<?> addTeacherClass(@RequestBody String info) {
 		int teacherID = 0;
 		int classID = 0;
@@ -327,7 +327,7 @@ public class TeacherClassController {
 
 			// check if the student and the class exist
 			teacherAccount = this.accountService.findAccountByID(teacherID);
-			if (teacherAccount == null) {
+			if (teacherAccount == null || teacherAccount.getRole() != AccountRole.TEACHER.getValue()) {
 				report = new ReportError(110, "Adding teacher-class roll call failed because teacherID is invalid ");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -370,7 +370,7 @@ public class TeacherClassController {
 			report = new ReportError(2, "Error happened when jackson deserialization info!");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, report.toString());
 		}
-	}*/
+	}
 
 	@GetMapping(value = "/teacherClass")
 	public ResponseEntity<?> getTeacherClassInfoByTeacherID(
