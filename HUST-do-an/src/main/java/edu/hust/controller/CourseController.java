@@ -22,7 +22,9 @@ import edu.hust.model.ReportError;
 import edu.hust.service.CourseService;
 import edu.hust.utils.ValidationCourseData;
 import edu.hust.utils.ValidationData;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin
 @RestController
 public class CourseController {
 
@@ -69,7 +71,8 @@ public class CourseController {
 			}
 			
 			if (this.courseService.addNewCourse(course)) {
-				return ResponseEntity.ok("Adding course success!");
+                            report = new ReportError(200, "Adding course success!");
+			    return ResponseEntity.ok(report);
 			}
 
 			report = new ReportError(41, "Duplicate course name!");
