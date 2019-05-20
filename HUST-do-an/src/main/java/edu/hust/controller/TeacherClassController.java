@@ -322,34 +322,35 @@ public class TeacherClassController {
 			classID = Integer.parseInt(jsonMap.get("classID").toString());
 			errorMessage = this.validationTeacherClassData.validateIdData(classID);
 			if (errorMessage != null) {
-				report = new ReportError(89, "Adding teacher-class roll call failed because " + errorMessage);
+				report = new ReportError(89, "Adding teacher to class failed because " + errorMessage);
 				return ResponseEntity.badRequest().body(report);
 			}
 
 			// check if the student and the class exist
 			teacherAccount = this.accountService.findAccountByEmail(teacherEmail);
 			if (teacherAccount == null || teacherAccount.getRole() != AccountRole.TEACHER.getValue()) {
-				report = new ReportError(110, "Adding teacher-class roll call failed because teacherID is invalid ");
+				report = new ReportError(110, "Adding teacher to class failed because teacher email is invalid ");
 				return ResponseEntity.badRequest().body(report);
 			}
 
 			classInstance = this.classService.findClassByID(classID);
 			if (classInstance == null) {
-				report = new ReportError(111, "Adding teacher-class roll call failed because classID is invalid ");
+				report = new ReportError(111, "Adding teacher to class failed because class is invalid ");
 				return ResponseEntity.badRequest().body(report);
 			}
 
 			teacherClass = this.teacherClassService.findCurrentTeacherByClassID(classID);
 			if (teacherClass != null) {
-				if (teacherClass.getAccount().getId() == teacherID) {
+				if (teacherClass.getAccount().getEmail().equalsIgnoreCase(teacherEmail)){
 					report = new ReportError(113, "The teacher is teaching this class. Nothing need be added!");
+                                        return ResponseEntity.badRequest().body(report);
 				}
 
 				report = new ReportError(114, "Another teacher is teaching this class!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
-			if (!this.teacherClassService.checkTimetableConflict(teacherID, classID)) {
+			if (!this.teacherClassService.checkTimetableConflict(teacherAccount.getId(), classID)) {
 				report = new ReportError(112, "There are conflicts with current timetable!");
 				return new ResponseEntity<>(report, HttpStatus.CONFLICT);
 			}
