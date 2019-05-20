@@ -577,28 +577,28 @@ public class AccountController {
 				errorMessage = this.validationAccountData.validateUsernameData(tmpAccount.getUsername());
 				if (errorMessage != null) {
 					invalidAccount++;
-					infoOfRow += invalidAccount;
+					infoOfRow += rowCounter +',';
 					continue;
 				}
 
 				errorMessage = this.validationAccountData.validatePasswordData(tmpAccount.getPassword());
 				if (errorMessage != null) {
 					invalidAccount++;
-					infoOfRow += invalidAccount;
+					infoOfRow += rowCounter +',';
 					continue;
 				}
 
 				errorMessage = this.validationAccountData.validateEmailData(tmpAccount.getEmail());
 				if (errorMessage != null) {
 					invalidAccount++;
-					infoOfRow += invalidAccount;
+					infoOfRow += rowCounter +',';
 					continue;
 				}
 
 				account = this.accountService.findAccountByEmail(tmpAccount.getEmail());
 				if (account != null) {
 					invalidAccount++;
-					infoOfRow += invalidAccount + ", ";
+					infoOfRow += rowCounter + ", ";
 					continue;
 				}
 
