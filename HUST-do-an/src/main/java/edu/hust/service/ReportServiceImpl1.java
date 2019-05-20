@@ -223,6 +223,16 @@ public class ReportServiceImpl1 {
 			sumOfAbsent = 0;
 
 			listRollCall = teacherClass.getListRollCall();
+			if (listRollCall == null || listRollCall.isBlank()) {
+				teacherRecord = new GeneralTeacherRecord();
+				teacherRecord.setClassName(teacherClass.getClassInstance().getClassName());
+				teacherRecord.setCourseName(teacherClass.getClassInstance().getCourse().getCourseName());
+				teacherRecord.setSumOfAbsent(0);
+				teacherRecord.setSumOfLessons(0);
+
+				listRecord.add(teacherRecord);
+				continue;
+			}
 			indexOfYear = listRollCall.indexOf("" + beginYear);
 
 			// indexOfYear should never be -1
