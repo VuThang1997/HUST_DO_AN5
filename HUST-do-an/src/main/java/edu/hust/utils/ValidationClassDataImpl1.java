@@ -18,7 +18,7 @@ public class ValidationClassDataImpl1 implements ValidationClassData {
 	@Override
 	public String validateClassNameData(String className) {
 		if (className == null || className.isBlank()) {
-			return "Missing roomName data!";
+			return "Missing class name!";
 		}
 		return null;
 	}
@@ -34,7 +34,7 @@ public class ValidationClassDataImpl1 implements ValidationClassData {
 	@Override
 	public String validateNumberOfLessons(int numberOfLesson) {
 		if (numberOfLesson < 1) {
-			return "Number of lessons cannot be less than 1";
+			return "Number of lesson cannot be less than 1";
 		}
 		return null;
 	}

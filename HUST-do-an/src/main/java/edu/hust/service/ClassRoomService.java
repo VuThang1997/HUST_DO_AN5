@@ -16,9 +16,9 @@ public interface ClassRoomService {
 
 	//boolean updateClassRoomInfo(int roomID, int classID, ClassRoom classRoom);
 
-	List<ClassRoom> checkClassAvailable(int classID, int weekday, LocalTime beginAt, LocalTime finishAt);
+	boolean checkClassAvailable(int classID, int weekday, LocalTime beginAt, LocalTime finishAt);
 
-	List<ClassRoom> checkRoomAvailable(int roomID, int weekday, LocalTime beginAt, LocalTime finishAt);
+	boolean checkRoomAvailable(int roomID, int weekday, LocalTime beginAt, LocalTime finishAt);
 
 	ClassRoom findClassRoomByID(int id);
 
@@ -35,5 +35,9 @@ public interface ClassRoomService {
 	List<ClassRoom> checkListClassRoom(List<ClassRoom> listClassRoom, int roomID);
 
 	boolean addNewClassRoom(ClassRoom classRoom, int roomID);
+
+	boolean checkUpdateClassTimeValid(int classRoomID, int weekday, LocalTime beginAt, LocalTime finishAt);
+
+	boolean checkUpdateRoomTimeValid(int classRoomID, int weekday, LocalTime beginAt, LocalTime finishAt);
 	
 }

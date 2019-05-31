@@ -74,18 +74,18 @@ public class ClassRoomController {
 
 	@PostMapping("/classrooms")
 	public ResponseEntity<?> addNewClassRoom(@RequestBody String infoClassRoom) {
-		Map<String, Object> jsonMap = null;
-		ObjectMapper objectMapper = null;
+		int weekday = -1;
+		int classID = -1;
+		int roomID = -1;
 		String errorMessage = null;
 		Class classInstance = null;
 		Room room = null;
 		LocalTime beginAt = null;
 		LocalTime finishAt = null;
-		int weekday = -1;
-		int classID = -1;
-		int roomID = -1;
 		ReportError report = null;
 		ClassRoom classRoom = null;
+		Map<String, Object> jsonMap = null;
+		ObjectMapper objectMapper = null;
 
 		try {
 			objectMapper = new ObjectMapper();
@@ -125,13 +125,13 @@ public class ClassRoomController {
 			weekday = Integer.parseInt(jsonMap.get("weekday").toString());
 
 			// check if class is available at this duration
-			if (this.classRoomService.checkClassAvailable(classID, weekday, beginAt, finishAt) != null) {
+			if (!this.classRoomService.checkClassAvailable(classID, weekday, beginAt, finishAt)) {
 				report = new ReportError(71, "This class is not available at this duration!");
 				return ResponseEntity.badRequest().body(report);
 			}
 
 			// check if room is available at this duration
-			if (this.classRoomService.checkRoomAvailable(roomID, weekday, beginAt, finishAt) != null) {
+			if (!this.classRoomService.checkRoomAvailable(roomID, weekday, beginAt, finishAt)) {
 				report = new ReportError(72, "This room is not available at this duration!");
 				return ResponseEntity.badRequest().body(report);
 			}
@@ -269,25 +269,14 @@ public class ClassRoomController {
 			if (classRoom.getWeekday() != weekday || classRoom.getBeginAt().compareTo(beginAt) != 0
 					|| classRoom.getFinishAt().compareTo(finishAt) != 0) {
 
-				// check if the only record returned is this class-room
-				List<ClassRoom> listClassRoom = this.classRoomService.checkClassAvailable(classID, weekday, beginAt,
-						finishAt);
-				if (listClassRoom != null) {
-					if (listClassRoom.size() > 1
-							|| (listClassRoom.size() == 1 && listClassRoom.get(0).getId() != classRoom.getId())) {
+				if (!this.classRoomService.checkUpdateClassTimeValid(classRoom.getId(), weekday, beginAt, finishAt)) {
 						report = new ReportError(71, "This class is not available at this duration!");
 						return ResponseEntity.badRequest().body(report);
-					}
 				}
 
-				// check if the only record returned is this class-room
-				listClassRoom = this.classRoomService.checkRoomAvailable(roomID, weekday, beginAt, finishAt);
-				if (listClassRoom != null) {
-					if (listClassRoom.size() > 1
-							|| (listClassRoom.size() == 1 && listClassRoom.get(0).getId() != classRoom.getId())) {
-						report = new ReportError(72, "This room is not available at this duration!");
-						return ResponseEntity.badRequest().body(report);
-					}
+				if (!this.classRoomService.checkUpdateRoomTimeValid(classRoom.getId(), weekday, beginAt, finishAt)) {
+					report = new ReportError(72, "This room is not available at this duration!");
+					return ResponseEntity.badRequest().body(report);
 				}
 
 				classRoom.setWeekday(weekday);
@@ -365,7 +354,6 @@ public class ClassRoomController {
 	public ResponseEntity<?> createMultipleClassRoom( @RequestBody String requestBody, 
 			@RequestParam(value = "roomID", required = true) int roomID) {
 
-		String errorMessage = null;
 		ReportError report = null;
 		ObjectMapper objectMapper = null;
 		List<ClassRoom> listClassRoom = null;
@@ -375,22 +363,14 @@ public class ClassRoomController {
 			objectMapper.findAndRegisterModules();
 			listClassRoom = objectMapper.readValue(requestBody, new TypeReference<List<ClassRoom>>() {
 			});
-
-			//System.out.println(listClassRoom.get(0).getBeginAt());
-			//System.out.println(listClassRoom.get(0).getFinishAt());
 			
-			List<ClassRoom> filteredList = this.classRoomService
-											.checkListClassRoom(listClassRoom, roomID);
-			
-
+			List<ClassRoom> filteredList = this.classRoomService.checkListClassRoom(listClassRoom, roomID);
 
 			if (filteredList == null || filteredList.isEmpty()) {
 				report = new ReportError(200, "All accounts are invalid!");
 			} else {
 				for (int i = 0; i < filteredList.size() - 1; i++) {
 					//add all missing info
-					
-					
 					this.classRoomService.addNewClassRoom(filteredList.get(i), roomID);
 				}
 					

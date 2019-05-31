@@ -17,9 +17,9 @@ import edu.hust.model.TeacherClass;
 
 
 public class StudentClassDAL {
-	private static String url = "jdbc:mysql://localhost:3306/rollcall3?useUnicode=yes&characterEncoding=UTF-8";
-	private static String user = "root";
-	private static String password = "";
+	private static String url = "jdbc:mysql://localhost:3306/roll_call_system_2";
+	private static String user = "hustStdent2";
+	private static String password = "hustStdent2";
 
 	public static Connection getConnecṭ() {
 		Connection connection = null;
