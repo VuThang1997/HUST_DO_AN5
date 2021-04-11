@@ -1,8 +1,10 @@
 package edu.hust.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import edu.hust.model.Class;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,11 @@ import edu.hust.repository.CourseRepository;
 public class CourseServiceImpl1 implements CourseService {
 
 	private CourseRepository courseRepository;
+
+	@Autowired
+	private SemesterService semesterService;
+	@Autowired
+	private ClassService classService;
 	// private ClassRepository classRepository;
 
 	public CourseServiceImpl1() {
@@ -38,6 +45,11 @@ public class CourseServiceImpl1 implements CourseService {
 		}
 		this.courseRepository.save(course);
 		return true;
+	}
+
+	@Override
+	public Course findCourseById(int id) {
+		return this.courseRepository.findById(id).get();
 	}
 
 	@Override
@@ -84,5 +96,20 @@ public class CourseServiceImpl1 implements CourseService {
 			return null;
 		}
 		return listCourse;
+	}
+
+	@Override
+	public List<Course> findBySemester(String semester) {
+		List<Class> classList = classService.getClassBySemesterName(semester);
+		List<Course> listCourses = new ArrayList<>();
+		for (Class classObject: classList) {
+			listCourses.add(classObject.getCourse());
+			System.out.println("CourseId = " + classObject.getCourse().getCourseID());
+
+		}
+		if (listCourses == null || listCourses.isEmpty()) {
+			return null;
+		}
+		return listCourses;
 	}
 }

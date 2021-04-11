@@ -175,4 +175,14 @@ public class CourseController {
 		}
 		return ResponseEntity.ok(listCourse);
 	}
+
+	@RequestMapping(value = "/courses/getCoursesBySemeter", method = RequestMethod.GET)
+	public ResponseEntity<?> getAllCourse(@RequestParam(value = "semester", required = true) String semester) {
+
+		List<Course> listCourse = this.courseService.findBySemester(semester);
+		if (listCourse == null) {
+			return ResponseEntity.badRequest().body("No data founded!");
+		}
+		return ResponseEntity.ok(listCourse);
+	}
 }

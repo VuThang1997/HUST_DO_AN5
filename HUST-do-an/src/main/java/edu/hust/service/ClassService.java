@@ -21,4 +21,6 @@ public interface ClassService {
 
 	List<Class> getListClassByCourseID(int courseID);
 
+	List<Class> getClassBySemesterName(String semesterName);
+
 }

@@ -320,4 +320,14 @@ public class ClassController {
 		report = new ReportError(74, "No record is found!");
 		return new ResponseEntity<>(report, HttpStatus.NOT_FOUND);
 	}
+
+	@GetMapping("/getClassesBySemester")
+	public ResponseEntity<?> getClassesBySemester(@RequestParam(value = "semester", required = true) String semesterName) {
+		List<Class> listClasses = this.classService.getClassBySemesterName(semesterName);
+		if (listClasses != null && !listClasses.isEmpty()) {
+			return ResponseEntity.ok(listClasses);
+		} else {
+			return ResponseEntity.badRequest().body("No data founded!");
+		}
+	}
 }

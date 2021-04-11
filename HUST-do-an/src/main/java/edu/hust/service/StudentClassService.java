@@ -80,4 +80,6 @@ public interface StudentClassService {
 
 	String rollcallByEmailAndClassID(ReportError studentRollcall, int classID, int roomID);
 
+	List<StudentClass> findStudentByClassId (int ClassId);
+
 }

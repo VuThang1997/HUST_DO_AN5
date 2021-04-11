@@ -517,4 +517,9 @@ public class StudentClassServiceImpl1 implements StudentClassService {
 
 	}
 
+	@Override
+	public List<StudentClass> findStudentByClassId(int classId) {
+		return studentClassRepository.findByClassIDAndStatus(classId, 1);
+	}
+
 }

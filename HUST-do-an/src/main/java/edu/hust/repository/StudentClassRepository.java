@@ -3,6 +3,7 @@ package edu.hust.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import edu.hust.model.StudentClass;
 
 @Repository
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public interface StudentClassRepository extends JpaRepository<StudentClass, Integer>{
 
 	@Query("SELECT sc.classInstance.id FROM StudentClass sc WHERE sc.account.id = ?1 AND sc.classInstance.semester.semesterID = ?2")
@@ -35,4 +37,7 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, Inte
 
 	@Query("SELECT sc FROM StudentClass sc WHERE sc.account.id = ?1 and sc.isLearning = ?2")
 	List<StudentClass> findByStudentIDAndStatus(int studentID, int isLearning);
+
+	@Query("SELECT sc FROM StudentClass sc WHERE sc.classInstance.id = ?1 and sc.isLearning = ?2")
+	List<StudentClass> findByClassIDAndStatus(int classId, int isLearning);
 }

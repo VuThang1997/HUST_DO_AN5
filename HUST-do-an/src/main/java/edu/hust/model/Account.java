@@ -1,5 +1,7 @@
 package edu.hust.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -11,6 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "account")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Account implements Serializable {
 	private static final long serialVersionUID = 1L;
 
